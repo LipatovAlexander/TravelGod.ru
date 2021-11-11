@@ -5,11 +5,12 @@ namespace TravelGod.ru.Models
 {
     public class Chat
     {
-        public string Name { get; set; }
         public DateTime CreationDate { get; set; }
-        public virtual User Initiator { get; set; }
-        public virtual List<User> Users { get; set; }
-        public virtual List<Message> Messages { get; set; }
+        public int Id { get; set; }
+        public User Initiator { get; set; }
+        public List<Message> Messages { get; set; } = new();
+        public string Name { get; set; }
         public Status Status { get; set; }
+        public List<User> Users { get; set; } = new();
     }
 }

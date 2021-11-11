@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.VisualBasic;
 
 namespace TravelGod.ru.Models
 {
     public class Trip
     {
-        public string Title { get; set; }
+        public Chat Chat { get; set; }
+        public List<Comment> Comments { get; set; } = new();
         public string Description { get; set; }
-        public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public List<string> Route { get; set; }
-        public virtual User Initiator { get; set; }
-        public virtual List<User> Users { get; set; }
-        public virtual Chat Chat { get; set; }
-        public virtual List<Comment> Comments { get; set; }
-        public virtual List<Rating> Ratings { get; set; }
+        public int Id { get; set; }
+        public User Initiator { get; set; }
+        public List<Rating> Ratings { get; set; } = new();
+        public List<string> Route { get; set; } = new();
+        public DateTime StartDate { get; set; }
         public Status Status { get; set; }
+        public string Title { get; set; }
+        public List<User> Users { get; set; } = new();
     }
 }
