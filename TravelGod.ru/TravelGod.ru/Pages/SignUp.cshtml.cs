@@ -1,8 +1,11 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using TravelGod.ru.Models;
 
 namespace TravelGod.ru.Pages
@@ -39,13 +42,30 @@ namespace TravelGod.ru.Pages
             return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
+            if (_context.Users.FirstOrDefault(u => u.Login == Login) is not null)
+            {
+                ModelState.AddModelError("Login", "Логин уже занят");
+            }
+
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
+            var passwordSalt = Cryptography.GenerateRandomCryptographicKey(32);
+            var passwordHash = Cryptography.ComputeMd5HashString(Password1 + passwordSalt);
+
+            var newUser = new User
+            {
+                Login = Login,
+                PasswordHash = passwordHash,
+                PasswordSalt = passwordSalt
+            };
+
+            _context.Users.Add(newUser);
+            await _context.SaveChangesAsync();
             return RedirectToPage(nameof(SignIn));
         }
     }

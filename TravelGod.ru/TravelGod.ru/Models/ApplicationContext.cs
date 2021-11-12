@@ -14,6 +14,7 @@ namespace TravelGod.ru.Models
         public DbSet<Rating> Ratings { get; set; }
         public DbSet<Trip> Trips { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Session> Sessions { get; set; }
 
         public ApplicationContext (DbContextOptions<ApplicationContext> options) : base(options)
         {
