@@ -11,7 +11,7 @@ using TravelGod.ru.Models;
 
 namespace TravelGod.ru.Pages
 {
-    public class SignIn : PageModel
+    public class SignIn : MyPageModel
     {
         [BindProperty]
         [Required(ErrorMessage = "Введите логин")]
@@ -21,15 +21,11 @@ namespace TravelGod.ru.Pages
         [Required(ErrorMessage = "Введите пароль")]
         public string Password { get; set; }
 
-        [BindProperty]
-        public bool RememberMe { get; set; }
+        [BindProperty] public bool RememberMe { get; set; }
 
-        public SignIn(ApplicationContext context)
+        public SignIn(ApplicationContext context) : base(context)
         {
-            _context = context;
         }
-
-        private readonly ApplicationContext _context;
 
         public IActionResult OnGet()
         {
@@ -38,6 +34,11 @@ namespace TravelGod.ru.Pages
 
         public async Task<IActionResult> OnPost()
         {
+            if (User is not null)
+            {
+                return RedirectToPage(nameof(Profile));
+            }
+
             var user = _context.Users.FirstOrDefault(u => u.Login == Login);
             if (user is null)
             {
@@ -64,7 +65,7 @@ namespace TravelGod.ru.Pages
                     });
                 _context.Sessions.Add(session);
                 await _context.SaveChangesAsync();
-                return RedirectToPage(nameof(Profile));
+                return RedirectToPage(nameof(Profile), new {id = user.Id});
             }
 
             ModelState.AddModelError("Password", "Неправильный логин или пароль");

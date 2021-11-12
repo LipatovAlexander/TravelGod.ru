@@ -10,7 +10,7 @@ using TravelGod.ru.Models;
 
 namespace TravelGod.ru.Pages
 {
-    public class SignUp : PageModel
+    public class SignUp : MyPageModel
     {
         [BindProperty]
         [Required(ErrorMessage = "Введите логин")]
@@ -30,12 +30,9 @@ namespace TravelGod.ru.Pages
         [Compare(nameof(Password1), ErrorMessage = "Пароли должны совпадать")]
         public string Password2 { get; set; }
 
-        public SignUp(ApplicationContext context)
+        public SignUp(ApplicationContext context) : base(context)
         {
-            _context = context;
         }
-
-        private readonly ApplicationContext _context;
 
         public IActionResult OnGet()
         {
@@ -44,6 +41,11 @@ namespace TravelGod.ru.Pages
 
         public async Task<IActionResult> OnPost()
         {
+            if (User is not null)
+            {
+                return RedirectToPage(nameof(Profile));
+            }
+
             if (_context.Users.FirstOrDefault(u => u.Login == Login) is not null)
             {
                 ModelState.AddModelError("Login", "Логин уже занят");

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TravelGod.ru.Models;
+using TravelGod.ru.Services;
 
 namespace TravelGod.ru
 {
@@ -25,6 +26,8 @@ namespace TravelGod.ru
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSession();
+            services.AddMemoryCache();
             services.AddRazorPages();
             services.AddDbContext<ApplicationContext>(options =>
                 options
@@ -52,7 +55,7 @@ namespace TravelGod.ru
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseMiddleware<AuthenticationMiddleware>();
 
             app.UseEndpoints(endpoints => { endpoints.MapRazorPages(); });
         }
