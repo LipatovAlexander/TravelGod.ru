@@ -26,14 +26,13 @@ namespace TravelGod.ru
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSession();
-            services.AddMemoryCache();
             services.AddRazorPages();
             services.AddDbContext<ApplicationContext>(options =>
                 options
                     .UseMySql(
                         "server=localhost;user=root;password=66958357LaS!;database=travelgoddb;",
                         new MySqlServerVersion(new Version(8, 0, 27))));
+            services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
