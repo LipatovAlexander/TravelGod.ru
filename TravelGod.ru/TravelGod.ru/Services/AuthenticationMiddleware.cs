@@ -37,6 +37,7 @@ namespace TravelGod.ru.Services
                             Expires = session.Expires,
                             Path = "/"
                         });
+                    context.Items["Session"] = session;
                 }
                 else if (session is not null)
                 {

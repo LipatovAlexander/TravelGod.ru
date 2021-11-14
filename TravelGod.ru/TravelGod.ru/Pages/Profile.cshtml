@@ -26,16 +26,13 @@
                     @($"{Model.CurrentUser.FirstName} {Model.CurrentUser.LastName}")
                 }
             </span>
-            <span class="d-block text-truncate mt-2 text-muted">
-                @if (string.IsNullOrEmpty(Model.CurrentUser.FirstName) || string.IsNullOrEmpty(Model.CurrentUser.LastName))
-                {
-                    @Model.CurrentUser.Login
-                }
-                else
-                {
-                    @($"{Model.CurrentUser.Description}")
-                }
-            </span>
+            @if (!string.IsNullOrEmpty(Model.CurrentUser.Description))
+            {
+                <span class="d-block text-truncate mt-2 text-muted">
+                    @Model.CurrentUser.Description
+                </span>
+            }
+
         </div>
         <div class="col-12 col-md order-first order-md-last p-2 text-center">
             <img src="profile-bg.png" alt="" style="max-height: 100px" class="img-fluid">
@@ -58,7 +55,38 @@
                 }
             </ul>
             <div class="tab-content m-3" id="myTabContent">
-                <div class="tab-pane fade show active" id="trips" role="tabpanel" aria-labelledby="trips-tab">История</div>
+                <div class="tab-pane fade show active" id="trips" role="tabpanel" aria-labelledby="trips-tab">
+                    <div class="container py-1">
+
+                        <div class="row">
+                            <div class="col-lg-7 mx-auto">
+                                @if (Model.CurrentUser.JoinedTrips.Count > 0)
+                                {
+                                    <!-- Timeline -->
+                                    <ul class="timeline">
+                                        @foreach (var trip in Model.CurrentUser.JoinedTrips)
+                                        {
+                                            <li class="timeline-item bg-white rounded ml-3 p-4 shadow">
+                                                <div class="timeline-arrow"></div>
+                                                <h2 class="h5 mb-0">@trip.Title</h2>
+                                                <span class="small text-gray"><i class="fa fa-clock-o mr-1"></i>@trip.StartDate.ToString("D") - @trip.EndDate.ToString("D")</span>
+                                                <p class="text-small mt-2 font-weight-light">@trip.Description</p>
+                                                <span class="align-self-end text-muted">Участников: @trip.Users.Count</span>
+                                            </li>
+                                        }
+                                    </ul>
+                                    <!-- End -->
+                                }
+                                else
+                                {
+                                    <p class="text-center">Данный пользователь ещё не участвовал в поездках.</p>
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
                 <div class="tab-pane fade" id="about" role="tabpanel" aria-labelledby="about-tab">
                     <form method="post" id="profile-form">
                         <div class="form-group row">
@@ -67,9 +95,12 @@
                                 <input asp-for="CurrentUser.FirstName" type="text" readonly disabled class="form-control-plaintext">
                                 <span class="text-danger" asp-validation-for="CurrentUser.FirstName"></span>
                             </div>
-                            <div class="col-sm-3 order-first order-sm-last">
-                                <input id="toggle-edit" type="button" class="btn btn-outline-secondary" value="Редактировать">
-                            </div>
+                            @if (Model.User?.Id == Model.CurrentUser?.Id)
+                            {
+                                <div class="col-sm-3 order-first order-sm-last">
+                                    <input id="toggle-edit" type="button" class="btn btn-outline-secondary" value="Редактировать">
+                                </div>
+                            }
                         </div>
                         <div class="form-group row">
                             <label asp-for="CurrentUser.LastName" class="font-weight-bold col-sm-2 col-form-label">Фамилия</label>
@@ -106,12 +137,24 @@
                                 <span class="text-danger" asp-validation-for="CurrentUser.BirthDate"></span>
                             </div>
                         </div>
-                        <input class="btn btn-outline-primary" type="submit" value="Сохранить" hidden>
+                        @if (Model.User?.Id == Model.CurrentUser?.Id)
+                        {
+                            <input class="btn btn-outline-primary" type="submit" value="Сохранить" hidden>
+                        }
                     </form>
                 </div>
                 @if (Model.CurrentUser?.Id == Model.User?.Id)
                 {
-                    <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">Настройки</div>
+                    <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+                        <div class="row">
+                            <div class="col-auto">
+                                <a asp-area="" asp-page-handler="LogOut" class="btn btn-outline-warning">Выйти из аккаунта</a>
+                            </div>
+                            <div class="col-auto">
+                                <a class="btn btn-outline-danger">Удалить аккаунт</a>
+                            </div>
+                        </div>
+                    </div>
                 }
             </div>
         </div>
