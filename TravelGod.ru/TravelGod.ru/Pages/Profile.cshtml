@@ -1,7 +1,127 @@
 ﻿@page
 @model TravelGod.ru.Pages.Profile
+
 @{
     ViewData["Title"] = "Профиль";
 }
 
-@Html.DisplayFor(profile => profile.CurrentUser)
+@section Styles
+{
+    <link rel="stylesheet" href="~/css/profile.css">
+}
+
+<div class="container">
+    <div class="row" id="profile-header">
+        <div class="col-3 col-sm-auto p-2">
+            <img class="img-fluid" src="user.png" alt="Пользовательский аватар" width="100">
+        </div>
+        <div class="col-9 col-sm col-md-3 p-2">
+            <span class="d-block text-truncate font-weight-bold">
+                @if (string.IsNullOrEmpty(Model.CurrentUser.FirstName) || string.IsNullOrEmpty(Model.CurrentUser.LastName))
+                {
+                    @Model.CurrentUser.Login
+                }
+                else
+                {
+                    @($"{Model.CurrentUser.FirstName} {Model.CurrentUser.LastName}")
+                }
+            </span>
+            <span class="d-block text-truncate mt-2 text-muted">
+                @if (string.IsNullOrEmpty(Model.CurrentUser.FirstName) || string.IsNullOrEmpty(Model.CurrentUser.LastName))
+                {
+                    @Model.CurrentUser.Login
+                }
+                else
+                {
+                    @($"{Model.CurrentUser.Description}")
+                }
+            </span>
+        </div>
+        <div class="col-12 col-md order-first order-md-last p-2 text-center">
+            <img src="profile-bg.png" alt="" style="max-height: 100px" class="img-fluid">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active border-0" id="trips-tab" data-toggle="tab" href="#trips" role="tab" aria-controls="trips" aria-selected="true">История поездок</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link border-0" id="about-tab" data-toggle="tab" href="#about" role="tab" aria-controls="about" aria-selected="false">Обо мне</a>
+                </li>
+                @if (Model.CurrentUser?.Id == Model.User?.Id)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link border-0" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">Настройки</a>
+                    </li>
+                }
+            </ul>
+            <div class="tab-content m-3" id="myTabContent">
+                <div class="tab-pane fade show active" id="trips" role="tabpanel" aria-labelledby="trips-tab">История</div>
+                <div class="tab-pane fade" id="about" role="tabpanel" aria-labelledby="about-tab">
+                    <form method="post" id="profile-form">
+                        <div class="form-group row">
+                            <label asp-for="CurrentUser.FirstName" class="font-weight-bold col-sm-2 col-form-label">Имя</label>
+                            <div class="col-sm-7">
+                                <input asp-for="CurrentUser.FirstName" type="text" readonly disabled class="form-control-plaintext">
+                                <span class="text-danger" asp-validation-for="CurrentUser.FirstName"></span>
+                            </div>
+                            <div class="col-sm-3 order-first order-sm-last">
+                                <input id="toggle-edit" type="button" class="btn btn-outline-secondary" value="Редактировать">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label asp-for="CurrentUser.LastName" class="font-weight-bold col-sm-2 col-form-label">Фамилия</label>
+                            <div class="col-sm-7">
+                                <input asp-for="CurrentUser.LastName" type="text" readonly disabled class="form-control-plaintext">
+                                <span class="text-danger" asp-validation-for="CurrentUser.LastName"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label asp-for="CurrentUser.Patronymic" class="font-weight-bold col-sm-2 col-form-label">Отчество</label>
+                            <div class="col-sm-7">
+                                <input asp-for="CurrentUser.Patronymic" type="text" readonly disabled class="form-control-plaintext">
+                                <span class="text-danger" asp-validation-for="CurrentUser.Patronymic"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label asp-for="CurrentUser.Description" class="font-weight-bold col-sm-2 col-form-label">О себе</label>
+                            <div class="col-sm-7">
+                                <input asp-for="CurrentUser.Description" type="text" readonly disabled class="form-control-plaintext">
+                                <span class="text-danger" asp-validation-for="CurrentUser.Description"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label asp-for="CurrentUser.Email" class="font-weight-bold col-sm-2 col-form-label">Email</label>
+                            <div class="col-sm-7">
+                                <input asp-for="CurrentUser.Email" type="email" readonly disabled class="form-control-plaintext">
+                                <span class="text-danger" asp-validation-for="CurrentUser.Email"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label asp-for="CurrentUser.BirthDate" class="font-weight-bold col-sm-2 col-form-label">День рождения</label>
+                            <div class="col-sm-7">
+                                <input asp-for="CurrentUser.BirthDate" type="date" readonly disabled class="form-control-plaintext">
+                                <span class="text-danger" asp-validation-for="CurrentUser.BirthDate"></span>
+                            </div>
+                        </div>
+                        <input class="btn btn-outline-primary" type="submit" value="Сохранить" hidden>
+                    </form>
+                </div>
+                @if (Model.CurrentUser?.Id == Model.User?.Id)
+                {
+                    <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">Настройки</div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.Hidden("UserId", Model.CurrentUser.Id)
+
+@section Scripts
+{
+    <script src="js/profile.js"></script>
+    <partial name="Shared/_ValidationScriptsPartial"/>
+}

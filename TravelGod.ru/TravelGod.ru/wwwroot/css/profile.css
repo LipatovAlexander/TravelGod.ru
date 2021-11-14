@@ -1,0 +1,8 @@
+﻿#myTab .nav-item .nav-link {
+    background-color: inherit;
+    color: grey;
+}
+
+#myTab .nav-item .nav-link.active {
+    color: black;
+}
