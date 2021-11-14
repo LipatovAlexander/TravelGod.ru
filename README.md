@@ -35,4 +35,4 @@
 10. Конкретный чат
 
 ## Сущности и связи между ними
-![Database](https://user-images.githubusercontent.com/77479370/141165330-1c22967e-39b5-4962-b7a0-0becbdaebe2c.png)
+![Database](Docs/Database.png)
