@@ -1,4 +1,8 @@
 ﻿@model TravelGod.ru.Pages.MyPageModel
+@{
+    var currentPage = ViewContext.RouteData.Values["page"].ToString();
+    Console.WriteLine(currentPage);
+}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -24,15 +28,15 @@
             </button>
             <div class="navbar-collapse collapse d-sm-inline-flex" id="navbarSupportedContent">
                 <ul class="navbar-nav flex-grow-1 justify-content-end">
-                    <li class="nav-item">
+                    <li class="nav-item @(currentPage == "/Index" ? "active" : "")">
                         <a class="nav-link text-dark" asp-area="" asp-page="/Index">Главная</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item @(currentPage == "/Trips" ? "active" : "")">
                         <a class="nav-link text-dark" asp-area="" asp-page="/Trips">Поездки</a>
                     </li>
                     @if (Model.User is not null)
                     {
-                        <li class="nav-item">
+                        <li class="nav-item @(currentPage == "/Profile" ? "active" : "")">
                             <a class="nav-link text-primary" asp-route-id="@Model.User.Id" asp-page="/Profile">
                                 @if (!string.IsNullOrEmpty(Model.User.FirstName) && !string.IsNullOrEmpty(Model.User.LastName))
                                 {
@@ -47,10 +51,10 @@
                     }
                     else
                     {
-                        <li class="nav-item">
+                        <li class="nav-item @(currentPage == "/SignIn" ? "active" : "")">
                             <a class="nav-link text-primary" asp-area="" asp-page="/SignIn">Авторизация</a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item @(currentPage == "/SignUp" ? "active" : "")">
                             <a class="nav-link text-primary" asp-area="" asp-page="/SignUp">Регистрация</a>
                         </li>
                     }
