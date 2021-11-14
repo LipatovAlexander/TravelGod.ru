@@ -11,9 +11,9 @@
     <link rel="stylesheet" href="~/css/site.css"/>
     @await RenderSectionAsync("Styles", false)
 </head>
-<body class="bg-light">
+<body>
 <header>
-    <nav class="navbar navbar-expand-sm navbar-light bg-light border-bottom">
+    <nav class="navbar navbar-expand-sm border-bottom">
         <div class="container">
             <a class="navbar-brand" asp-area="" asp-page="/Index">
                 <img src="/logo.svg" alt="TravelGod.ru" width="70">
@@ -34,7 +34,14 @@
                     {
                         <li class="nav-item">
                             <a class="nav-link text-primary" asp-route-id="@Model.User.Id" asp-page="/Profile">
-                                Профиль
+                                @if (!string.IsNullOrEmpty(Model.User.FirstName) && !string.IsNullOrEmpty(Model.User.LastName))
+                                {
+                                    @($"{Model.User.FirstName} {Model.User.LastName}")
+                                }
+                                else
+                                {
+                                    @Model.User.Login
+                                }
                             </a>
                         </li>
                     }
