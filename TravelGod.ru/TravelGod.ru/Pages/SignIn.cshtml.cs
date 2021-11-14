@@ -48,12 +48,14 @@ namespace TravelGod.ru.Pages
 
             var actualPasswordHash = Cryptography.ComputeMd5HashString(Password + user.PasswordSalt);
 
+            Console.WriteLine(RememberMe);
             if (actualPasswordHash == user.PasswordHash)
             {
                 var accessToken = Cryptography.GenerateRandomCryptographicKey(40);
                 var session = new Session
                 {
-                    Expires = RememberMe ? DateTimeOffset.MaxValue : DateTimeOffset.Now.Add(TimeSpan.FromMinutes(20)),
+                    RememberMe = RememberMe,
+                    Expires = RememberMe ? DateTimeOffset.Now.AddYears(1) : DateTimeOffset.Now.Add(TimeSpan.FromMinutes(20)),
                     Token = accessToken,
                     User = user
                 };

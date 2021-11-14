@@ -25,7 +25,10 @@ namespace TravelGod.ru.Services
                 {
                     await dbContext.Entry(session).Reference(s => s.User).LoadAsync();
                     context.Items["User"] = session.User;
-                    session.Expires = DateTimeOffset.Now.AddMinutes(20);
+                    if (!session.RememberMe)
+                    {
+                        session.Expires = DateTimeOffset.Now.AddMinutes(20);
+                    }
                     dbContext.Sessions.Update(session);
                     await dbContext.SaveChangesAsync();
                     context.Response.Cookies.Append("token", token,
