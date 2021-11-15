@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using TravelGod.ru.Models;
 
-namespace TravelGod.ru.Services
+namespace TravelGod.ru.Infrastructure
 {
     public class AuthenticationMiddleware
     {
@@ -24,20 +23,28 @@ namespace TravelGod.ru.Services
                 if (session is not null && session.Expires > DateTimeOffset.Now && token is not null)
                 {
                     await dbContext.Entry(session).Reference(s => s.User).LoadAsync();
-                    context.Items["User"] = session.User;
-                    if (!session.RememberMe)
+                    if (session.User.Status != Status.Normal)
                     {
-                        session.Expires = DateTimeOffset.Now.AddMinutes(20);
+                        dbContext.Sessions.Remove(session);
+                        await dbContext.SaveChangesAsync();
                     }
-                    dbContext.Sessions.Update(session);
-                    await dbContext.SaveChangesAsync();
-                    context.Response.Cookies.Append("token", token,
-                        new CookieOptions()
+                    else
+                    {
+                        context.Items["User"] = session.User;
+                        if (!session.RememberMe)
                         {
-                            Expires = session.Expires,
-                            Path = "/"
-                        });
-                    context.Items["Session"] = session;
+                            session.Expires = DateTimeOffset.Now.AddMinutes(20);
+                        }
+                        dbContext.Sessions.Update(session);
+                        await dbContext.SaveChangesAsync();
+                        context.Response.Cookies.Append("token", token,
+                            new CookieOptions()
+                            {
+                                Expires = session.Expires,
+                                Path = "/"
+                            });
+                        context.Items["Session"] = session;
+                    }
                 }
                 else if (session is not null)
                 {
