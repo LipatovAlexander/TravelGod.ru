@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using TravelGod.ru.Infrastructure.Cryptography;
 using TravelGod.ru.Models;
 
 namespace TravelGod.ru.Pages

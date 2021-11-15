@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace TravelGod.ru
+namespace TravelGod.ru.Infrastructure.Cryptography
 {
     public static class Cryptography
     {
