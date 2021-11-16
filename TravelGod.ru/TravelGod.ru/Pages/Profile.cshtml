@@ -13,7 +13,13 @@
 <div class="container">
     <div class="row" id="profile-header">
         <div class="col-3 col-sm-auto p-2">
-            <img class="img-fluid" src="user.png" alt="Пользовательский аватар" width="100">
+            <div class="picture-container">
+                <div class="picture">
+                    <img src="@Model.CurrentUser.Avatar.Path" alt="default avatar" class="picture-src" id="wizardPicturePreview" title="@Model.CurrentUser.Avatar.Name"/>
+                    <input asp-for="UploadedFile" id="wizard-picture" form="profile-form" disabled readonly>
+                </div>
+                <h6>Choose Picture</h6>
+            </div>
         </div>
         <div class="col-9 col-sm col-md-3 p-2">
             <span class="d-block text-truncate font-weight-bold">
@@ -88,7 +94,7 @@
 
                 </div>
                 <div class="tab-pane fade" id="about" role="tabpanel" aria-labelledby="about-tab">
-                    <form method="post" id="profile-form">
+                    <form method="post" id="profile-form" enctype="multipart/form-data">
                         <div class="form-group row">
                             <label asp-for="CurrentUser.FirstName" class="font-weight-bold col-sm-2 col-form-label">Имя</label>
                             <div class="col-sm-7">

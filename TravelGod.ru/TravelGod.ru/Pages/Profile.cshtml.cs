@@ -1,12 +1,16 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using TravelGod.ru.Models;
+using File = TravelGod.ru.Models.File;
 using Index = System.Index;
 
 namespace TravelGod.ru.Pages
@@ -14,9 +18,14 @@ namespace TravelGod.ru.Pages
     public class Profile : MyPageModel
     {
         public User CurrentUser { get; set; }
+        [BindProperty, Display(Name="File")]
+        public IFormFile UploadedFile { get; set; }
 
-        public Profile(ApplicationContext context) : base(context)
+        private readonly IWebHostEnvironment _appEnvironment;
+
+        public Profile(ApplicationContext context, IWebHostEnvironment environment) : base(context)
         {
+            _appEnvironment = environment;
         }
 
         public async Task<IActionResult> OnGet(int id)
@@ -31,6 +40,8 @@ namespace TravelGod.ru.Pages
             {
                 await _context.Entry(trip).Collection(t => t.Users).LoadAsync();
             }
+
+            await _context.Entry(CurrentUser).Reference(u => u.Avatar).LoadAsync();
 
             return Page();
         }
@@ -50,6 +61,21 @@ namespace TravelGod.ru.Pages
                 u => u.LastName) || !ModelState.IsValid)
             {
                 return new JsonResult(new {Success = false});
+            }
+
+            if (UploadedFile != null)
+            {
+                // путь к папке Files
+                string path = "CustomFiles/Avatars/" + CurrentUser.Id + Path.GetExtension(UploadedFile.FileName);
+                // сохраняем файл в папку Files в каталоге wwwroot
+                using (var fileStream = new FileStream(Path.Combine(_appEnvironment.WebRootPath, path), FileMode.Create))
+                {
+                    await UploadedFile.CopyToAsync(fileStream);
+                }
+                var file = new File { Name = UploadedFile.FileName, Path = path };
+                _context.Files.Add(file);
+                await _context.SaveChangesAsync();
+                CurrentUser.Avatar = file;
             }
 
             _context.Users.Update(CurrentUser);
