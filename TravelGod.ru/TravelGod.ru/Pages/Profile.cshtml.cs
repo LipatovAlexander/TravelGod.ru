@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using TravelGod.ru.Infrastructure;
 using TravelGod.ru.Models;
 using File = TravelGod.ru.Models.File;
 using Index = System.Index;
@@ -19,7 +20,7 @@ namespace TravelGod.ru.Pages
     {
         public User CurrentUser { get; set; }
         [BindProperty, Display(Name="File")]
-        public IFormFile UploadedFile { get; set; }
+        public IFormFile Avatar { get; set; }
 
         private readonly IWebHostEnvironment _appEnvironment;
 
@@ -63,16 +64,21 @@ namespace TravelGod.ru.Pages
                 return new JsonResult(new {Success = false});
             }
 
-            if (UploadedFile != null)
+            if (Avatar != null)
             {
+                if (!ImageValidator.IsValid(Avatar))
+                {
+                    return new JsonResult(new {Success = false});
+                }
+
                 // путь к папке Files
-                string path = "CustomFiles/Avatars/" + CurrentUser.Id + Path.GetExtension(UploadedFile.FileName);
+                string path = "CustomFiles/Avatars/" + CurrentUser.Id + Path.GetExtension(Avatar.FileName).ToLowerInvariant();
                 // сохраняем файл в папку Files в каталоге wwwroot
                 using (var fileStream = new FileStream(Path.Combine(_appEnvironment.WebRootPath, path), FileMode.Create))
                 {
-                    await UploadedFile.CopyToAsync(fileStream);
+                    await Avatar.CopyToAsync(fileStream);
                 }
-                var file = new File { Name = UploadedFile.FileName, Path = path };
+                var file = new File { Name = Avatar.FileName, Path = path };
                 _context.Files.Add(file);
                 await _context.SaveChangesAsync();
                 CurrentUser.Avatar = file;

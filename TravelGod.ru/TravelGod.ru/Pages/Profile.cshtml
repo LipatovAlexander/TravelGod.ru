@@ -15,10 +15,10 @@
         <div class="col-3 col-sm-auto p-2">
             <div class="picture-container">
                 <div class="picture">
-                    <img src="@Model.CurrentUser.Avatar.Path" alt="default avatar" class="picture-src" id="wizardPicturePreview" title="@Model.CurrentUser.Avatar.Name"/>
-                    <input asp-for="UploadedFile" id="wizard-picture" form="profile-form" disabled readonly>
+                    <img src="@Model.CurrentUser.Avatar?.Path" alt="default avatar" class="picture-src" id="wizardPicturePreview" title="@Model.CurrentUser.Avatar?.Name"/>
+                    <input asp-for="Avatar" id="wizard-picture" form="profile-form" disabled readonly title="@Model.CurrentUser.Avatar?.Name" accept="image/png, image/jpeg">
+                    <span asp-validation-for="Avatar" class="text-danger"></span>
                 </div>
-                <h6>Choose Picture</h6>
             </div>
         </div>
         <div class="col-9 col-sm col-md-3 p-2">
@@ -171,6 +171,6 @@
 
 @section Scripts
 {
-    <script src="js/profile.js"></script>
     <partial name="Shared/_ValidationScriptsPartial"/>
+    <script src="js/profile.js"></script>
 }
