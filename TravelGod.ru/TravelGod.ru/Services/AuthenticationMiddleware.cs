@@ -36,7 +36,7 @@ namespace TravelGod.ru.Services
 
                         await sessionService.UpdateSessionAsync(session);
                         context.Response.Cookies.Append("token", token,
-                            new CookieOptions()
+                            new CookieOptions
                             {
                                 Expires = session.Expires,
                                 Path = "/"

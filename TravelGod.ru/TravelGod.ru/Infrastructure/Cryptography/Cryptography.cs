@@ -24,6 +24,7 @@ namespace TravelGod.ru.Infrastructure.Cryptography
             {
                 builder.Append(b.ToString("x2"));
             }
+
             return builder.ToString();
         }
     }

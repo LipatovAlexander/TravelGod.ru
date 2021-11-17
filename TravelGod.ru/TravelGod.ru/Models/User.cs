@@ -39,10 +39,9 @@ namespace TravelGod.ru.Models
         [MaxLength(10, ErrorMessage = "Логин не должен быть длиннее 10 символов")]
         public string Login { get; set; }
 
-        [Required]
-        public string PasswordHash { get; set; }
-        [Required]
-        public string PasswordSalt { get; set; }
+        [Required] public string PasswordHash { get; set; }
+
+        [Required] public string PasswordSalt { get; set; }
 
         [RegularExpression(@"^[A-Za-zА-Яа-я]*$", ErrorMessage = "Отчество содержит недопустимые символы")]
         [MaxLength(20, ErrorMessage = "Отчество не должно быть длиннее 20 символов")]
@@ -51,10 +50,10 @@ namespace TravelGod.ru.Models
         public int AvatarId { get; set; }
         public File Avatar { get; set; }
 
-        [Required]
-        public Role Role { get; set; }
-        [Required]
-        public Status Status { get; set; }
+        [Required] public Role Role { get; set; }
+
+        [Required] public Status Status { get; set; }
+
         public List<Trip> JoinedTrips { get; set; } = new();
         public List<Chat> OwnedChats { get; set; } = new();
         public List<Trip> OwnedTrips { get; set; } = new();

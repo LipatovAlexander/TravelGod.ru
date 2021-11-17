@@ -1,32 +1,24 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using TravelGod.ru.Infrastructure;
 using TravelGod.ru.Models;
 using TravelGod.ru.Services;
 using File = TravelGod.ru.Models.File;
-using Index = System.Index;
 
 namespace TravelGod.ru.Pages
 {
     public class Profile : MyPageModel
     {
-        public User CurrentUser { get; set; }
-        [BindProperty, Display(Name = "File")] public IFormFile Avatar { get; set; }
-
         private readonly IWebHostEnvironment _appEnvironment;
-        private readonly UserService _userService;
         private readonly FileService _fileService;
         private readonly SessionService _sessionService;
         private readonly TripService _tripService;
+        private readonly UserService _userService;
 
         public Profile(IWebHostEnvironment environment, UserService userService, FileService fileService,
                        SessionService sessionService, TripService tripService)
@@ -37,6 +29,12 @@ namespace TravelGod.ru.Pages
             _sessionService = sessionService;
             _tripService = tripService;
         }
+
+        public User CurrentUser { get; set; }
+
+        [BindProperty]
+        [Display(Name = "File")]
+        public IFormFile Avatar { get; set; }
 
         public async Task<IActionResult> OnGet(int id)
         {
@@ -56,7 +54,9 @@ namespace TravelGod.ru.Pages
         {
             CurrentUser = await _userService.GetUserAsync(id);
             if (CurrentUser.Id != User.Id)
+            {
                 return new JsonResult("Нет доступа!");
+            }
 
             if (!await TryUpdateModelAsync(CurrentUser, "CurrentUser",
                 u => u.Description,
@@ -104,7 +104,7 @@ namespace TravelGod.ru.Pages
                 return RedirectToPage("Index");
             }
 
-            HttpContext.Response.Cookies.Append("token", session.Token, new CookieOptions()
+            HttpContext.Response.Cookies.Append("token", session.Token, new CookieOptions
             {
                 Expires = DateTimeOffset.Now.AddDays(-1)
             });

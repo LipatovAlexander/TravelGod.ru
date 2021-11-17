@@ -1,11 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using TravelGod.ru.Infrastructure.Cryptography;
 using TravelGod.ru.Models;
 using TravelGod.ru.Services;
@@ -14,6 +9,13 @@ namespace TravelGod.ru.Pages
 {
     public class SignUp : MyPageModel
     {
+        private readonly UserService _userService;
+
+        public SignUp(UserService userService)
+        {
+            _userService = userService;
+        }
+
         [BindProperty]
         [Required(ErrorMessage = "Введите логин")]
         [MinLength(5, ErrorMessage = "Логин не должен быть короче 5 символов")]
@@ -31,13 +33,6 @@ namespace TravelGod.ru.Pages
         [BindProperty]
         [Compare(nameof(Password1), ErrorMessage = "Пароли должны совпадать")]
         public string Password2 { get; set; }
-
-        public SignUp(UserService userService)
-        {
-            _userService = userService;
-        }
-
-        private readonly UserService _userService;
 
         public IActionResult OnGet()
         {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
@@ -8,6 +7,10 @@ namespace TravelGod.ru.Models
 {
     public class ApplicationContext : DbContext
     {
+        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
+        {
+        }
+
         public DbSet<Chat> Chats { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Message> Messages { get; set; }
@@ -16,10 +19,6 @@ namespace TravelGod.ru.Models
         public DbSet<User> Users { get; set; }
         public DbSet<Session> Sessions { get; set; }
         public DbSet<File> Files { get; set; }
-
-        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
-        {
-        }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

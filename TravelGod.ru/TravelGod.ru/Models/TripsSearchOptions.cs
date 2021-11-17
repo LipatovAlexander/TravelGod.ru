@@ -5,6 +5,10 @@ namespace TravelGod.ru.Models
 {
     public class TripsSearchOptions
     {
+        private string _datesRaw;
+
+        private string _routeRaw;
+
         [RegularExpression(@"^[A-Za-zА-Яа-я0-9\., '""]*$", ErrorMessage = "Название содержит недопустимые символы")]
         public string Title { get; set; }
 
@@ -21,8 +25,6 @@ namespace TravelGod.ru.Models
             }
         }
 
-        private string _routeRaw;
-
         public bool Archive { get; set; }
 
         [RegularExpression(@"\d\d.\d\d.\d\d\d\d - \d\d.\d\d.\d\d\d\d", ErrorMessage = "Некорректный диапазон дат")]
@@ -37,14 +39,12 @@ namespace TravelGod.ru.Models
                     return;
                 }
 
-                var startDateRaw = value[0..10];
+                var startDateRaw = value[..10];
                 var endDateRaw = value[13..23];
                 StartDate = DateTime.Parse(startDateRaw);
                 EndDate = DateTime.Parse(endDateRaw);
             }
         }
-
-        private string _datesRaw;
 
         public bool HasTitle => !string.IsNullOrEmpty(Title);
 

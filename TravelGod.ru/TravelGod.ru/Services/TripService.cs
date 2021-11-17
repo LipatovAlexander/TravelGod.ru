@@ -32,7 +32,7 @@ namespace TravelGod.ru.Services
                                                                                  string.Equals(route, routeItem,
                                                                                      StringComparison
                                                                                          .InvariantCultureIgnoreCase))))
-                                 .OrderBy(t=> t.StartDate)
+                                 .OrderBy(t => t.StartDate)
                                  .ToList();
 
             return result;
@@ -44,7 +44,6 @@ namespace TravelGod.ru.Services
                                  .Include(t => t.Users)
                                  .Where(t => t.Users.Any(u => u.Id == userId))
                                  .ToListAsync();
-
         }
     }
 }

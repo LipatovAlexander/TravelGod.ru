@@ -1,12 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using TravelGod.ru.Infrastructure.Cryptography;
 using TravelGod.ru.Models;
 using TravelGod.ru.Services;
@@ -15,6 +11,16 @@ namespace TravelGod.ru.Pages
 {
     public class SignIn : MyPageModel
     {
+        private readonly SessionService _sessionService;
+
+        private readonly UserService _userService;
+
+        public SignIn(UserService userService, SessionService sessionService)
+        {
+            _userService = userService;
+            _sessionService = sessionService;
+        }
+
         [BindProperty]
         [Required(ErrorMessage = "Введите логин")]
         public string Login { get; set; }
@@ -24,15 +30,6 @@ namespace TravelGod.ru.Pages
         public string Password { get; set; }
 
         [BindProperty] public bool RememberMe { get; set; }
-
-        public SignIn(UserService userService, SessionService sessionService)
-        {
-            _userService = userService;
-            _sessionService = sessionService;
-        }
-
-        private readonly UserService _userService;
-        private readonly SessionService _sessionService;
 
         public IActionResult OnGet()
         {
@@ -66,12 +63,14 @@ namespace TravelGod.ru.Pages
                 var session = new Session
                 {
                     RememberMe = RememberMe,
-                    Expires = RememberMe ? DateTimeOffset.Now.AddYears(1) : DateTimeOffset.Now.Add(TimeSpan.FromMinutes(20)),
+                    Expires = RememberMe
+                        ? DateTimeOffset.Now.AddYears(1)
+                        : DateTimeOffset.Now.Add(TimeSpan.FromMinutes(20)),
                     Token = accessToken,
                     User = user
                 };
                 HttpContext.Response.Cookies.Append("token", accessToken,
-                    new CookieOptions()
+                    new CookieOptions
                     {
                         Expires = session.Expires,
                         Path = "/"

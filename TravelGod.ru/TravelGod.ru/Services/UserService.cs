@@ -8,6 +8,7 @@ namespace TravelGod.ru.Services
     {
         private readonly ApplicationContext _context;
         private readonly FileService _fileService;
+
         public UserService(ApplicationContext context, FileService fileService)
         {
             _context = context;
