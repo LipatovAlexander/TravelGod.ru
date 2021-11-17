@@ -20,6 +20,7 @@ namespace TravelGod.ru.Models
         public int Id { get; set; }
 
         [Required]
+        public int InitiatorId { get; set; }
         public User Initiator { get; set; }
         public List<Rating> Ratings { get; set; } = new();
 

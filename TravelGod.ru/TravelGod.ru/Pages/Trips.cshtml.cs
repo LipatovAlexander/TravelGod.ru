@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using TravelGod.ru.Models;
+using TravelGod.ru.Services;
 
 namespace TravelGod.ru.Pages
 {
@@ -17,7 +18,7 @@ namespace TravelGod.ru.Pages
         [BindProperty(SupportsGet = true)]
         public TripsSearchOptions SearchOptions { get; set; }
 
-        public void OnGet()
+        public async Task OnGet()
         {
             if (!ModelState.IsValid)
             {
@@ -25,34 +26,23 @@ namespace TravelGod.ru.Pages
                 return;
             }
 
-            var trips = _context.Trips
-                                 .Include(t => t.Initiator)
-                                 .ThenInclude(u => u.Avatar)
-                                 .Where(t => !SearchOptions.HasTitle ||
-                                             EF.Functions.Like(t.Title.ToLower(),
-                                                 $"%{SearchOptions.Title.ToLower()}%"))
-                                 .Where(t => !SearchOptions.Archive || t.EndDate < DateTime.Now)
-                                 .Where(t => !SearchOptions.HasDates || t.StartDate >= SearchOptions.StartDate &&
-                                     t.EndDate <= SearchOptions.EndDate)
-                                 .AsEnumerable();
-            if (SearchOptions.HasRoute)
+            ListOfTrips = _tripService.GetTrips(SearchOptions);
+            foreach (var trip in ListOfTrips)
             {
-                trips = trips
-                    .Where(trip => SearchOptions.Route
-                                                .All(route => trip.Route
-                                                                  .Any(routeItem =>
-                                                                      string.Equals(route, routeItem,
-                                                                          StringComparison
-                                                                              .InvariantCultureIgnoreCase))));
+                trip.Initiator = await _userService.GetUserAsync(trip.InitiatorId);
+                trip.Initiator.Avatar = await _fileService.GetFileAsync(trip.Initiator.AvatarId);
             }
-
-            ListOfTrips = trips
-                          .OrderBy(t => t.StartDate)
-                          .ToList();
         }
 
-        public Trips(ApplicationContext context) : base(context)
+        public Trips(TripService tripService, FileService fileService, UserService userService)
         {
+            _tripService = tripService;
+            _fileService = fileService;
+            _userService = userService;
         }
+
+        private readonly UserService _userService;
+        private readonly TripService _tripService;
+        private readonly FileService _fileService;
     }
 }

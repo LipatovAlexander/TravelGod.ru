@@ -48,6 +48,7 @@ namespace TravelGod.ru.Models
         [MaxLength(20, ErrorMessage = "Отчество не должно быть длиннее 20 символов")]
         public string Patronymic { get; set; }
 
+        public int AvatarId { get; set; }
         public File Avatar { get; set; }
 
         [Required]

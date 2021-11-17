@@ -12,7 +12,7 @@ namespace TravelGod.ru.Pages
 {
     public class IndexModel : MyPageModel
     {
-        public IndexModel(ApplicationContext context) : base(context)
+        public IndexModel()
         {
         }
 

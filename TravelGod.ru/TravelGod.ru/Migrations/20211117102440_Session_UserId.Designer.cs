@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TravelGod.ru.Models;
 
 namespace TravelGod.ru.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20211117102440_Session_UserId")]
+    partial class Session_UserId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -102,14 +104,6 @@ namespace TravelGod.ru.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Files");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "default-avatar.png",
-                            Path = "CustomFiles/Avatars/default-avatar.png"
-                        });
                 });
 
             modelBuilder.Entity("TravelGod.ru.Models.Message", b =>

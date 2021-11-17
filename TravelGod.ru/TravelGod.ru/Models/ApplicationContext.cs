@@ -17,15 +17,15 @@ namespace TravelGod.ru.Models
         public DbSet<Session> Sessions { get; set; }
         public DbSet<File> Files { get; set; }
 
-        public ApplicationContext (DbContextOptions<ApplicationContext> options) : base(options)
+        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {
         }
 
-        protected override void OnModelCreating (ModelBuilder builder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
             var splitStringConverter = new ValueConverter<List<string>, string>(
                 v => string.Join(";", v),
-                v => v.Split(new[] { ';' }).ToList());
+                v => v.Split(new[] {';'}).ToList());
             builder
                 .Entity<Trip>()
                 .Property(nameof(Trip.Route))
@@ -52,6 +52,16 @@ namespace TravelGod.ru.Models
                 .HasMany(u => u.JoinedTrips)
                 .WithMany(t => t.Users)
                 .UsingEntity(j => j.ToTable("usertrip"));
+
+            var defaultAvatar = new File
+            {
+                Id = 1,
+                Name = "default-avatar.png",
+                Path = "CustomFiles/Avatars/default-avatar.png"
+            };
+            builder
+                .Entity<File>()
+                .HasData(defaultAvatar);
         }
     }
 }

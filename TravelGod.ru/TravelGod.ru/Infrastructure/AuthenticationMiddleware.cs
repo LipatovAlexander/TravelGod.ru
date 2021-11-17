@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using TravelGod.ru.Models;
+using TravelGod.ru.Services;
 
 namespace TravelGod.ru.Infrastructure
 {
@@ -15,18 +16,17 @@ namespace TravelGod.ru.Infrastructure
             _next = next;
         }
 
-        public async Task InvokeAsync(HttpContext context, ApplicationContext dbContext)
+        public async Task InvokeAsync(HttpContext context, SessionService sessionService, UserService userService)
         {
             if (context.Request.Cookies.TryGetValue("token", out var token))
             {
-                var session = await dbContext.Sessions.FirstOrDefaultAsync(s => s.Token == token);
+                var session = await sessionService.GetSessionAsync(token);
                 if (session is not null && session.Expires > DateTimeOffset.Now && token is not null)
                 {
-                    await dbContext.Entry(session).Reference(s => s.User).LoadAsync();
+                    session.User = await userService.GetUserAsync(session.UserId);
                     if (session.User.Status != Status.Normal)
                     {
-                        dbContext.Sessions.Remove(session);
-                        await dbContext.SaveChangesAsync();
+                        await sessionService.RemoveSessionAsync(session);
                     }
                     else
                     {
@@ -35,8 +35,8 @@ namespace TravelGod.ru.Infrastructure
                         {
                             session.Expires = DateTimeOffset.Now.AddMinutes(20);
                         }
-                        dbContext.Sessions.Update(session);
-                        await dbContext.SaveChangesAsync();
+
+                        await sessionService.UpdateSessionAsync(session);
                         context.Response.Cookies.Append("token", token,
                             new CookieOptions()
                             {
@@ -48,8 +48,7 @@ namespace TravelGod.ru.Infrastructure
                 }
                 else if (session is not null)
                 {
-                    dbContext.Sessions.Remove(session);
-                    await dbContext.SaveChangesAsync();
+                    await sessionService.RemoveSessionAsync(session);
                 }
             }
 

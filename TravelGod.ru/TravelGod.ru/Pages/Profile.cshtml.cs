@@ -20,16 +20,22 @@ namespace TravelGod.ru.Pages
     public class Profile : MyPageModel
     {
         public User CurrentUser { get; set; }
-        [BindProperty, Display(Name="File")]
-        public IFormFile Avatar { get; set; }
+        [BindProperty, Display(Name = "File")] public IFormFile Avatar { get; set; }
 
         private readonly IWebHostEnvironment _appEnvironment;
         private readonly UserService _userService;
+        private readonly FileService _fileService;
+        private readonly SessionService _sessionService;
+        private readonly TripService _tripService;
 
-        public Profile(ApplicationContext context, IWebHostEnvironment environment, UserService userService) : base(context)
+        public Profile(IWebHostEnvironment environment, UserService userService, FileService fileService,
+                       SessionService sessionService, TripService tripService)
         {
             _appEnvironment = environment;
             _userService = userService;
+            _fileService = fileService;
+            _sessionService = sessionService;
+            _tripService = tripService;
         }
 
         public async Task<IActionResult> OnGet(int id)
@@ -39,6 +45,9 @@ namespace TravelGod.ru.Pages
             {
                 return NotFound();
             }
+
+            CurrentUser.Avatar = await _fileService.GetFileAsync(CurrentUser.AvatarId);
+            CurrentUser.JoinedTrips = await _tripService.GetJoinedTrips(CurrentUser.Id);
 
             return Page();
         }
@@ -68,16 +77,22 @@ namespace TravelGod.ru.Pages
                 }
 
                 // путь к папке Files
-                string path = "CustomFiles/Avatars/" + CurrentUser.Id + Path.GetExtension(Avatar.FileName).ToLowerInvariant();
+                string path = "CustomFiles/Avatars/" + CurrentUser.Id +
+                              Path.GetExtension(Avatar.FileName).ToLowerInvariant();
                 // сохраняем файл в папку Files в каталоге wwwroot
-                using (var fileStream = new FileStream(Path.Combine(_appEnvironment.WebRootPath, path), FileMode.Create))
+                using (var fileStream =
+                    new FileStream(Path.Combine(_appEnvironment.WebRootPath, path), FileMode.Create))
                 {
                     await Avatar.CopyToAsync(fileStream);
                 }
-                var file = new File { Name = Avatar.FileName, Path = path };
-                _context.Files.Add(file);
-                await _context.SaveChangesAsync();
+
+                var file = new File {Name = Avatar.FileName, Path = path};
+                await _fileService.AddFileAsync(file);
                 CurrentUser.Avatar = file;
+            }
+            else
+            {
+                CurrentUser.Avatar = await _fileService.GetFileAsync(CurrentUser.AvatarId);
             }
 
             await _userService.UpdateUserAsync(CurrentUser);
@@ -93,8 +108,7 @@ namespace TravelGod.ru.Pages
                 {
                     Expires = DateTimeOffset.Now.AddDays(-1)
                 });
-                _context.Sessions.Remove(session);
-                await _context.SaveChangesAsync();
+                await _sessionService.RemoveSessionAsync(session);
             }
 
             return RedirectToPage("Index");

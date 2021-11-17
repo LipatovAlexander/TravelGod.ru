@@ -7,38 +7,37 @@ namespace TravelGod.ru.Services
     public class UserService
     {
         private readonly ApplicationContext _context;
-
-        public UserService(ApplicationContext context)
+        private readonly FileService _fileService;
+        public UserService(ApplicationContext context, FileService fileService)
         {
             _context = context;
+            _fileService = fileService;
         }
 
         public async Task<User> GetUserAsync(int id)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
-            await _context.Entry(user).Collection(u => u.JoinedTrips).LoadAsync();
-            await _context.Entry(user).Reference(u => u.Avatar).LoadAsync();
             return user;
         }
 
         public async Task<User> GetUserAsync(string login)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Login == login);
-            await _context.Entry(user).Collection(u => u.JoinedTrips).LoadAsync();
-            await _context.Entry(user).Reference(u => u.Avatar).LoadAsync();
             return user;
         }
 
-        public async Task<int> UpdateUserAsync(User user)
+        public async Task UpdateUserAsync(User user)
         {
+            user.Avatar ??= await _fileService.GetFileAsync(1);
             _context.Users.Update(user);
-            return await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
-        public async Task<int> AddUserAsync(User user)
+        public async Task AddUserAsync(User user)
         {
+            user.Avatar = await _fileService.GetFileAsync(1);
             _context.Users.Add(user);
-            return await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
     }
 }

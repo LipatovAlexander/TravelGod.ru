@@ -32,7 +32,7 @@ namespace TravelGod.ru.Pages
         [Compare(nameof(Password1), ErrorMessage = "Пароли должны совпадать")]
         public string Password2 { get; set; }
 
-        public SignUp(ApplicationContext context, UserService userService) : base(context)
+        public SignUp(UserService userService)
         {
             _userService = userService;
         }

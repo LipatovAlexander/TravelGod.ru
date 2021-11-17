@@ -35,6 +35,9 @@ namespace TravelGod.ru
                         "server=localhost;user=root;password=66958357LaS!;database=travelgoddb;",
                         new MySqlServerVersion(new Version(8, 0, 27))));
             services.AddTransient<UserService>();
+            services.AddTransient<TripService>();
+            services.AddTransient<SessionService>();
+            services.AddTransient<FileService>();
             services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
         }
 

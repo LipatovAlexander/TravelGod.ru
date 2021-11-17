@@ -25,12 +25,14 @@ namespace TravelGod.ru.Pages
 
         [BindProperty] public bool RememberMe { get; set; }
 
-        public SignIn(ApplicationContext context, UserService userService) : base(context)
+        public SignIn(UserService userService, SessionService sessionService)
         {
             _userService = userService;
+            _sessionService = sessionService;
         }
 
         private readonly UserService _userService;
+        private readonly SessionService _sessionService;
 
         public IActionResult OnGet()
         {
@@ -75,8 +77,7 @@ namespace TravelGod.ru.Pages
                         Expires = session.Expires,
                         Path = "/"
                     });
-                _context.Sessions.Add(session);
-                await _context.SaveChangesAsync();
+                await _sessionService.AddSessionAsync(session);
                 return RedirectToPage(nameof(Profile), new {id = user.Id});
             }
 
