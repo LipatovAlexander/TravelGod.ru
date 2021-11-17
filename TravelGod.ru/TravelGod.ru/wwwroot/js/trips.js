@@ -5,9 +5,34 @@
     searchDatesInput.daterangepicker({
         autoUpdateInput: false,
         locale: {
-            cancelLabel: 'Отменить',
+            cancelLabel: 'Очистить',
             format: 'DD.MM.YYYY',
+            separator: ' - ',
             applyLabel: 'Вставить',
+            daysOfWeek: [
+                "Вс",
+                "Пн",
+                "Вт",
+                "Ср",
+                "Чт",
+                "Пт",
+                "Сб"
+            ],
+            monthNames: [
+                "Январь",
+                "Февраль",
+                "Март",
+                "Апрель",
+                "Май",
+                "Июнь",
+                "Июль",
+                "Август",
+                "Сентябрь",
+                "Октябрь",
+                "Ноябрь",
+                "Декабрь"
+            ],
+            firstDay: 1,
         }
     });
 
