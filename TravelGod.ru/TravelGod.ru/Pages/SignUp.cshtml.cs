@@ -37,6 +37,11 @@ namespace TravelGod.ru.Pages
 
         public IActionResult OnGet()
         {
+            if (User is not null)
+            {
+                return RedirectToPage(nameof(Profile));
+            }
+
             return Page();
         }
 
