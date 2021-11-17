@@ -14,12 +14,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Pages\TripsSearchOptions.cs">
-        <DependentUpon>Trips.cshtml</DependentUpon>
-      </Compile>
-    </ItemGroup>
-
-    <ItemGroup>
       <Folder Include="wwwroot\CustomFiles" />
     </ItemGroup>
 </Project>

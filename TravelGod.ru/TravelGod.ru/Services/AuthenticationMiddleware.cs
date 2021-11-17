@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using TravelGod.ru.Models;
-using TravelGod.ru.Services;
 
-namespace TravelGod.ru.Infrastructure
+namespace TravelGod.ru.Services
 {
     public class AuthenticationMiddleware
     {

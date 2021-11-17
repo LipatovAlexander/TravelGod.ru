@@ -1,8 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
 
-namespace TravelGod.ru.Pages
+namespace TravelGod.ru.Models
 {
     public class TripsSearchOptions
     {

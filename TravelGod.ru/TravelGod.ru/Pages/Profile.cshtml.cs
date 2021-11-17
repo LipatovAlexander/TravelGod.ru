@@ -76,11 +76,9 @@ namespace TravelGod.ru.Pages
                     return new JsonResult(new {Success = false});
                 }
 
-                // путь к папке Files
-                string path = "CustomFiles/Avatars/" + CurrentUser.Id +
-                              Path.GetExtension(Avatar.FileName).ToLowerInvariant();
-                // сохраняем файл в папку Files в каталоге wwwroot
-                using (var fileStream =
+                var path = "CustomFiles/Avatars/" + CurrentUser.Id +
+                           Path.GetExtension(Avatar.FileName).ToLowerInvariant();
+                await using (var fileStream =
                     new FileStream(Path.Combine(_appEnvironment.WebRootPath, path), FileMode.Create))
                 {
                     await Avatar.CopyToAsync(fileStream);
@@ -101,15 +99,16 @@ namespace TravelGod.ru.Pages
 
         public async Task<IActionResult> OnGetLogOut()
         {
-            var session = HttpContext.Items["Session"] as Session;
-            if (session is not null)
+            if (HttpContext.Items["Session"] is not Session session)
             {
-                HttpContext.Response.Cookies.Append("token", session.Token, new CookieOptions()
-                {
-                    Expires = DateTimeOffset.Now.AddDays(-1)
-                });
-                await _sessionService.RemoveSessionAsync(session);
+                return RedirectToPage("Index");
             }
+
+            HttpContext.Response.Cookies.Append("token", session.Token, new CookieOptions()
+            {
+                Expires = DateTimeOffset.Now.AddDays(-1)
+            });
+            await _sessionService.RemoveSessionAsync(session);
 
             return RedirectToPage("Index");
         }

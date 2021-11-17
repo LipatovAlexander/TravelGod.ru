@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TravelGod.ru.Models;
-using TravelGod.ru.Pages;
 
 namespace TravelGod.ru.Services
 {

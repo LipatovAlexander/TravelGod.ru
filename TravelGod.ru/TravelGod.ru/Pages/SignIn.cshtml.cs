@@ -60,7 +60,6 @@ namespace TravelGod.ru.Pages
 
             var actualPasswordHash = Cryptography.ComputeMd5HashString(Password + user.PasswordSalt);
 
-            Console.WriteLine(RememberMe);
             if (actualPasswordHash == user.PasswordHash)
             {
                 var accessToken = Cryptography.GenerateRandomCryptographicKey(40);
