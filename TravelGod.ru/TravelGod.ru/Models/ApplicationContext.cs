@@ -44,12 +44,12 @@ namespace TravelGod.ru.Models
 
             builder
                 .Entity<User>()
-                .HasMany(u => u.JoinedTrips)
+                .HasMany(u => u.OwnedTrips)
                 .WithOne(t => t.Initiator);
 
             builder
                 .Entity<User>()
-                .HasMany(u => u.OwnedTrips)
+                .HasMany(u => u.JoinedTrips)
                 .WithMany(t => t.Users)
                 .UsingEntity(j => j.ToTable("usertrip"));
         }

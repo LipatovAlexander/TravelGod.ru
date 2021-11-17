@@ -22,16 +22,18 @@
                         <div class="card-body position-relative">
                             <div class="position-absolute" style="top: -35px; left: 0;">
                                 <img src="@trip.Initiator.Avatar.Path" class="rounded mr-2" alt="аватарка" width="30" title="@trip.Initiator.Avatar.Name">
-                                <strong>
-                                    @if (!string.IsNullOrEmpty(trip.Initiator.FirstName) && !string.IsNullOrEmpty(trip.Initiator.LastName))
-                                    {
-                                        @($"{trip.Initiator.FirstName} {trip.Initiator.LastName}")
-                                    }
-                                    else
-                                    {
-                                        @trip.Initiator.Login
-                                    }
-                                </strong>
+                                <a asp-page="Profile" asp-route-id="@trip.Initiator.Id" class="text-dark">
+                                    <strong>
+                                        @if (!string.IsNullOrEmpty(trip.Initiator.FirstName) && !string.IsNullOrEmpty(trip.Initiator.LastName))
+                                        {
+                                            @($"{trip.Initiator.FirstName} {trip.Initiator.LastName}")
+                                        }
+                                        else
+                                        {
+                                            @trip.Initiator.Login
+                                        }
+                                    </strong>
+                                </a>
                             </div>
                             <h5 class="card-title d-flex justify-content-between">
                                 @trip.Title
@@ -43,9 +45,9 @@
                                     }
                                 </small>
                             </h5>
-                            <p class="card-text text-truncate text-wrap" style="max-height: 50px">@trip.Description</p>
+                            <p class="card-text">@trip.Description</p>
                             <div class="d-flex justify-content-between">
-                                <span class="text-muted">Участников: @trip.Users.Count</span>
+                                <span class="text-muted">Участников: @trip.UsersCount</span>
                                 <span class="text-muted">@trip.StartDate.ToString("D") - @trip.EndDate.ToString("D")</span>
                             </div>
                         </div>
