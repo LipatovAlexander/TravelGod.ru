@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using TravelGod.ru.Infrastructure.Cryptography;
 using TravelGod.ru.Models;
+using TravelGod.ru.Services;
 
 namespace TravelGod.ru.Pages
 {
@@ -24,12 +25,20 @@ namespace TravelGod.ru.Pages
 
         [BindProperty] public bool RememberMe { get; set; }
 
-        public SignIn(ApplicationContext context) : base(context)
+        public SignIn(ApplicationContext context, UserService userService) : base(context)
         {
+            _userService = userService;
         }
+
+        private readonly UserService _userService;
 
         public IActionResult OnGet()
         {
+            if (User is not null)
+            {
+                return RedirectToPage(nameof(Profile));
+            }
+
             return Page();
         }
 
@@ -40,7 +49,7 @@ namespace TravelGod.ru.Pages
                 return RedirectToPage(nameof(Profile));
             }
 
-            var user = _context.Users.FirstOrDefault(u => u.Login == Login);
+            var user = await _userService.GetUserAsync(Login);
             if (user is null)
             {
                 ModelState.AddModelError("Password", "Неправильный логин или пароль");

@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TravelGod.ru.Infrastructure;
 using TravelGod.ru.Models;
+using TravelGod.ru.Services;
 
 namespace TravelGod.ru
 {
@@ -33,6 +34,7 @@ namespace TravelGod.ru
                     .UseMySql(
                         "server=localhost;user=root;password=66958357LaS!;database=travelgoddb;",
                         new MySqlServerVersion(new Version(8, 0, 27))));
+            services.AddTransient<UserService>();
             services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
         }
 

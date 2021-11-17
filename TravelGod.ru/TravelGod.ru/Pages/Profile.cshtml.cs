@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using TravelGod.ru.Infrastructure;
 using TravelGod.ru.Models;
+using TravelGod.ru.Services;
 using File = TravelGod.ru.Models.File;
 using Index = System.Index;
 
@@ -23,33 +24,28 @@ namespace TravelGod.ru.Pages
         public IFormFile Avatar { get; set; }
 
         private readonly IWebHostEnvironment _appEnvironment;
+        private readonly UserService _userService;
 
-        public Profile(ApplicationContext context, IWebHostEnvironment environment) : base(context)
+        public Profile(ApplicationContext context, IWebHostEnvironment environment, UserService userService) : base(context)
         {
             _appEnvironment = environment;
+            _userService = userService;
         }
 
         public async Task<IActionResult> OnGet(int id)
         {
-            CurrentUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            CurrentUser = await _userService.GetUserAsync(id);
             if (CurrentUser is null)
             {
                 return NotFound();
             }
-            await _context.Entry(CurrentUser).Collection(u => u.JoinedTrips).LoadAsync();
-            foreach (var trip in CurrentUser.JoinedTrips)
-            {
-                await _context.Entry(trip).Collection(t => t.Users).LoadAsync();
-            }
-
-            await _context.Entry(CurrentUser).Reference(u => u.Avatar).LoadAsync();
 
             return Page();
         }
 
         public async Task<JsonResult> OnPostEdit(int id)
         {
-            CurrentUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            CurrentUser = await _userService.GetUserAsync(id);
             if (CurrentUser.Id != User.Id)
                 return new JsonResult("Нет доступа!");
 
@@ -84,8 +80,7 @@ namespace TravelGod.ru.Pages
                 CurrentUser.Avatar = file;
             }
 
-            _context.Users.Update(CurrentUser);
-            await _context.SaveChangesAsync();
+            await _userService.UpdateUserAsync(CurrentUser);
             return new JsonResult(new {Success = true});
         }
 

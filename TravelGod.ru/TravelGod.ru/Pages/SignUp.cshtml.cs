@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using TravelGod.ru.Infrastructure.Cryptography;
 using TravelGod.ru.Models;
+using TravelGod.ru.Services;
 
 namespace TravelGod.ru.Pages
 {
@@ -31,9 +32,12 @@ namespace TravelGod.ru.Pages
         [Compare(nameof(Password1), ErrorMessage = "Пароли должны совпадать")]
         public string Password2 { get; set; }
 
-        public SignUp(ApplicationContext context) : base(context)
+        public SignUp(ApplicationContext context, UserService userService) : base(context)
         {
+            _userService = userService;
         }
+
+        private readonly UserService _userService;
 
         public IActionResult OnGet()
         {
@@ -52,7 +56,7 @@ namespace TravelGod.ru.Pages
                 return RedirectToPage(nameof(Profile));
             }
 
-            if (_context.Users.FirstOrDefault(u => u.Login == Login) is not null)
+            if (await _userService.GetUserAsync(Login) is not null)
             {
                 ModelState.AddModelError("Login", "Логин уже занят");
             }
@@ -72,8 +76,7 @@ namespace TravelGod.ru.Pages
                 PasswordSalt = passwordSalt
             };
 
-            _context.Users.Add(newUser);
-            await _context.SaveChangesAsync();
+            await _userService.AddUserAsync(newUser);
             return RedirectToPage(nameof(SignIn));
         }
     }

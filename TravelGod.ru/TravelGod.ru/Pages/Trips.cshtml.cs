@@ -26,9 +26,8 @@ namespace TravelGod.ru.Pages
             }
 
             var trips = _context.Trips
-                                 .Include(t => t.Users)
-                                 .ThenInclude(u => u.Avatar)
                                  .Include(t => t.Initiator)
+                                 .ThenInclude(u => u.Avatar)
                                  .Where(t => !SearchOptions.HasTitle ||
                                              EF.Functions.Like(t.Title.ToLower(),
                                                  $"%{SearchOptions.Title.ToLower()}%"))

@@ -37,5 +37,7 @@ namespace TravelGod.ru.Models
         [RegularExpression(@"^[A-Za-zА-Яа-я\d ,\.!?""']$", ErrorMessage = "Название содержит недопустимые символы")]
         public string Title { get; set; }
         public List<User> Users { get; set; } = new();
+
+        public int UsersCount { get; set; }
     }
 }
