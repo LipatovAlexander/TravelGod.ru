@@ -10,10 +10,12 @@ namespace TravelGod.ru.Services
     public class TripService
     {
         private readonly ApplicationContext _context;
+        private readonly ChatService _chatService;
 
-        public TripService(ApplicationContext context)
+        public TripService(ApplicationContext context, ChatService chatService)
         {
             _context = context;
+            _chatService = chatService;
         }
 
         public List<Trip> GetTrips(TripsSearchOptions options)
@@ -44,6 +46,42 @@ namespace TravelGod.ru.Services
                                  .Include(t => t.Users)
                                  .Where(t => t.Users.Any(u => u.Id == userId))
                                  .ToListAsync();
+        }
+
+        public async Task<Trip> GetTripAsync(int id)
+        {
+            return await _context.Trips.FindAsync(id);
+        }
+
+        public async Task AddTripAsync(Trip trip)
+        {
+            _context.Trips.Add(trip);
+            await _context.SaveChangesAsync();
+        }
+        
+        public async Task AddTripAsync(Trip trip, string routeRaw, User initiator)
+        {
+            trip.Route = routeRaw
+                             .Split(new[] {',', ' ', '-'}, StringSplitOptions.RemoveEmptyEntries)
+                             .Select(r => char.ToUpper(r[0]) + r[1..].ToLower())
+                             .ToList();
+
+            trip.Initiator = initiator;
+            trip.UsersCount = 1;
+            trip.Users.Add(initiator);
+            if (trip.CreateChat)
+            {
+                trip.Chat = new Chat
+                {
+                    Initiator = initiator,
+                    Name = trip.Title,
+                    CreationDate = DateTime.Now
+                };
+                trip.Chat.Users.Add(initiator);
+                await _chatService.AddChatAsync(trip.Chat);
+            }
+
+            await AddTripAsync(trip);
         }
     }
 }

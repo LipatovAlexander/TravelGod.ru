@@ -10,11 +10,13 @@ namespace TravelGod.ru.Models
         public List<Comment> Comments { get; set; } = new();
 
         [Required(ErrorMessage = "Добавьте описание")]
-        [RegularExpression(@"^[A-Za-zА-Яа-я\d ,\.!?""']$", ErrorMessage = "Описание содержит недопустимые символы")]
-        [MaxLength(200, ErrorMessage = "Описание должно не должно быть длиннее 200 символов")]
+        [RegularExpression(@"^[A-Za-zА-Яа-я\d ,\.!?""']*$", ErrorMessage = "Описание содержит недопустимые символы")]
+        [MaxLength(300, ErrorMessage = "Описание не должно быть длиннее 300 символов")]
         public string Description { get; set; }
 
-        [Required] public DateTime EndDate { get; set; }
+        [Required(ErrorMessage = "Ввведите дату окончания поездки")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime EndDate { get; set; }
 
         public int Id { get; set; }
 
@@ -23,19 +25,33 @@ namespace TravelGod.ru.Models
         public User Initiator { get; set; }
         public List<Rating> Ratings { get; set; } = new();
 
-        [Required] public List<string> Route { get; set; } = new();
+        public List<string> Route { get; set; } = new();
 
-        [Required] public DateTime StartDate { get; set; }
+        [Required(ErrorMessage = "Ввведите дату начала поездки")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime StartDate { get; set; }
 
         [Required] public Status Status { get; set; }
 
         [Required(ErrorMessage = "Введите название")]
         [MaxLength(30, ErrorMessage = "Название не может быть длиннее 20 символов")]
-        [RegularExpression(@"^[A-Za-zА-Яа-я\d ,\.!?""']$", ErrorMessage = "Название содержит недопустимые символы")]
+        [RegularExpression(@"^[A-Za-zА-Яа-я\d ,\.!?""']*$", ErrorMessage = "Название содержит недопустимые символы")]
         public string Title { get; set; }
 
         public List<User> Users { get; set; } = new();
 
-        public int UsersCount { get; set; }
+        [Required] public int UsersCount { get; set; }
+
+        [Required]
+        public TripType Type { get; set; }
+
+        public bool CreateChat { get; set; }
+    }
+
+    public enum TripType
+    {
+        NatureTrip,
+        CityTrip,
+        CommonTrip
     }
 }

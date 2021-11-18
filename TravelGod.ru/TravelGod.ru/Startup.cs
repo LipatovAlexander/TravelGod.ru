@@ -22,7 +22,10 @@ namespace TravelGod.ru
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages();
+            services.AddRazorPages()
+                    .AddRazorPagesOptions(options =>
+                        options.Conventions.AddPageRoute("/TripPage", "Trips/{id}")
+                               .AddPageRoute("/AddTrip", "Trips/Add"));
             services.AddDbContext<ApplicationContext>(options =>
                 options
                     .UseMySql(
@@ -32,6 +35,7 @@ namespace TravelGod.ru
             services.AddTransient<TripService>();
             services.AddTransient<SessionService>();
             services.AddTransient<FileService>();
+            services.AddTransient<ChatService>();
             services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
         }
 
