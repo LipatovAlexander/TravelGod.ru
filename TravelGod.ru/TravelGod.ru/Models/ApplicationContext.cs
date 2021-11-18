@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
@@ -22,12 +23,13 @@ namespace TravelGod.ru.Models
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            var splitStringConverter = new ValueConverter<List<string>, string>(
-                v => string.Join(";", v),
-                v => v.Split(new[] {';'}).ToList());
+            var splitStringConverter = new ValueConverter<string, string>(
+                v => string.Join(";", v
+                    .Split(new []{' ', ';', '-', ','}, StringSplitOptions.RemoveEmptyEntries)),
+                v => v);
             builder
                 .Entity<Trip>()
-                .Property(nameof(Trip.Route))
+                .Property(nameof(Trip.RouteRaw))
                 .HasConversion(splitStringConverter);
 
             builder

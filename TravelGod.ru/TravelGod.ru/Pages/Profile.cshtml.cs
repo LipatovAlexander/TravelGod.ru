@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -45,7 +46,9 @@ namespace TravelGod.ru.Pages
             }
 
             CurrentUser.Avatar = await _fileService.GetFileAsync(CurrentUser.AvatarId);
-            CurrentUser.JoinedTrips = await _tripService.GetJoinedTrips(CurrentUser.Id);
+            CurrentUser.JoinedTrips = (await _tripService.GetJoinedTrips(CurrentUser.Id))
+                                      .OrderByDescending(t => t.EndDate)
+                                      .ToList();
 
             return Page();
         }

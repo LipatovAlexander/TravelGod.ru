@@ -22,11 +22,6 @@ namespace TravelGod.ru.Pages
         [BindProperty]
         public Trip Trip { get; set; }
 
-        [BindProperty]
-        [Required(ErrorMessage = "Введите маршрут")]
-        [RegularExpression(@"^[A-Za-zА-Яа-я ,-]*$", ErrorMessage = "Маршрут содержит недопустимые символы")]
-        public string RouteRaw { get; set; }
-
         public IActionResult OnGet()
         {
             if (User is null)
@@ -45,7 +40,7 @@ namespace TravelGod.ru.Pages
                 return Page();
             }
 
-            await _tripService.AddTripAsync(Trip, RouteRaw, User);
+            await _tripService.AddTripAsync(Trip, User);
             return RedirectToPage("TripPage", new {id = Trip.Id});
         }
     }

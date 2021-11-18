@@ -37,9 +37,9 @@
                             <span asp-validation-for="Trip.Title" class="text-danger"></span>
                         </div>
                         <div class="form-group col">
-                            <label asp-for="RouteRaw" class="font-weight-bold">Маршрут</label>
-                            <input asp-for="RouteRaw" class="form-control">
-                            <span asp-validation-for="RouteRaw" class="text-danger"></span>
+                            <label asp-for="Trip.RouteRaw" class="font-weight-bold">Маршрут</label>
+                            <input asp-for="Trip.RouteRaw" class="form-control" data-toggle="tooltip" title="Введите населённые пункты через пробел" data-placement="bottom">
+                            <span asp-validation-for="Trip.RouteRaw" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="row">
@@ -68,21 +68,21 @@
                 <div class="radio-group">
                     <div class="row mt-4">
                         <div class="col-12 col-sm-4 d-inline-flex justify-content-center mb-3 mb-sm-0">
-                            <div class="radio text-center" data-toggle="tooltip" title="Поездка на природу" data-value="NatureTrip">
+                            <div tabindex="0" class="radio text-center" data-toggle="tooltip" title="Поездка на природу" data-placement="bottom" data-value="NatureTrip">
                                 <span class="material-icons">
                                     landscape
                                 </span>
                             </div>
                         </div>
                         <div class="col-12 col-sm-4 d-inline-flex justify-content-center mb-3 mb-sm-0">
-                            <div class="radio text-center" data-toggle="tooltip" title="Городская поездка" data-value="CityTrip">
+                            <div tabindex="1" class="radio text-center" data-toggle="tooltip" title="Городская поездка" data-placement="bottom" data-value="CityTrip">
                                 <span class="material-icons">
                                     location_city
                                 </span>
                             </div>
                         </div>
                         <div class="col-12 col-sm-4 d-inline-flex justify-content-center mb-3 mb-sm-0">
-                            <div class="radio text-center selected" data-toggle="tooltip" title="Всё вместе" data-value="CommonTrip">
+                            <div tabindex="2" class="radio text-center selected" data-toggle="tooltip" title="Всё вместе" data-placement="bottom" data-value="CommonTrip" autofocus>
                                 <span class="material-icons">
                                     travel_explore
                                 </span>
@@ -100,7 +100,7 @@
                 <p class="text-center">Кратко опишите вашу идею и пожелания.</p>
                 <div class="form-group mt-4">
                     <label asp-for="Trip.Description" class="font-weight-bold">Описание</label>
-                    <textarea asp-for="Trip.Description" class="form-control" rows="4" form="trip-form"></textarea>
+                    <textarea asp-for="Trip.Description" class="form-control" rows="5" form="trip-form" style="resize: none;"></textarea>
                     <span asp-validation-for="Trip.Description" class="text-danger"></span>
                 </div>
                 <div class="d-flex justify-content-between button-group">

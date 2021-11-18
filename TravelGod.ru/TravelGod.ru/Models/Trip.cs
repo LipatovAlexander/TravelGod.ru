@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace TravelGod.ru.Models
 {
@@ -25,7 +27,8 @@ namespace TravelGod.ru.Models
         public User Initiator { get; set; }
         public List<Rating> Ratings { get; set; } = new();
 
-        public List<string> Route { get; set; } = new();
+        [NotMapped]
+        public List<string> Route => RouteRaw?.Split(';').ToList();
 
         [Required(ErrorMessage = "Ввведите дату начала поездки")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
@@ -42,16 +45,22 @@ namespace TravelGod.ru.Models
 
         [Required] public int UsersCount { get; set; }
 
-        [Required]
-        public TripType Type { get; set; }
+        [Required] public TripType Type { get; set; }
 
         public bool CreateChat { get; set; }
+
+        [Required(ErrorMessage = "Введите маршрут")]
+        [RegularExpression(@"^[A-Za-zА-Яа-я ,-;]*$", ErrorMessage = "Маршрут содержит недопустимые символы")]
+        public string RouteRaw { get; set; }
     }
 
     public enum TripType
     {
+        [Display(Name = "Поездка на природу")]
         NatureTrip,
+        [Display(Name = "Городская поездка")]
         CityTrip,
+        [Display(Name = "Всё вместе")]
         CommonTrip
     }
 }

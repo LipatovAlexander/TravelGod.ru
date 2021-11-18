@@ -24,7 +24,8 @@ namespace TravelGod.ru.Services
                                  .Where(t => !options.HasTitle ||
                                              EF.Functions.Like(t.Title.ToLower(),
                                                  $"%{options.Title.ToLower()}%"))
-                                 .Where(t => !options.Archive || t.EndDate < DateTime.Now)
+                                 .Where(t => (!options.Archive || t.EndDate < DateTime.Now)
+                                             && (options.Archive || t.EndDate > DateTime.Now))
                                  .Where(t => !options.HasDates || t.StartDate >= options.StartDate &&
                                      t.EndDate <= options.EndDate)
                                  .AsEnumerable()
@@ -58,14 +59,12 @@ namespace TravelGod.ru.Services
             _context.Trips.Add(trip);
             await _context.SaveChangesAsync();
         }
-        
-        public async Task AddTripAsync(Trip trip, string routeRaw, User initiator)
-        {
-            trip.Route = routeRaw
-                             .Split(new[] {',', ' ', '-'}, StringSplitOptions.RemoveEmptyEntries)
-                             .Select(r => char.ToUpper(r[0]) + r[1..].ToLower())
-                             .ToList();
 
+        public async Task AddTripAsync(Trip trip, User initiator)
+        {
+            trip.RouteRaw = string.Join(';', trip.RouteRaw
+                                                 .Split(new[] {' ', ';', '-', ','}, StringSplitOptions.RemoveEmptyEntries)
+                                                 .Select(r => char.ToUpper(r[0]) + r[1..].ToLower()));
             trip.Initiator = initiator;
             trip.UsersCount = 1;
             trip.Users.Add(initiator);
