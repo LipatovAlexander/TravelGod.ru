@@ -13,7 +13,7 @@
         <div class="col-md-3"></div>
     </div>
     <div class="row">
-        <div class="col-lg-6 position-relative">
+        <div class="col-lg-6 position-relative @if (Model.ListOfTrips?.TotalPages > 1) {@("mb-5")}">
             @if (Model.ListOfTrips?.Count > 0)
             {
                 @foreach (var trip in Model.ListOfTrips)
@@ -59,7 +59,7 @@
                     var prevDisabled = !Model.ListOfTrips.HasPreviousPage ? "disabled" : "";
                     var nextDisabled = !Model.ListOfTrips.HasNextPage ? "disabled" : "";
 
-                    <nav class="position-absolute" style="bottom: 0; left: 50%; transform: translate(-50%);" aria-label="Page navigation example">
+                    <nav class="position-absolute" style="bottom: 0; left: 50%; transform: translate(-50%, 100%);" aria-label="Page navigation example">
                         <ul class="pagination">
                             <li class="page-item @prevDisabled">
                                 <a class="page-link" asp-route-title="@Model.Options.Title" asp-route-route="@Model.Options.Route"
