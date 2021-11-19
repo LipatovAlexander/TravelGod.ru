@@ -15,7 +15,6 @@ namespace TravelGod.ru.Pages
 {
     public class Profile : MyPageModel
     {
-        private readonly IWebHostEnvironment _appEnvironment;
         private readonly FileService _fileService;
         private readonly SessionService _sessionService;
         private readonly TripService _tripService;
@@ -24,7 +23,6 @@ namespace TravelGod.ru.Pages
         public Profile(IWebHostEnvironment environment, UserService userService, FileService fileService,
                        SessionService sessionService, TripService tripService)
         {
-            _appEnvironment = environment;
             _userService = userService;
             _fileService = fileService;
             _sessionService = sessionService;
@@ -46,9 +44,7 @@ namespace TravelGod.ru.Pages
             }
 
             CurrentUser.Avatar = await _fileService.GetFileAsync(CurrentUser.AvatarId);
-            CurrentUser.JoinedTrips = (await _tripService.GetJoinedTripsAsync(CurrentUser.Id))
-                                      .OrderByDescending(t => t.EndDate)
-                                      .ToList();
+            CurrentUser.JoinedTrips = await _tripService.GetJoinedTripsAsync(CurrentUser.Id);
 
             return Page();
         }
@@ -56,7 +52,7 @@ namespace TravelGod.ru.Pages
         public async Task<JsonResult> OnPostEdit(int id)
         {
             CurrentUser = await _userService.GetUserAsync(id);
-            if (CurrentUser.Id != User.Id)
+            if (CurrentUser?.Id != User?.Id)
             {
                 return new JsonResult("Нет доступа!");
             }
@@ -79,17 +75,7 @@ namespace TravelGod.ru.Pages
                     return new JsonResult(new {Success = false});
                 }
 
-                var path = "CustomFiles/Avatars/" + CurrentUser.Id +
-                           Path.GetExtension(Avatar.FileName).ToLowerInvariant();
-                await using (var fileStream =
-                    new FileStream(Path.Combine(_appEnvironment.WebRootPath, path), FileMode.Create))
-                {
-                    await Avatar.CopyToAsync(fileStream);
-                }
-
-                var file = new File {Name = Avatar.FileName, Path = path};
-                await _fileService.AddFileAsync(file);
-                CurrentUser.Avatar = file;
+                CurrentUser.Avatar = await _fileService.AddFileAsync(CurrentUser, Avatar);
             }
             else
             {

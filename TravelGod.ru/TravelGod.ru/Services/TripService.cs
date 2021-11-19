@@ -57,6 +57,7 @@ namespace TravelGod.ru.Services
             return await _context.Trips
                                  .Include(t => t.Users)
                                  .Where(t => t.Users.Any(u => u.Id == userId))
+                                 .OrderByDescending(t => t.EndDate)
                                  .ToListAsync();
         }
 

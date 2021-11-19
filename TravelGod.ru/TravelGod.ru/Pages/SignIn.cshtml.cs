@@ -1,11 +1,9 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TravelGod.ru.Infrastructure.Cryptography;
-using TravelGod.ru.Models;
 using TravelGod.ru.Services;
+using TravelGod.ru.ViewModels;
 
 namespace TravelGod.ru.Pages
 {
@@ -22,14 +20,7 @@ namespace TravelGod.ru.Pages
         }
 
         [BindProperty]
-        [Required(ErrorMessage = "Введите логин")]
-        public string Login { get; set; }
-
-        [BindProperty]
-        [Required(ErrorMessage = "Введите пароль")]
-        public string Password { get; set; }
-
-        [BindProperty] public bool RememberMe { get; set; }
+        public SignInModel SignInModel { get; set; }
 
         public IActionResult OnGet()
         {
@@ -48,38 +39,28 @@ namespace TravelGod.ru.Pages
                 return RedirectToPage(nameof(Profile));
             }
 
-            var user = await _userService.GetUserAsync(Login);
+            var user = await _userService.GetUserAsync(SignInModel.Login);
             if (user is null)
             {
-                ModelState.AddModelError("Password", "Неправильный логин или пароль");
+                ModelState.AddModelError("SignInModel.Password", "Неправильный логин или пароль");
                 return Page();
             }
 
-            var actualPasswordHash = Cryptography.ComputeMd5HashString(Password + user.PasswordSalt);
+            var actualPasswordHash = Cryptography.ComputeMd5HashString(SignInModel.Password + user.PasswordSalt);
 
             if (actualPasswordHash == user.PasswordHash)
             {
-                var accessToken = Cryptography.GenerateRandomCryptographicKey(40);
-                var session = new Session
-                {
-                    RememberMe = RememberMe,
-                    Expires = RememberMe
-                        ? DateTimeOffset.Now.AddYears(1)
-                        : DateTimeOffset.Now.Add(TimeSpan.FromMinutes(20)),
-                    Token = accessToken,
-                    User = user
-                };
-                HttpContext.Response.Cookies.Append("token", accessToken,
+                var session = await _sessionService.AddSessionAsync(user, !SignInModel.RememberMe);
+                HttpContext.Response.Cookies.Append("token", session.Token,
                     new CookieOptions
                     {
                         Expires = session.Expires,
                         Path = "/"
                     });
-                await _sessionService.AddSessionAsync(session);
                 return RedirectToPage(nameof(Profile), new {id = user.Id});
             }
 
-            ModelState.AddModelError("Password", "Неправильный логин или пароль");
+            ModelState.AddModelError("SignInModel.Password", "Неправильный логин или пароль");
             return Page();
         }
     }
