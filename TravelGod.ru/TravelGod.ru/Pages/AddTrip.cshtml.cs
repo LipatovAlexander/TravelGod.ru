@@ -26,7 +26,6 @@ namespace TravelGod.ru.Pages
         {
             if (User is null)
             {
-                Console.WriteLine(true);
                 return RedirectToPage("/SignIn");
             }
 
