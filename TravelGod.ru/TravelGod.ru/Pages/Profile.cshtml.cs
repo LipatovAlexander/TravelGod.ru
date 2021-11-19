@@ -46,7 +46,7 @@ namespace TravelGod.ru.Pages
             }
 
             CurrentUser.Avatar = await _fileService.GetFileAsync(CurrentUser.AvatarId);
-            CurrentUser.JoinedTrips = (await _tripService.GetJoinedTrips(CurrentUser.Id))
+            CurrentUser.JoinedTrips = (await _tripService.GetJoinedTripsAsync(CurrentUser.Id))
                                       .OrderByDescending(t => t.EndDate)
                                       .ToList();
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using TravelGod.ru.Infrastructure;
 using TravelGod.ru.Models;
 
 namespace TravelGod.ru.Services
@@ -18,30 +19,40 @@ namespace TravelGod.ru.Services
             _chatService = chatService;
         }
 
-        public List<Trip> GetTrips(TripsSearchOptions options)
+        public async Task<PaginatedList<Trip>> GetTrips(TripsOptions options)
         {
-            var result = _context.Trips
-                                 .Where(t => !options.HasTitle ||
-                                             EF.Functions.Like(t.Title.ToLower(),
-                                                 $"%{options.Title.ToLower()}%"))
-                                 .Where(t => (!options.Archive || t.EndDate < DateTime.Now)
-                                             && (options.Archive || t.EndDate > DateTime.Now))
-                                 .Where(t => !options.HasDates || t.StartDate >= options.StartDate &&
-                                     t.EndDate <= options.EndDate)
-                                 .AsEnumerable()
-                                 .Where(t => !options.HasRoute || options.Route
-                                                                         .All(route => t.Route
-                                                                             .Any(routeItem =>
-                                                                                 string.Equals(route, routeItem,
-                                                                                     StringComparison
-                                                                                         .InvariantCultureIgnoreCase))))
-                                 .OrderBy(t => t.StartDate)
-                                 .ToList();
+            var trips = from t in _context.Trips
+                        select t;
 
-            return result;
+            if (!string.IsNullOrEmpty(options.Title))
+            {
+                trips = trips.Where(t => t.Title.ToLower().Contains(options.Title.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(options.Dates))
+            {
+                var startDate = DateTime.Parse(options.Dates[..10]);
+                var endDate = DateTime.Parse(options.Dates[13..23]);
+                trips = trips.Where(t => t.StartDate >= startDate && t.EndDate <= endDate);
+            }
+
+            trips = options.Archive
+                ? trips.Where(t => t.EndDate <= DateTime.Now)
+                : trips.Where(t => t.EndDate > DateTime.Now);
+
+            if (!string.IsNullOrEmpty(options.Route))
+            {
+                var routes = options.Route.Split(new[] {' ', ';', ',', '-'}, StringSplitOptions.RemoveEmptyEntries);
+                trips = routes.Aggregate(trips,
+                    (current, route) => current.Where(t => t.RouteRaw.ToLower().Contains(route.ToLower())));
+            }
+
+            trips = trips.OrderBy(t => t.StartDate);
+
+            return await PaginatedList<Trip>.CreateAsync(trips, options.PageNumber, TripsOptions.PageSize);
         }
 
-        public async Task<List<Trip>> GetJoinedTrips(int userId)
+        public async Task<List<Trip>> GetJoinedTripsAsync(int userId)
         {
             return await _context.Trips
                                  .Include(t => t.Users)
@@ -63,7 +74,8 @@ namespace TravelGod.ru.Services
         public async Task AddTripAsync(Trip trip, User initiator)
         {
             trip.RouteRaw = string.Join(';', trip.RouteRaw
-                                                 .Split(new[] {' ', ';', '-', ','}, StringSplitOptions.RemoveEmptyEntries)
+                                                 .Split(new[] {' ', ';', '-', ','},
+                                                     StringSplitOptions.RemoveEmptyEntries)
                                                  .Select(r => char.ToUpper(r[0]) + r[1..].ToLower()));
             trip.Initiator = initiator;
             trip.UsersCount = 1;

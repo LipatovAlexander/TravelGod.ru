@@ -13,8 +13,8 @@
         <div class="col-md-3"></div>
     </div>
     <div class="row">
-        <div class="col-lg-6">
-            @if (Model.ListOfTrips.Count > 0)
+        <div class="col-lg-6 position-relative">
+            @if (Model.ListOfTrips?.Count > 0)
             {
                 @foreach (var trip in Model.ListOfTrips)
                 {
@@ -53,6 +53,31 @@
                         </div>
                     </div>
                 }
+
+                if (Model.ListOfTrips.TotalPages > 1)
+                {
+                    var prevDisabled = !Model.ListOfTrips.HasPreviousPage ? "disabled" : "";
+                    var nextDisabled = !Model.ListOfTrips.HasNextPage ? "disabled" : "";
+
+                    <nav class="position-absolute" style="bottom: 0; left: 50%; transform: translate(-50%);" aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <li class="page-item @prevDisabled">
+                                <a class="page-link" asp-route-title="@Model.Options.Title" asp-route-route="@Model.Options.Route"
+                                   asp-route-archive="@Model.Options.Archive" asp-route-dates="@Model.Options.Dates"
+                                   asp-route-pageNumber="@(Model.ListOfTrips.PageIndex - 1)" asp-page="Trips">
+                                    Назад
+                                </a>
+                            </li>
+                            <li class="page-item @nextDisabled">
+                                <a class="page-link" asp-route-title="@Model.Options.Title" asp-route-route="@Model.Options.Route"
+                                   asp-route-archive="@Model.Options.Archive" asp-route-dates="@Model.Options.Dates"
+                                   asp-route-pageNumber="@(Model.ListOfTrips.PageIndex + 1)" asp-page="Trips">
+                                    Вперед
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                }
             }
             else
             {
@@ -68,24 +93,24 @@
                     </h2>
                     <form method="get">
                         <div class="form-group">
-                            <label asp-for="SearchOptions.Title">Название</label>
-                            <input asp-for="SearchOptions.Title" class="form-control" type="text">
-                            <span asp-validation-for="SearchOptions.Title" class="text-danger"></span>
+                            <label asp-for="Options.Title">Название</label>
+                            <input asp-for="Options.Title" class="form-control" type="text">
+                            <span asp-validation-for="Options.Title" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="SearchOptions.DatesRaw">Даты</label>
-                            <input asp-for="SearchOptions.DatesRaw" class="form-control" type="text" id="dateRangePicker">
-                            <span asp-validation-for="SearchOptions.DatesRaw" class="text-danger"></span>
+                            <label asp-for="Options.Dates">Даты</label>
+                            <input asp-for="Options.Dates" class="form-control" type="text" id="dateRangePicker">
+                            <span asp-validation-for="Options.Dates" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="SearchOptions.RouteRaw">Маршрут</label>
-                            <input asp-for="SearchOptions.RouteRaw" class="form-control" type="text">
+                            <label asp-for="Options.Route">Маршрут</label>
+                            <input asp-for="Options.Route" class="form-control" type="text">
                             <small class="form-text text-muted">Введите населённые пункты через пробел.</small>
-                            <span asp-validation-for="SearchOptions.RouteRaw" class="text-danger"></span>
+                            <span asp-validation-for="Options.Route" class="text-danger"></span>
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input asp-for="SearchOptions.Archive" type="checkbox"> Поездка уже прошла
+                                <input asp-for="Options.Archive" type="checkbox"> Поездка уже прошла
                             </label>
                         </div>
                         <input type="submit" class="btn btn-outline-dark mt-3" value="Искать">

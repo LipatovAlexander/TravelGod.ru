@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using TravelGod.ru.Infrastructure;
 using TravelGod.ru.Models;
 using TravelGod.ru.Services;
 
@@ -10,7 +10,6 @@ namespace TravelGod.ru.Pages
     {
         private readonly FileService _fileService;
         private readonly TripService _tripService;
-
         private readonly UserService _userService;
 
         public Trips(TripService tripService, FileService fileService, UserService userService)
@@ -20,24 +19,26 @@ namespace TravelGod.ru.Pages
             _userService = userService;
         }
 
-        public List<Trip> ListOfTrips { get; set; }
+        public PaginatedList<Trip> ListOfTrips { get; private set; }
 
-        [BindProperty(SupportsGet = true)] public TripsSearchOptions SearchOptions { get; set; }
+        [BindProperty(SupportsGet = true)] public TripsOptions Options { get; set; }
 
-        public async Task OnGet()
+        public async Task<IActionResult> OnGet()
         {
             if (!ModelState.IsValid)
             {
-                ListOfTrips = new List<Trip>();
-                return;
+                return Page();
             }
 
-            ListOfTrips = _tripService.GetTrips(SearchOptions);
+            ListOfTrips = await _tripService.GetTrips(Options);
+
             foreach (var trip in ListOfTrips)
             {
                 trip.Initiator = await _userService.GetUserAsync(trip.InitiatorId);
                 trip.Initiator.Avatar = await _fileService.GetFileAsync(trip.Initiator.AvatarId);
             }
+
+            return Page();
         }
     }
 }
