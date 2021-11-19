@@ -9,8 +9,8 @@ namespace TravelGod.ru.Services
 {
     public class FileService
     {
-        private readonly ApplicationContext _context;
         private readonly IWebHostEnvironment _appEnvironment;
+        private readonly ApplicationContext _context;
 
         public FileService(ApplicationContext context, IWebHostEnvironment appEnvironment)
         {

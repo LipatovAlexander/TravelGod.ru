@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using TravelGod.ru.Models;
 using TravelGod.ru.Services;
 
@@ -7,6 +6,13 @@ namespace TravelGod.ru.Pages
 {
     public class TripPage : MyPageModel
     {
+        private readonly TripService _tripService;
+
+        public TripPage(TripService tripService)
+        {
+            _tripService = tripService;
+        }
+
         public Trip Trip { get; set; }
 
         public IActionResult OnGet(int id)
@@ -18,13 +24,6 @@ namespace TravelGod.ru.Pages
             }
 
             return Page();
-        }
-
-        private readonly TripService _tripService;
-
-        public TripPage(TripService tripService)
-        {
-            _tripService = tripService;
         }
     }
 }

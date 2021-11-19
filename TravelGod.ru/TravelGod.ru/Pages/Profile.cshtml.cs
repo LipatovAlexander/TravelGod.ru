@@ -1,7 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -9,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using TravelGod.ru.Infrastructure;
 using TravelGod.ru.Models;
 using TravelGod.ru.Services;
-using File = TravelGod.ru.Models.File;
 
 namespace TravelGod.ru.Pages
 {

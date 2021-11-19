@@ -1,10 +1,5 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using TravelGod.ru.Models;
 using TravelGod.ru.Services;
 
@@ -19,8 +14,7 @@ namespace TravelGod.ru.Pages
             _tripService = tripService;
         }
 
-        [BindProperty]
-        public Trip Trip { get; set; }
+        [BindProperty] public Trip Trip { get; set; }
 
         public IActionResult OnGet()
         {

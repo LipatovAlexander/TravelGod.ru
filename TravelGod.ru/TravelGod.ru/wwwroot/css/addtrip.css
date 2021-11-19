@@ -38,15 +38,15 @@
     width: 95%;
 }
 
-.radio-group{
+.radio-group {
     position: relative;
 }
 
-.radio{
+.radio {
     width: 10rem;
     height: 10rem;
     border-radius: 100%;
-    cursor:pointer;
+    cursor: pointer;
     border: 5px solid #999999;
     box-sizing: content-box;
     display: inline-flex;
@@ -54,11 +54,11 @@
     align-content: center;
 }
 
-.radio.selected{
+.radio.selected {
     border-color: #1b6ec2;
 }
 
-.radio.selected .material-icons{
+.radio.selected .material-icons {
     color: #1b6ec2;
 }
 

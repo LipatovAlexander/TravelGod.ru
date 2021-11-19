@@ -10,8 +10,8 @@ namespace TravelGod.ru.Services
 {
     public class TripService
     {
-        private readonly ApplicationContext _context;
         private readonly ChatService _chatService;
+        private readonly ApplicationContext _context;
 
         public TripService(ApplicationContext context, ChatService chatService)
         {

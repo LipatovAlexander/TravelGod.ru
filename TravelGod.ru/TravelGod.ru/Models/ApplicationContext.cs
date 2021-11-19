@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
@@ -25,7 +23,7 @@ namespace TravelGod.ru.Models
         {
             var splitStringConverter = new ValueConverter<string, string>(
                 v => string.Join(";", v
-                    .Split(new []{' ', ';', '-', ','}, StringSplitOptions.RemoveEmptyEntries)),
+                    .Split(new[] {' ', ';', '-', ','}, StringSplitOptions.RemoveEmptyEntries)),
                 v => v);
             builder
                 .Entity<Trip>()

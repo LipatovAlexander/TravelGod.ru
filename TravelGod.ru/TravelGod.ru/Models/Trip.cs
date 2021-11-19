@@ -27,8 +27,7 @@ namespace TravelGod.ru.Models
         public User Initiator { get; set; }
         public List<Rating> Ratings { get; set; } = new();
 
-        [NotMapped]
-        public List<string> Route => RouteRaw?.Split(';').ToList();
+        [NotMapped] public List<string> Route => RouteRaw?.Split(';').ToList();
 
         [Required(ErrorMessage = "Ввведите дату начала поездки")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
@@ -56,11 +55,8 @@ namespace TravelGod.ru.Models
 
     public enum TripType
     {
-        [Display(Name = "Поездка на природу")]
-        NatureTrip,
-        [Display(Name = "Городская поездка")]
-        CityTrip,
-        [Display(Name = "Всё вместе")]
-        CommonTrip
+        [Display(Name = "Поездка на природу")] NatureTrip,
+        [Display(Name = "Городская поездка")] CityTrip,
+        [Display(Name = "Всё вместе")] CommonTrip
     }
 }

@@ -19,8 +19,7 @@ namespace TravelGod.ru.Pages
             _sessionService = sessionService;
         }
 
-        [BindProperty]
-        public SignInModel SignInModel { get; set; }
+        [BindProperty] public SignInModel SignInModel { get; set; }
 
         public IActionResult OnGet()
         {

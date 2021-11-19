@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TravelGod.ru.Infrastructure.Cryptography;
 using TravelGod.ru.Models;
@@ -17,8 +16,7 @@ namespace TravelGod.ru.Pages
             _userService = userService;
         }
 
-        [BindProperty]
-        public SignUpModel SignUpModel { get; set; }
+        [BindProperty] public SignUpModel SignUpModel { get; set; }
 
         public IActionResult OnGet()
         {
