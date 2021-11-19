@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TravelGod.ru.Infrastructure;
 using TravelGod.ru.Models;
+using TravelGod.ru.ViewModels;
 
 namespace TravelGod.ru.Services
 {

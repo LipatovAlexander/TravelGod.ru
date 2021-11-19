@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using TravelGod.ru.Infrastructure;
 
-namespace TravelGod.ru.Models
+namespace TravelGod.ru.ViewModels
 {
     public class TripsOptions
     {
