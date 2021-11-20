@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TravelGod.ru.Models
 {
@@ -57,5 +58,13 @@ namespace TravelGod.ru.Models
         public List<Trip> JoinedTrips { get; set; } = new();
         public List<Chat> OwnedChats { get; set; } = new();
         public List<Trip> OwnedTrips { get; set; } = new();
+
+        [NotMapped]
+        public string DisplayName => !string.IsNullOrEmpty(FirstName) && !string.IsNullOrEmpty(LastName)
+            ? FirstName + " " + LastName
+            : Login;
+
+        public int OwnedTripsCount { get; set; }
+        public int JoinedTripsCount { get; set; }
     }
 }

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TravelGod.ru.Infrastructure;
 using TravelGod.ru.Models;
-using TravelGod.ru.Pages;
 using TravelGod.ru.ViewModels;
 
 namespace TravelGod.ru.Services
@@ -14,11 +13,15 @@ namespace TravelGod.ru.Services
     {
         private readonly ChatService _chatService;
         private readonly ApplicationContext _context;
+        private readonly UserService _userService;
+        private readonly FileService _fileService;
 
-        public TripService(ApplicationContext context, ChatService chatService)
+        public TripService(ApplicationContext context, ChatService chatService, UserService userService, FileService fileService)
         {
             _context = context;
             _chatService = chatService;
+            _userService = userService;
+            _fileService = fileService;
         }
 
         public async Task<PaginatedList<Trip>> GetTrips(TripsOptions options)
@@ -65,10 +68,22 @@ namespace TravelGod.ru.Services
 
         public async Task<Trip> GetTripAsync(int id)
         {
-            return await _context.Trips.FindAsync(id);
+            var trip = await _context.Trips.FindAsync(id);
+            if (trip is null)
+            {
+                return null;
+            }
+
+            await _context.Entry(trip).Collection(t => t.Users).LoadAsync();
+            foreach (var user in trip.Users)
+            {
+                user.Avatar = await _fileService.GetFileAsync(user.AvatarId);
+            }
+
+            return trip;
         }
 
-        public async Task AddTripAsync(Trip trip)
+        private async Task AddTripAsync(Trip trip)
         {
             _context.Trips.Add(trip);
             await _context.SaveChangesAsync();
@@ -96,6 +111,20 @@ namespace TravelGod.ru.Services
             }
 
             await AddTripAsync(trip);
+            initiator.OwnedTripsCount += 1;
+            initiator.JoinedTripsCount += 1;
+            await _userService.UpdateUserAsync(initiator);
+        }
+
+        public async Task AddUserToTrip(Trip trip, User user)
+        {
+            trip.Users.Add(user);
+            trip.UsersCount += 1;
+            user.JoinedTripsCount += 1;
+
+            _context.Trips.Update(trip);
+            await _userService.UpdateUserAsync(user);
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -29,7 +29,10 @@ namespace TravelGod.ru.Services
 
         public async Task UpdateUserAsync(User user)
         {
-            user.Avatar ??= await _fileService.GetFileAsync(1);
+            if (await _fileService.GetFileAsync(user.AvatarId) is null)
+            {
+                user.Avatar = await _fileService.GetFileAsync(1);
+            }
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
         }
