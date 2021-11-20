@@ -58,12 +58,6 @@
     border-color: #1b6ec2;
 }
 
-.radio.selected .material-icons {
-    color: #1b6ec2;
-}
-
-.material-icons {
-    color: #999999;
-    font-size: 3.5rem;
-    line-height: 9.5rem;
+.radio:not(.selected) svg, .radio:not(.selected) path, .radio:not(.selected) polygon {
+    fill: #999999;
 }
