@@ -35,16 +35,16 @@
                                 </a>
                             </div>
                             <h5 class="card-title d-flex justify-content-between">
-                                @trip.Title
+                                @(trip.Title.Length > 15 ? trip.Title[..15] + "..." : trip.Title)
                                 <small class="text-muted">
-                                    @trip.Route[0]
+                                    @(trip.Route[0].Length > 10 ? trip.Route[0][..10] + "..." : trip.Route[0])
                                     @if (trip.Route.Count > 1)
                                     {
-                                        @($" - {trip.Route.Last()}")
+                                        @(trip.Route.Last().Length > 10 ? " - " + trip.Route.Last()[..10] + "..." : " - " + trip.Route.Last())
                                     }
                                 </small>
                             </h5>
-                            <p class="card-text">@trip.Description</p>
+                            <p class="card-text">@(trip.Description.Length > 45 ? trip.Description[..45] + "..." : trip.Description)</p>
                             <div class="d-flex justify-content-between">
                                 <span class="text-muted">Участников: @trip.UsersCount</span>
                                 <span class="text-muted">@trip.StartDate.ToString("D") - @trip.EndDate.ToString("D")</span>

@@ -67,7 +67,7 @@
                     <div class="container py-1">
 
                         <div class="row">
-                            <div class="col-lg-7 mx-auto position-relative mb-5">
+                            <div class="col-lg-7 mx-auto mb-5 position-relative">
                                 @if (Model.CurrentUser.JoinedTrips.Any())
                                 {
                                     <!-- Timeline -->
@@ -76,9 +76,13 @@
                                         {
                                             <li class="timeline-item bg-white rounded ml-3 p-4 shadow">
                                                 <div class="timeline-arrow"></div>
-                                                <h2 class="h5 mb-0">@trip.Title</h2>
+                                                <h2 class="h5 mb-0">@(trip.Title.Length > 15 ? trip.Title[..15] + "..." : trip.Title)</h2>
                                                 <span class="small text-gray">@trip.StartDate.ToString("D") - @trip.EndDate.ToString("D")</span>
-                                                <p class="text-small mt-2 font-weight-light">@trip.Description</p>
+                                                <p class="text-small mt-2 font-weight-light">
+                                                    @(trip.Description.Length > 45
+                                                        ? trip.Description[..45] + "..."
+                                                        : trip.Description)
+                                                </p>
                                                 <span class="align-self-end text-muted">Участников: @trip.UsersCount</span>
                                             </li>
                                         }
@@ -107,7 +111,6 @@
                                             </ul>
                                         </nav>
                                     }
-
                                 }
                                 else
                                 {

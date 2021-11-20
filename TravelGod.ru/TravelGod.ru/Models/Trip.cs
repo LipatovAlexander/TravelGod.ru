@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using TravelGod.ru.Infrastructure;
 
 namespace TravelGod.ru.Models
 {
@@ -11,12 +12,12 @@ namespace TravelGod.ru.Models
         public Chat Chat { get; set; }
         public List<Comment> Comments { get; set; } = new();
 
-        [Required(ErrorMessage = "Добавьте описание")]
-        [RegularExpression(@"^[A-Za-zА-Яа-я\d ,\.!?""']*$", ErrorMessage = "Описание содержит недопустимые символы")]
-        [MaxLength(300, ErrorMessage = "Описание не должно быть длиннее 300 символов")]
+        [Required(ErrorMessage = ValidationMessages.RequiredMessage)]
+        [RegularExpression(@"^[A-Za-zА-Яа-я\d ,\.!?""']*$", ErrorMessage = ValidationMessages.RegularExpressionMessage)]
+        [MaxLength(300, ErrorMessage = ValidationMessages.MaxLengthMessage)]
         public string Description { get; set; }
 
-        [Required(ErrorMessage = "Ввведите дату окончания поездки")]
+        [Required(ErrorMessage = ValidationMessages.RequiredMessage)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime EndDate { get; set; }
 
@@ -29,15 +30,15 @@ namespace TravelGod.ru.Models
 
         [NotMapped] public List<string> Route => RouteRaw?.Split(';').ToList();
 
-        [Required(ErrorMessage = "Ввведите дату начала поездки")]
+        [Required(ErrorMessage = ValidationMessages.RequiredMessage)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime StartDate { get; set; }
 
         [Required] public Status Status { get; set; }
 
-        [Required(ErrorMessage = "Введите название")]
-        [MaxLength(30, ErrorMessage = "Название не может быть длиннее 20 символов")]
-        [RegularExpression(@"^[A-Za-zА-Яа-я\d ,\.!?""']*$", ErrorMessage = "Название содержит недопустимые символы")]
+        [Required(ErrorMessage = ValidationMessages.MaxLengthMessage)]
+        [MaxLength(30, ErrorMessage = ValidationMessages.MaxLengthMessage)]
+        [RegularExpression(@"^[A-Za-zА-Яа-я\d ,\.!?""']*$", ErrorMessage = ValidationMessages.RegularExpressionMessage)]
         public string Title { get; set; }
 
         public List<User> Users { get; set; } = new();
@@ -48,8 +49,9 @@ namespace TravelGod.ru.Models
 
         public bool CreateChat { get; set; }
 
-        [Required(ErrorMessage = "Введите маршрут")]
-        [RegularExpression(@"^[A-Za-zА-Яа-я ,-;]*$", ErrorMessage = "Маршрут содержит недопустимые символы")]
+        [Required(ErrorMessage = ValidationMessages.RequiredMessage)]
+        [MaxLength(200, ErrorMessage = ValidationMessages.MaxLengthMessage)]
+        [RegularExpression(@"^[A-Za-zА-Яа-я ,-;]*$", ErrorMessage = ValidationMessages.RegularExpressionMessage)]
         public string RouteRaw { get; set; }
     }
 
