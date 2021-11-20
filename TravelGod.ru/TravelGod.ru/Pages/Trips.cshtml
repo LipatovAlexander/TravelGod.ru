@@ -6,11 +6,10 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-3"></div>
-        <div class="col-md-6 col-12">
-            <img class="w-100 img-fluid" src="/trips-bg.png" alt="">
+        <div class="col-12">
+            <img class="w-100 img-fluid d-none d-md-block" src="/trips-bg2.png" alt="">
+            <img class="w-100 img-fluid d-md-none" src="/trips-bg.png" alt="">
         </div>
-        <div class="col-md-3"></div>
     </div>
     <div class="row">
         <div class="col-lg-6 position-relative @if (Model.ListOfTrips?.TotalPages > 1) {@("mb-5")}">
