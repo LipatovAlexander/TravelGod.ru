@@ -76,7 +76,11 @@
                                         {
                                             <li class="timeline-item bg-white rounded ml-3 p-4 shadow">
                                                 <div class="timeline-arrow"></div>
-                                                <h2 class="h5 mb-0">@(trip.Title.Length > 15 ? trip.Title[..15] + "..." : trip.Title)</h2>
+                                                <h2 class="h5 mb-0">
+                                                    <a asp-route-id="@trip.Id" asp-page="TripPage" class="text-dark">
+                                                        @(trip.Title.Length > 15 ? trip.Title[..15] + "..." : trip.Title)
+                                                    </a>
+                                                </h2>
                                                 <span class="small text-gray">@trip.StartDate.ToString("D") - @trip.EndDate.ToString("D")</span>
                                                 <p class="text-small mt-2 font-weight-light">
                                                     @(trip.Description.Length > 45

@@ -22,20 +22,13 @@
                             <div class="position-absolute" style="top: -35px; left: 0;">
                                 <img src="@trip.Initiator.Avatar.Path" class="rounded mr-2" alt="аватарка" width="30" title="@trip.Initiator.Avatar.Name">
                                 <a asp-page="Profile" asp-route-id="@trip.Initiator.Id" class="text-dark">
-                                    <strong>
-                                        @if (!string.IsNullOrEmpty(trip.Initiator.FirstName) && !string.IsNullOrEmpty(trip.Initiator.LastName))
-                                        {
-                                            @($"{trip.Initiator.FirstName} {trip.Initiator.LastName}")
-                                        }
-                                        else
-                                        {
-                                            @trip.Initiator.Login
-                                        }
-                                    </strong>
+                                    <strong>@trip.Initiator.DisplayName</strong>
                                 </a>
                             </div>
                             <h5 class="card-title d-flex justify-content-between">
-                                @(trip.Title.Length > 15 ? trip.Title[..15] + "..." : trip.Title)
+                                <a asp-route-id="@trip.Id" asp-page="TripPage" class="text-dark">
+                                    @(trip.Title.Length > 15 ? trip.Title[..15] + "..." : trip.Title)
+                                </a>
                                 <small class="text-muted">
                                     @(trip.Route[0].Length > 10 ? trip.Route[0][..10] + "..." : trip.Route[0])
                                     @if (trip.Route.Count > 1)
@@ -115,9 +108,12 @@
                         <input type="submit" class="btn btn-outline-dark mt-3" value="Искать">
                     </form>
                 </div>
-                <div class="my-3 text-center">
-                    <a asp-area="" asp-page="AddTrip" class="btn btn-outline-primary">Добавить поездку</a>
-                </div>
+                @if (Model.User is not null)
+                {
+                    <div class="my-3 text-center">
+                        <a asp-area="" asp-page="AddTrip" class="btn btn-outline-primary">Добавить поездку</a>
+                    </div>
+                }
             </div>
         </div>
     </div>
