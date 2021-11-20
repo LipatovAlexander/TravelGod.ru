@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -42,6 +43,11 @@ namespace TravelGod.ru.Infrastructure
         {
             var extension = Path.GetExtension(image.FileName).ToLowerInvariant();
             if (string.IsNullOrEmpty(extension) || !PermittedExtensions.Contains(extension))
+            {
+                return false;
+            }
+
+            if (image.Length > 1024 * 1024) // больше чем мегабайт
             {
                 return false;
             }
