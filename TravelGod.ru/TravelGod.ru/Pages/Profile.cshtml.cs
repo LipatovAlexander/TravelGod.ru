@@ -32,8 +32,10 @@ namespace TravelGod.ru.Pages
         [Display(Name = "File")]
         public IFormFile Avatar { get; set; }
 
-        public async Task<IActionResult> OnGet(int id)
+        public async Task<IActionResult> OnGet(int id, int pageNumber = 1)
         {
+            const int pageSize = 10;
+
             CurrentUser = await _userService.GetUserAsync(id);
             if (CurrentUser is null)
             {
@@ -41,7 +43,7 @@ namespace TravelGod.ru.Pages
             }
 
             CurrentUser.Avatar = await _fileService.GetFileAsync(CurrentUser.AvatarId);
-            CurrentUser.JoinedTrips = await _tripService.GetJoinedTripsAsync(CurrentUser.Id);
+            CurrentUser.JoinedTrips = await _tripService.GetJoinedTripsAsync(CurrentUser.Id, pageNumber, pageSize);
 
             return Page();
         }

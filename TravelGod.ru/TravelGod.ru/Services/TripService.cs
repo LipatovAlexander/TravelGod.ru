@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TravelGod.ru.Infrastructure;
 using TravelGod.ru.Models;
+using TravelGod.ru.Pages;
 using TravelGod.ru.ViewModels;
 
 namespace TravelGod.ru.Services
@@ -37,10 +38,6 @@ namespace TravelGod.ru.Services
                 trips = trips.Where(t => t.StartDate >= startDate && t.EndDate <= endDate);
             }
 
-            trips = options.Archive
-                ? trips.Where(t => t.EndDate <= DateTime.Now)
-                : trips.Where(t => t.EndDate > DateTime.Now);
-
             if (!string.IsNullOrEmpty(options.Route))
             {
                 var routes = options.Route.Split(new[] {' ', ';', ',', '-'}, StringSplitOptions.RemoveEmptyEntries);
@@ -48,18 +45,22 @@ namespace TravelGod.ru.Services
                     (current, route) => current.Where(t => t.RouteRaw.ToLower().Contains(route.ToLower())));
             }
 
-            trips = trips.OrderBy(t => t.StartDate);
+            trips = options.Archive
+                ? trips.Where(t => t.EndDate <= DateTime.Now)
+                       .OrderByDescending(t => t.EndDate)
+                : trips.Where(t => t.EndDate > DateTime.Now)
+                       .OrderBy(t => t.StartDate);
 
             return await PaginatedList<Trip>.CreateAsync(trips, options.PageNumber, TripsOptions.PageSize);
         }
 
-        public async Task<List<Trip>> GetJoinedTripsAsync(int userId)
+        public async Task<List<Trip>> GetJoinedTripsAsync(int userId, int pageNumber, int pageSize)
         {
-            return await _context.Trips
-                                 .Include(t => t.Users)
-                                 .Where(t => t.Users.Any(u => u.Id == userId))
-                                 .OrderByDescending(t => t.EndDate)
-                                 .ToListAsync();
+            var trips = _context.Trips
+                                .Include(t => t.Users)
+                                .Where(t => t.Users.Any(u => u.Id == userId))
+                                .OrderByDescending(t => t.EndDate);
+            return await PaginatedList<Trip>.CreateAsync(trips, pageNumber, pageSize);
         }
 
         public async Task<Trip> GetTripAsync(int id)

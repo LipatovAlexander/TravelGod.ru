@@ -1,4 +1,6 @@
 ﻿@page
+@using TravelGod.ru.Infrastructure
+@using TravelGod.ru.Models
 @model TravelGod.ru.Pages.Profile
 
 @{
@@ -65,8 +67,8 @@
                     <div class="container py-1">
 
                         <div class="row">
-                            <div class="col-lg-7 mx-auto">
-                                @if (Model.CurrentUser.JoinedTrips.Count > 0)
+                            <div class="col-lg-7 mx-auto position-relative mb-5">
+                                @if (Model.CurrentUser.JoinedTrips.Any())
                                 {
                                     <!-- Timeline -->
                                     <ul class="timeline">
@@ -82,6 +84,30 @@
                                         }
                                     </ul>
                                     <!-- End -->
+
+                                    if (Model.CurrentUser.JoinedTrips is PaginatedList<Trip> {TotalPages: > 1 } paginatedList)
+                                    {
+                                        var prevDisabled = !paginatedList.HasPreviousPage ? "disabled" : "";
+                                        var nextDisabled = !paginatedList.HasNextPage ? "disabled" : "";
+
+                                        <nav class="position-absolute" style="bottom: 0; left: 50%; transform: translate(-50%, 100%);" aria-label="Page navigation example">
+                                            <ul class="pagination">
+                                                <li class="page-item @prevDisabled">
+                                                    <a class="page-link" asp-route-pageNumber="@(paginatedList.PageIndex - 1)"
+                                                       asp-route-id="@Model.CurrentUser.Id" asp-page="Profile">
+                                                        Назад
+                                                    </a>
+                                                </li>
+                                                <li class="page-item @nextDisabled">
+                                                    <a class="page-link" asp-route-pageNumber="@(paginatedList.PageIndex + 1)"
+                                                       asp-route-id="@Model.CurrentUser.Id" asp-page="Profile">
+                                                        Вперед
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    }
+
                                 }
                                 else
                                 {
