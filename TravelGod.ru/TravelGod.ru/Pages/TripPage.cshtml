@@ -86,5 +86,37 @@
         </aside><!-- /.blog-sidebar -->
 
     </div><!-- /.row -->
-
 </main><!-- /.container -->
+
+<div class="container pb-1 mt-4">
+    @if (Model.User is not null)
+    {
+        <div class="row no-gutters mb-4">
+            <div class="col-auto">
+                <img src="/@Model.User.Avatar.Path" class="rounded mr-2" alt="аватарка" width="40" title="@Model.User.Avatar.Name">
+            </div>
+            <div class="col col-md-7">
+                <form method="Post" id="comment-form">
+                    <div class="form-group">
+                        <textarea asp-for="NewComment.Text" id="comment-text" class="form-control" rows="3" style="resize: none;" placeholder="Комментарий"></textarea>
+                        <span asp-validation-for="NewComment.Text" class="text-danger"></span>
+                    </div>
+                    <input class="btn btn-primary" type="submit" value="Оставить комментарий">
+                </form>
+            </div>
+        </div>
+    }
+    <div id="comments">
+        @foreach (var comment in Model.Trip.Comments)
+        {
+            @await Component.InvokeAsync("Comment", new {Comment = comment})
+        }
+    </div>
+</div>
+
+@Html.Hidden("TripId", Model.Trip.Id)
+
+@section Scripts {
+    <partial name="Shared/_ValidationScriptsPartial"/>
+    <script src="/js/tripPage.js"></script>
+}

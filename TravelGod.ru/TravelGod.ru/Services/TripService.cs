@@ -15,13 +15,15 @@ namespace TravelGod.ru.Services
         private readonly ApplicationContext _context;
         private readonly UserService _userService;
         private readonly FileService _fileService;
+        private readonly CommentService _commentService;
 
-        public TripService(ApplicationContext context, ChatService chatService, UserService userService, FileService fileService)
+        public TripService(ApplicationContext context, ChatService chatService, UserService userService, FileService fileService, CommentService commentService)
         {
             _context = context;
             _chatService = chatService;
             _userService = userService;
             _fileService = fileService;
+            _commentService = commentService;
         }
 
         public async Task<PaginatedList<Trip>> GetTrips(TripsOptions options)
@@ -79,6 +81,8 @@ namespace TravelGod.ru.Services
             {
                 user.Avatar = await _fileService.GetFileAsync(user.AvatarId);
             }
+
+            trip.Comments = await _commentService.GetCommentsAsync(trip);
 
             return trip;
         }
