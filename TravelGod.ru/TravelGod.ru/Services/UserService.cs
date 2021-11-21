@@ -18,12 +18,14 @@ namespace TravelGod.ru.Services
         public async Task<User> GetUserAsync(int id)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            user.Avatar = await _fileService.GetFileAsync(user.AvatarId);
             return user;
         }
 
         public async Task<User> GetUserAsync(string login)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Login == login);
+            user.Avatar = await _fileService.GetFileAsync(user.AvatarId);
             return user;
         }
 

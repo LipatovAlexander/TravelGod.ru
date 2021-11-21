@@ -36,7 +36,6 @@ namespace TravelGod.ru.Pages
             foreach (var trip in ListOfTrips)
             {
                 trip.Initiator = await _userService.GetUserAsync(trip.InitiatorId);
-                trip.Initiator.Avatar = await _fileService.GetFileAsync(trip.Initiator.AvatarId);
             }
 
             return Page();

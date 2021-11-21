@@ -42,7 +42,6 @@ namespace TravelGod.ru.Pages
                 return NotFound();
             }
 
-            CurrentUser.Avatar = await _fileService.GetFileAsync(CurrentUser.AvatarId);
             CurrentUser.JoinedTrips = await _tripService.GetJoinedTripsAsync(CurrentUser.Id, pageNumber, pageSize);
 
             return Page();
@@ -75,10 +74,6 @@ namespace TravelGod.ru.Pages
                 }
 
                 CurrentUser.Avatar = await _fileService.AddFileAsync(CurrentUser, Avatar);
-            }
-            else
-            {
-                CurrentUser.Avatar = await _fileService.GetFileAsync(CurrentUser.AvatarId);
             }
 
             await _userService.UpdateUserAsync(CurrentUser);
