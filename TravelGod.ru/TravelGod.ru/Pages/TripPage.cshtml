@@ -7,9 +7,16 @@
     ViewData["Title"] = Model.Trip.Title;
 }
 
-<div class="jumbotron jumbotron-fluid">
-    <div class="container">
-    </div>
+@{
+    var imagePath = Model.Trip.Type switch {
+        TripType.NatureTrip => "/nature-trip.jpg",
+        TripType.CityTrip => "/city-trip.jpg",
+        TripType.CommonTrip => "/common-trip.jpg",
+        _ => throw new ArgumentOutOfRangeException()
+        };
+}
+
+<div class="jumbotron jumbotron-fluid" style="height: 15rem; background-image: url('@imagePath'); background-position: center; background-size: cover">
 </div>
 
 <main role="main" class="container">
