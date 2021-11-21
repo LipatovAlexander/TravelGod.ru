@@ -96,8 +96,9 @@ namespace TravelGod.ru.Services
         public async Task AddTripAsync(Trip trip, User initiator)
         {
             trip.RouteRaw = string.Join(';', trip.RouteRaw
-                                                 .Split(new[] {' ', ';', '-', ','},
+                                                 .Split(new[] {';', ','},
                                                      StringSplitOptions.RemoveEmptyEntries)
+                                                 .Select(t => t.Trim())
                                                  .Select(r => char.ToUpper(r[0]) + r[1..].ToLower()));
             trip.Initiator = initiator;
             trip.UsersCount = 1;

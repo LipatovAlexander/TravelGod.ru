@@ -13,7 +13,8 @@ namespace TravelGod.ru.Models
         public List<Comment> Comments { get; set; } = new();
 
         [Required(ErrorMessage = ValidationMessages.RequiredMessage)]
-        [RegularExpression(@"^[A-Za-zА-Яа-я\d ,\.!?""']*$", ErrorMessage = ValidationMessages.RegularExpressionMessage)]
+        [RegularExpression(@"^[A-Za-zА-Яа-я\d ,\.!?""\-']*$",
+            ErrorMessage = ValidationMessages.RegularExpressionMessage)]
         [MaxLength(300, ErrorMessage = ValidationMessages.MaxLengthMessage)]
         public string Description { get; set; }
 
@@ -36,7 +37,7 @@ namespace TravelGod.ru.Models
 
         [Required] public Status Status { get; set; }
 
-        [Required(ErrorMessage = ValidationMessages.MaxLengthMessage)]
+        [Required(ErrorMessage = ValidationMessages.RequiredMessage)]
         [MaxLength(30, ErrorMessage = ValidationMessages.MaxLengthMessage)]
         [RegularExpression(@"^[A-Za-zА-Яа-я\d ,\.!?""']*$", ErrorMessage = ValidationMessages.RegularExpressionMessage)]
         public string Title { get; set; }
