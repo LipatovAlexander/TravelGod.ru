@@ -20,7 +20,7 @@
                     <div class="card w-100 shadow" style="margin: 4rem 0 4rem 0">
                         <div class="card-body position-relative">
                             <div class="position-absolute" style="top: -35px; left: 0;">
-                                <img src="@trip.Initiator.Avatar.Path" class="rounded mr-2" alt="аватарка" width="30" title="@trip.Initiator.Avatar.Name">
+                                <img src="/@trip.Initiator.Avatar.Path" class="rounded mr-2" style="object-fit: cover" alt="аватарка" width="30" height="30" title="@trip.Initiator.Avatar.Name">
                                 <a asp-page="Profile" asp-route-id="@trip.Initiator.Id" class="text-dark">
                                     <strong>@trip.Initiator.DisplayName</strong>
                                 </a>

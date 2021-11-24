@@ -57,7 +57,7 @@
                     <h4 class="font-italic">Организатор</h4>
                     <div class="my-1">
                         <a asp-page="Profile" asp-route-id="@Model.Trip.Initiator.Id" class="text-dark text-nowrap">
-                            <img src="/@Model.Trip.Initiator.Avatar.Path" class="rounded mr-2" alt="аватарка" width="30" title="@Model.Trip.Initiator.Avatar.Name">
+                            <img src="/@Model.Trip.Initiator.Avatar.Path" class="rounded mr-2" style="object-fit: cover" alt="аватарка" width="30" height="30" title="@Model.Trip.Initiator.Avatar.Name">
                             <span>@Model.Trip.Initiator.DisplayName</span>
                         </a>
                     </div>
@@ -82,7 +82,7 @@
                         {
                             <li>
                                 <a asp-page="Profile" asp-route-id="@user.Id" class="text-dark text-nowrap">
-                                    <img src="/@user.Avatar.Path" class="rounded mr-2" alt="аватарка" width="15" title="@user.Avatar.Name">
+                                    <img src="/@user.Avatar.Path" class="rounded mr-2" style="object-fit: cover"  alt="аватарка" width="25" height="25" title="@user.Avatar.Name">
                                     <span>@user.DisplayName</span>
                                 </a>
                             </li>
@@ -100,7 +100,7 @@
     {
         <div class="row no-gutters mb-4">
             <div class="col-auto">
-                <img src="/@Model.User.Avatar.Path" class="rounded mr-2" alt="аватарка" width="40" title="@Model.User.Avatar.Name">
+                <img src="/@Model.User.Avatar.Path" class="rounded mr-2" style="object-fit: cover" alt="аватарка" width="40" height="40" title="@Model.User.Avatar.Name">
             </div>
             <div class="col col-md-7">
                 <form method="Post" id="comment-form">
