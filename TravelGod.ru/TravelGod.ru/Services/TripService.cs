@@ -26,10 +26,12 @@ namespace TravelGod.ru.Services
             _commentService = commentService;
         }
 
-        public async Task<PaginatedList<Trip>> GetTrips(TripsOptions options)
+        public async Task<PaginatedList<Trip>> GetTrips(TripsOptions options, Status status = Status.Normal)
         {
             var trips = from t in _context.Trips
                         select t;
+
+            trips = trips.Where(t => t.Status == status);
 
             if (!string.IsNullOrEmpty(options.Title))
             {
@@ -59,19 +61,20 @@ namespace TravelGod.ru.Services
             return await PaginatedList<Trip>.CreateAsync(trips, options.PageNumber, TripsOptions.PageSize);
         }
 
-        public async Task<List<Trip>> GetJoinedTripsAsync(int userId, int pageNumber, int pageSize)
+        public async Task<List<Trip>> GetJoinedTripsAsync(int userId, int pageNumber, int pageSize, Status status = Status.Normal)
         {
             var trips = _context.Trips
                                 .Include(t => t.Users)
                                 .Where(t => t.Users.Any(u => u.Id == userId))
+                                .Where(t => t.Status == status)
                                 .OrderByDescending(t => t.EndDate);
             return await PaginatedList<Trip>.CreateAsync(trips, pageNumber, pageSize);
         }
 
-        public async Task<Trip> GetTripAsync(int id)
+        public async Task<Trip> GetTripAsync(int id, Status status = Status.Normal)
         {
             var trip = await _context.Trips.FindAsync(id);
-            if (trip is null)
+            if (trip is null || trip.Status != status)
             {
                 return null;
             }

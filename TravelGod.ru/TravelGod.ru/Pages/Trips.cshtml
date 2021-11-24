@@ -17,7 +17,7 @@
             {
                 @foreach (var trip in Model.ListOfTrips)
                 {
-                    <div class="card w-100 my-3 mt-5 shadow">
+                    <div class="card w-100 shadow" style="margin: 4rem 0 4rem 0">
                         <div class="card-body position-relative">
                             <div class="position-absolute" style="top: -35px; left: 0;">
                                 <img src="@trip.Initiator.Avatar.Path" class="rounded mr-2" alt="аватарка" width="30" title="@trip.Initiator.Avatar.Name">

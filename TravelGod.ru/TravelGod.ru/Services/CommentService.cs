@@ -15,12 +15,14 @@ namespace TravelGod.ru.Services
             _context = context;
         }
 
-        public async Task<List<Comment>> GetCommentsAsync(Trip trip)
+        public async Task<List<Comment>> GetCommentsAsync(Trip trip, Status status = Status.Normal)
         {
             return await _context.Comments
                                  .Include(c => c.Trip)
                                  .Where(c => c.Trip == trip)
+                                 .Where(c => c.Status == status)
                                  .Include(c => c.User)
+                                 .ThenInclude(u => u.Avatar)
                                  .OrderByDescending(c => c.Date)
                                  .ToListAsync();
         }
