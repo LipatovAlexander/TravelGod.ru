@@ -14,16 +14,16 @@
 
 <div class="container">
     <div class="row" id="profile-header">
-        <div class="col-3 col-sm-auto p-2">
+        <div class="col-4 col-sm-auto p-2">
             <div class="picture-container">
                 <div class="picture">
-                    <img src="@Model.CurrentUser.Avatar?.Path" alt="default avatar" class="picture-src" id="wizardPicturePreview" title="@Model.CurrentUser.Avatar?.Name"/>
+                    <img src="@Model.CurrentUser.Avatar?.Path" alt="default avatar" width="100" height="100" style="object-fit: cover" id="wizardPicturePreview" title="@Model.CurrentUser.Avatar?.Name"/>
                     <input asp-for="Avatar" id="wizard-picture" form="profile-form" disabled readonly title="@Model.CurrentUser.Avatar?.Name" accept="image/png, image/jpeg">
                     <span asp-validation-for="Avatar" class="text-danger"></span>
                 </div>
             </div>
         </div>
-        <div class="col-9 col-sm col-md-3 p-2">
+        <div class="col-8 col-sm col-md-3 p-2">
             <span class="d-block text-truncate font-weight-bold">
                 @if (string.IsNullOrEmpty(Model.CurrentUser.FirstName) || string.IsNullOrEmpty(Model.CurrentUser.LastName))
                 {

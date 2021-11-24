@@ -104,9 +104,6 @@ li.timeline-item::before {
     cursor: pointer;
 }
 
-.picture-src {
-    width: 100%;
-}
 
 h6 {
     font-family: "Roboto", "Helvetica", "Arial", sans-serif;

@@ -4,6 +4,7 @@
 
     searchDatesInput.daterangepicker({
         autoUpdateInput: false,
+        autoApply: true,
         locale: {
             cancelLabel: 'Очистить',
             format: 'DD.MM.YYYY',
