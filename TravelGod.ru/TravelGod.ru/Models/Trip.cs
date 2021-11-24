@@ -54,6 +54,26 @@ namespace TravelGod.ru.Models
         [MaxLength(200, ErrorMessage = ValidationMessages.MaxLengthMessage)]
         [RegularExpression(@"^[A-Za-zА-Яа-я ,-;]*$", ErrorMessage = ValidationMessages.RegularExpressionMessage)]
         public string RouteRaw { get; set; }
+
+        [NotMapped]
+        [Required(ErrorMessage = ValidationMessages.RequiredMessage)]
+        [RegularExpression(@"^\d\d\.\d\d\.\d\d\d\d - \d\d\.\d\d\.\d\d\d\d$", ErrorMessage = ValidationMessages.RegularExpressionMessage)]
+        public string DatesRaw
+        {
+            get => StartDate.ToString("dd.MM.yyyy") + " - " + EndDate.ToString("dd.MM.yyyy");
+            set
+            {
+                value = value.Trim();
+                if (!DateTime.TryParse(value[..10], out var startDate) ||
+                    !DateTime.TryParse(value[13..23], out var endDate))
+                {
+                    return;
+                }
+
+                StartDate = startDate;
+                EndDate = endDate;
+            }
+        }
     }
 
     public enum TripType

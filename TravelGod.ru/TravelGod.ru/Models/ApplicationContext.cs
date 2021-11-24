@@ -21,15 +21,6 @@ namespace TravelGod.ru.Models
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            var splitStringConverter = new ValueConverter<string, string>(
-                v => string.Join(";", v
-                    .Split(new[] {' ', ';', '-', ','}, StringSplitOptions.RemoveEmptyEntries)),
-                v => v);
-            builder
-                .Entity<Trip>()
-                .Property(nameof(Trip.RouteRaw))
-                .HasConversion(splitStringConverter);
-
             builder
                 .Entity<User>()
                 .HasMany(u => u.OwnedChats)

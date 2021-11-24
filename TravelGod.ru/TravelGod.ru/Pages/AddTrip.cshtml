@@ -37,21 +37,16 @@
                             <span asp-validation-for="Trip.Title" class="text-danger"></span>
                         </div>
                         <div class="form-group col">
-                            <label asp-for="Trip.RouteRaw" class="font-weight-bold">Маршрут</label>
-                            <input asp-for="Trip.RouteRaw" class="form-control" data-toggle="tooltip" title="Введите населённые пункты через запятую" data-placement="bottom">
-                            <span asp-validation-for="Trip.RouteRaw" class="text-danger"></span>
+                            <label asp-for="Trip.DatesRaw" class="font-weight-bold">Даты</label>
+                            <input asp-for="Trip.DatesRaw" id="dateRangePicker" type="text" class="form-control">
+                            <span asp-validation-for="Trip.DatesRaw" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group col">
-                            <label asp-for="Trip.StartDate" class="font-weight-bold">Дата начала</label>
-                            <input asp-for="Trip.StartDate" type="date" class="form-control">
-                            <span asp-validation-for="Trip.StartDate" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col">
-                            <label asp-for="Trip.EndDate" class="font-weight-bold">Дата окончания</label>
-                            <input asp-for="Trip.EndDate" type="date" class="form-control">
-                            <span asp-validation-for="Trip.EndDate" class="text-danger"></span>
+                            <label asp-for="Trip.RouteRaw" class="font-weight-bold">Маршрут</label>
+                            <input asp-for="Trip.RouteRaw" class="form-control" data-toggle="tooltip" title="Введите населённые пункты через запятую" data-placement="bottom">
+                            <span asp-validation-for="Trip.RouteRaw" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="d-flex justify-content-between align-items-center button-group">
@@ -137,6 +132,9 @@
 
 @section Scripts
 {
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
     <script src="~/js/addtrip.js"></script>
     <partial name="Shared/_ValidationScriptsPartial"></partial>
 }
