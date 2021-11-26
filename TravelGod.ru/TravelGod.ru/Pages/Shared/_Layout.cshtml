@@ -15,57 +15,61 @@
     @await RenderSectionAsync("Styles", false)
 </head>
 <body>
-<header>
-    <nav class="navbar navbar-expand-sm border-bottom">
-        <div class="container">
-            <a class="navbar-brand" asp-area="" asp-page="/Index">
-                <img src="/logo.svg" alt="TravelGod.ru" width="70">
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
-                </svg>
-            </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex" id="navbarSupportedContent">
-                <ul class="navbar-nav flex-grow-1 justify-content-end">
-                    <li class="text-center nav-item @(currentPage == "/Index" ? "active" : "")">
-                        <a class="nav-link text-dark" asp-area="" asp-page="/Index">Главная</a>
-                    </li>
-                    <li class="text-center nav-item @(currentPage == "/Trips" ? "active" : "")">
-                        <a class="nav-link text-dark" asp-area="" asp-page="/Trips">Поездки</a>
-                    </li>
-                    @if (Model.User is not null)
-                    {
-                        <li class="text-center nav-item @(currentPage == "/Profile" ? "active" : "")">
-                            <a class="nav-link text-primary" asp-route-id="@Model.User.Id" asp-page="/Profile">
-                                @if (!string.IsNullOrEmpty(Model.User.FirstName) && !string.IsNullOrEmpty(Model.User.LastName))
-                                {
-                                    @($"{Model.User.FirstName} {Model.User.LastName}")
-                                }
-                                else
-                                {
-                                    @Model.User.Login
-                                }
-                            </a>
-                        </li>
-                    }
-                    else
-                    {
-                        <li class="text-center nav-item @(currentPage == "/SignIn" ? "active" : "")">
-                            <a class="nav-link text-primary" asp-area="" asp-page="/SignIn">Авторизация</a>
-                        </li>
-                        <li class="text-center nav-item @(currentPage == "/SignUp" ? "active" : "")">
-                            <a class="nav-link text-primary" asp-area="" asp-page="/SignUp">Регистрация</a>
-                        </li>
-                    }
-                </ul>
-            </div>
-        </div>
-    </nav>
-</header>
 
-@RenderBody()
+<div class="content">
+    <header>
+        <nav class="navbar navbar-expand-sm border-bottom">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-page="/Index">
+                    <img src="/logo.svg" alt="TravelGod.ru" width="70">
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                    </svg>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex" id="navbarSupportedContent">
+                    <ul class="navbar-nav flex-grow-1 justify-content-end">
+                        <li class="text-center nav-item @(currentPage == "/Index" ? "active" : "")">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Главная</a>
+                        </li>
+                        <li class="text-center nav-item @(currentPage == "/Trips" ? "active" : "")">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Trips">Поездки</a>
+                        </li>
+                        @if (Model.User is not null)
+                        {
+                            <li class="text-center nav-item @(currentPage == "/Profile" ? "active" : "")">
+                                <a class="nav-link text-primary" asp-route-id="@Model.User.Id" asp-page="/Profile">
+                                    @if (!string.IsNullOrEmpty(Model.User.FirstName) && !string.IsNullOrEmpty(Model.User.LastName))
+                                    {
+                                        @($"{Model.User.FirstName} {Model.User.LastName}")
+                                    }
+                                    else
+                                    {
+                                        @Model.User.Login
+                                    }
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="text-center nav-item @(currentPage == "/SignIn" ? "active" : "")">
+                                <a class="nav-link text-primary" asp-area="" asp-page="/SignIn">Авторизация</a>
+                            </li>
+                            <li class="text-center nav-item @(currentPage == "/SignUp" ? "active" : "")">
+                                <a class="nav-link text-primary" asp-area="" asp-page="/SignUp">Регистрация</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    @RenderBody()
+</div>
+
 
 <footer class="border-top footer text-muted">
     <div class="container">
