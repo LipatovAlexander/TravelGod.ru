@@ -1,0 +1,45 @@
+﻿@using System.Net.Http
+@using TravelGod.ru.Models
+@model TravelGod.ru.Models.Chat
+
+@{
+    var isGroupChat = Model.IsGroupChat;
+    var user = Context.Items["User"] as User;
+    var lastMessage = Model.Messages.LastOrDefault();
+    var otherUser = Model.Users.FirstOrDefault(u => u.Id != user!.Id);
+}
+
+<a chat-id="@Model.Id" class="list-group-item list-group-item-action list-group-item-light rounded-0 chat-link">
+    <div class="media">
+        @if (!isGroupChat)
+        {
+            <img src="/@otherUser?.Avatar.Path" alt="user" width="50" height="50" style="object-fit: cover" class="rounded-circle d-none d-md-block">
+        }
+        <div class="media-body ml-0 ml-sm-4">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+                <h6 class="mb-0">
+                    @if (isGroupChat)
+                    {
+                        @Model.Name
+                    }
+                    else
+                    {
+                        @otherUser?.DisplayName
+                    }
+                </h6>
+                @if (!isGroupChat)
+                {
+                    <small class="small font-weight-bold d-none d-md-inline-block">
+                        @lastMessage?.DateTime.ToString("dd MMM")
+                    </small>
+                }
+            </div>
+            @if (!isGroupChat)
+            {
+                <p class="font-italic text-muted mb-0 text-small d-none d-md-inline-block text-truncate" style="max-width: 10rem">
+                    @lastMessage?.Text
+                </p>
+            }
+        </div>
+    </div>
+</a>

@@ -1,0 +1,15 @@
+﻿@model TravelGod.ru.Models.Chat
+
+<div class="px-4 py-5 chat-box bg-white" id="messages-box">
+    @if (Model is not null)
+    {
+        <input name="Message.Chat.Id" form="message-form" type="number" value="@Model.Id" hidden>
+        if (Model.Messages.Count > 0)
+        {
+            @foreach (var message in Model.Messages)
+            {
+                @(await Component.InvokeAsync("Message", message))
+            }
+        }
+    }
+</div>

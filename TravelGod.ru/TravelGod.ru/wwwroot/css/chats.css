@@ -1,0 +1,71 @@
+﻿/*
+*
+* ==========================================
+* FOR DEMO PURPOSES
+* ==========================================
+*
+*/
+
+.message {
+    width: 100%;
+}
+
+h6 {
+    font-size: 0.8rem;
+}
+
+@media (min-width: 576px) {
+    h6 {
+        font-size: 1rem;
+    }
+}
+
+@media (min-width: 992px) {
+    .message {
+        width: 50%;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+    width: 5px;
+    background: #f5f5f5;
+}
+
+::-webkit-scrollbar-thumb {
+    width: 1em;
+    background-color: #ddd;
+    outline: 1px solid slategrey;
+    border-radius: 1rem;
+}
+
+.text-small {
+    font-size: 0.9rem;
+}
+
+.messages-box,
+.chat-box {
+    height: 510px;
+    overflow-y: scroll;
+}
+
+.rounded-lg {
+    border-radius: 0.5rem;
+}
+
+input::placeholder {
+    font-size: 0.9rem;
+    color: #999;
+}
+
+a.chat-link {
+    cursor: pointer;
+}
+
+.wordwrap {
+    word-break: break-all;
+    word-wrap: break-word;
+}
