@@ -37,6 +37,7 @@ namespace TravelGod.ru
             services.AddTransient<FileService>();
             services.AddTransient<ChatService>();
             services.AddTransient<CommentService>();
+            services.AddTransient<MessageService>();
             services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
         }
 
