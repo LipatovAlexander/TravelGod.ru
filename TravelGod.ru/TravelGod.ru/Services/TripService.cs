@@ -106,17 +106,6 @@ namespace TravelGod.ru.Services
             trip.Initiator = initiator;
             trip.UsersCount = 1;
             trip.Users.Add(initiator);
-            if (trip.CreateChat)
-            {
-                trip.Chat = new Chat
-                {
-                    Initiator = initiator,
-                    Name = trip.Title,
-                    CreationDate = DateTime.Now
-                };
-                trip.Chat.Users.Add(initiator);
-                await _chatService.AddChatAsync(trip.Chat);
-            }
 
             await AddTripAsync(trip);
             initiator.OwnedTripsCount += 1;

@@ -48,8 +48,6 @@ namespace TravelGod.ru.Models
 
         [Required] public TripType Type { get; set; }
 
-        public bool CreateChat { get; set; }
-
         [Required(ErrorMessage = ValidationMessages.RequiredMessage)]
         [MaxLength(200, ErrorMessage = ValidationMessages.MaxLengthMessage)]
         [RegularExpression(@"^[A-Za-zА-Яа-я ,-;]*$", ErrorMessage = ValidationMessages.RegularExpressionMessage)]

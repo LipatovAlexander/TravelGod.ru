@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TravelGod.ru.Models;
@@ -16,6 +17,7 @@ namespace TravelGod.ru.Pages
         }
 
         [BindProperty] public Trip Trip { get; set; }
+        [BindProperty] public bool CreateChat { get; set; }
 
         public IActionResult OnGet()
         {
@@ -32,6 +34,16 @@ namespace TravelGod.ru.Pages
             if (!ModelState.IsValid)
             {
                 return Page();
+            }
+
+            if (CreateChat)
+            {
+                Trip.Chat = new Chat
+                {
+                    Initiator = User,
+                    Name = Trip.Title,
+                    Users = new List<User>{User}
+                };
             }
 
             await _tripService.AddTripAsync(Trip, User);
