@@ -1,7 +1,4 @@
 ﻿@model MyPageModel
-@{
-    var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
-}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -31,33 +28,53 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex" id="navbarSupportedContent">
                     <ul class="navbar-nav flex-grow-1 justify-content-end">
-                        <li class="text-center nav-item @(currentPage == "/Index" ? "active" : "")">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Главная</a>
+                        <li class="text-center nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Index" id="Index">Главная</a>
                         </li>
-                        <li class="text-center nav-item @(currentPage == "/Trips" ? "active" : "")">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Trips">Поездки</a>
+                        <li class="text-center nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Trips" id="Trips">Поездки</a>
                         </li>
                         @if (Model.User is not null)
                         {
-                            <li class="text-center nav-item @(currentPage == "/Profile" ? "active" : "")">
-                                <a class="nav-link text-primary" asp-route-id="@Model.User.Id" asp-page="/Profile">
-                                    @if (!string.IsNullOrEmpty(Model.User.FirstName) && !string.IsNullOrEmpty(Model.User.LastName))
-                                    {
-                                        @($"{Model.User.FirstName} {Model.User.LastName}")
-                                    }
-                                    else
-                                    {
-                                        @Model.User.Login
-                                    }
-                                </a>
+                            <li class="text-center nav-item">
+                                <div class="dropdown">
+                                    <a class="nav-link dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <img src="/@Model.User.Avatar.Path" class="rounded mr-2" style="object-fit: cover" alt="аватарка" width="30" height="30" title="@Model.User.Avatar.Name">
+                                        <span>@Model.User.DisplayName</span>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-lg-right shadow mt-3" aria-labelledby="dropdownMenuLink">
+                                        <a class="dropdown-item" asp-area="" asp-page="/Profile" asp-route-id="@Model.User.Id" id="Profile">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+                                                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                                            </svg>
+                                            Профиль
+                                        </a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" asp-area="" asp-page="/Chats" id="Chats">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-dots" viewBox="0 0 16 16">
+                                                <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                                                <path d="M5 6a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                                            </svg>
+                                            Сообщения
+                                        </a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" asp-area="" asp-page="/Profile" asp-page-handler="LogOut">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                                                <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+                                                <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                                            </svg>
+                                            Выйти
+                                        </a>
+                                    </div>
+                                </div>
                             </li>
                         }
                         else
                         {
-                            <li class="text-center nav-item @(currentPage == "/SignIn" ? "active" : "")">
+                            <li class="text-center nav-item">
                                 <a class="nav-link text-primary" asp-area="" asp-page="/SignIn">Авторизация</a>
                             </li>
-                            <li class="text-center nav-item @(currentPage == "/SignUp" ? "active" : "")">
+                            <li class="text-center nav-item">
                                 <a class="nav-link text-primary" asp-area="" asp-page="/SignUp">Регистрация</a>
                             </li>
                         }
