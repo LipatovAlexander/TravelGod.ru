@@ -71,5 +71,19 @@ namespace TravelGod.ru.Services
 
             return chat;
         }
+
+        public async Task CreateChatForTripAsync(Trip trip)
+        {
+            var chat = new Chat
+            {
+                Initiator = trip.Initiator,
+                Name = trip.Title,
+                Users = trip.Users,
+                IsGroupChat = true
+            };
+            trip.Chat = chat;
+            _context.Trips.Update(trip);
+            await _context.SaveChangesAsync();
+        }
     }
 }

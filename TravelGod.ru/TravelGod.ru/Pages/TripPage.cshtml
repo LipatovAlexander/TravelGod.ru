@@ -24,7 +24,7 @@
         <div class="col-md-8 blog-main">
             <div class="blog-post overflow-hidden">
                 <h2 class="blog-post-title">
-                    @Model.Trip.Title<small> - @(Model.Trip.Type.GetAttribute<DisplayAttribute>().Name)</small>
+                    @Model.Trip.Title
                 </h2>
                 <p class="blog-post-meta">
                     @Model.Trip.StartDate.ToString("D") - @Model.Trip.EndDate.ToString("D")
@@ -80,7 +80,7 @@
                     <ol class="list-unstyled mb-0">
                         @foreach (var user in Model.Trip.Users)
                         {
-                            <li>
+                            <li class="mt-1">
                                 <a asp-page="Profile" asp-route-id="@user.Id" class="text-dark text-nowrap">
                                     <img src="/@user.Avatar.Path" class="rounded mr-2" style="object-fit: cover"  alt="аватарка" width="25" height="25" title="@user.Avatar.Name">
                                     <span>@user.DisplayName</span>
@@ -89,6 +89,12 @@
                         }
                     </ol>
                 </div>
+                @if (Model.User == Model.Trip.Initiator && Model.Trip.Chat is null)
+                {
+                    <div class="mb-3 text-center">
+                        <a asp-area="" asp-page="/TripPage" asp-page-handler="CreateChat" class="btn btn-outline-primary">Создать общий чат</a>
+                    </div>
+                }
             </div>
         </aside><!-- /.blog-sidebar -->
 

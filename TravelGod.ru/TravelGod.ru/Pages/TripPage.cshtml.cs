@@ -12,12 +12,14 @@ namespace TravelGod.ru.Pages
         private readonly TripService _tripService;
         private readonly FileService _fileService;
         private readonly CommentService _commentService;
+        private readonly ChatService _chatService;
 
-        public TripPage(TripService tripService, FileService fileService, CommentService commentService)
+        public TripPage(TripService tripService, FileService fileService, CommentService commentService, ChatService chatService)
         {
             _tripService = tripService;
             _fileService = fileService;
             _commentService = commentService;
+            _chatService = chatService;
         }
 
         public Trip Trip { get; set; }
@@ -45,7 +47,19 @@ namespace TravelGod.ru.Pages
             }
 
             await _tripService.AddUserToTrip(Trip, User);
-            return Page();
+            return RedirectToPage("/TripPage", new {Id = id});
+        }
+
+        public async Task<IActionResult> OnGetCreateChat(int id)
+        {
+            Trip = await _tripService.GetTripAsync(id);
+            if (User is null || Trip is null || Trip.InitiatorId != User.Id || Trip.Chat is not null)
+            {
+                return BadRequest();
+            }
+
+            await _chatService.CreateChatForTripAsync(Trip);
+            return RedirectToPage("/TripPage", new {Id = id});
         }
 
         public async Task<IActionResult> OnPostAddComment(int id)

@@ -80,6 +80,7 @@ namespace TravelGod.ru.Services
             }
 
             await _context.Entry(trip).Collection(t => t.Users).LoadAsync();
+            await _context.Entry(trip).Reference(t => t.Chat).LoadAsync();
             foreach (var user in trip.Users)
             {
                 user.Avatar = await _fileService.GetFileAsync(user.AvatarId);
