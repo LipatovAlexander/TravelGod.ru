@@ -11,6 +11,7 @@ using TravelGod.ru.Services;
 
 namespace TravelGod.ru.Areas.Admin.Pages
 {
+    [AdministratorPageFilter]
     public class Users : MyPageModel
     {
         private readonly UserService _userService;
@@ -26,11 +27,6 @@ namespace TravelGod.ru.Areas.Admin.Pages
 
         public async Task<IActionResult> OnGet()
         {
-            if (User is null || User.Role is not (Role.Administrator or Role.Moderator))
-            {
-                return BadRequest();
-            }
-
             if (!ModelState.IsValid)
             {
                 return Page();
@@ -43,11 +39,6 @@ namespace TravelGod.ru.Areas.Admin.Pages
 
         public async Task<IActionResult> OnPostEditUser(int id)
         {
-            if (User is null || User.Role is not (Role.Administrator or Role.Moderator))
-            {
-                return BadRequest();
-            }
-
             EditedUser = await _userService.GetUserAsync(id);
 
             if (EditedUser is null)

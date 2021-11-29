@@ -7,6 +7,7 @@ using TravelGod.ru.Services;
 
 namespace TravelGod.ru.Pages
 {
+    [AuthenticationPageFilter]
     public class AddTrip : MyPageModel
     {
         private readonly TripService _tripService;
@@ -21,11 +22,6 @@ namespace TravelGod.ru.Pages
 
         public IActionResult OnGet()
         {
-            if (User is null)
-            {
-                return RedirectToPage("/SignIn");
-            }
-
             return Page();
         }
 

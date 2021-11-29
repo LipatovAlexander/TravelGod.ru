@@ -9,6 +9,7 @@ using TravelGod.ru.Services;
 
 namespace TravelGod.ru.Pages
 {
+    [AuthenticationPageFilter]
     public class Chats : MyPageModel
     {
         private readonly ChatService _chatService;
@@ -27,23 +28,12 @@ namespace TravelGod.ru.Pages
 
         public async Task<IActionResult> OnGet()
         {
-            Console.WriteLine(true);
-            if (User is null)
-            {
-                return RedirectToPage("/SignIn");
-            }
-
             ListOfChats = await _chatService.GetChatsAsync(User);
             return Page();
         }
 
         public async Task<IActionResult> OnPostSendMessage()
         {
-            if (User is null)
-            {
-                return BadRequest();
-            }
-
             Message.User = User;
             Message.Chat = await _chatService.GetChatAsync(Message.Chat.Id);
             await _messageService.AddMessageAsync(Message);
