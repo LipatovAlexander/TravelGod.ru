@@ -9,12 +9,12 @@
 <div class="media @if (isReceiverMessage) {@("ml-auto")} mb-3 message">
     @if (!isReceiverMessage)
     {
-        <img src="@Model.User.Avatar.Path" alt="аватарка" width="50" height="50" class="rounded-circle" style="object-fit: cover">
+        <img src="/@Model.User.Avatar.Path" alt="аватарка" width="50" height="50" class="rounded-circle" style="object-fit: cover">
     }
     <div class="media-body @if (!isReceiverMessage) {@("ml-3")}">
         @if (!isReceiverMessage)
         {
-            <a asp-route-id="@Model.User.Id" asp-page="/Profile" class="text-dark">@Model.User.DisplayName</a>
+            <a asp-route-id="@Model.User.Id" asp-page="/Profile/Index" class="text-dark">@Model.User.DisplayName</a>
         }
         <div class="@if (isReceiverMessage) {@("bg-primary")} else {@("bg-light")} rounded py-2 px-3 mb-2 @if (!isReceiverMessage) {@("mt-1")}">
             <p class="text-small mb-0 wordwrap @if (isReceiverMessage) {@("text-white")} else {@("text-muted")}">@Model.Text</p>

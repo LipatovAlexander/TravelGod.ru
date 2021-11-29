@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using TravelGod.ru.Areas.Admin.ViewModels;
 using TravelGod.ru.Infrastructure;
 using TravelGod.ru.Models;
+using TravelGod.ru.Pages.Admin.ViewModels;
 
 namespace TravelGod.ru.Services
 {

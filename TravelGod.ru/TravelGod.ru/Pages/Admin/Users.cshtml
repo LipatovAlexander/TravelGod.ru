@@ -1,0 +1,138 @@
+﻿@page
+@using TravelGod.ru.Models
+@model TravelGod.ru.Pages.Admin.Users
+@{
+    ViewData["Title"] = "Админка - Пользователи";
+}
+
+<form>
+    <div class="form-row">
+        <div class="form-group col">
+            <label asp-for="UsersOptions.Name">Имя</label>
+            <input asp-for="UsersOptions.Name" class="form-control">
+            <small class="form-text text-muted">Поиск по ФИО или логину.</small>
+        </div>
+        <div class="form-group col">
+            <label asp-for="UsersOptions.Role">Роль</label>
+            @foreach (var c in Enum.GetValues<Role>())
+            {
+                <div class="custom-control custom-radio">
+                    <input type="radio" asp-for="UsersOptions.Role" id="UsersOptions_Role_@c" value="@((int) c)" class="custom-control-input" checked="@(c == Model?.UsersOptions.Role)"/>
+                    <label for="UsersOptions_Role_@c" class="custom-control-label">@c</label>
+                </div>
+            }
+        </div>
+        <div class="form-group form-check col">
+            <label asp-for="UsersOptions.Status">Статус</label>
+            @foreach (var c in Enum.GetValues<Status>())
+            {
+                <div class="custom-control custom-radio">
+                    <input type="radio" asp-for="UsersOptions.Status" id="UsersOptions_Status_@c" value="@((int) c)" class="custom-control-input" checked="@(c == Model?.UsersOptions.Status)"/>
+                    <label for="UsersOptions_Status_@c" class="custom-control-label">@c</label>
+                </div>
+            }
+        </div>
+        <div class="col">
+            <button type="submit" class="btn btn-primary">Поиск</button>
+        </div>
+    </div>
+</form>
+
+<table class="table table-responsive my-5">
+    <caption>Список пользователей</caption>
+    <thead>
+    <tr>
+        <th scope="col" class="text-nowrap"></th>
+        <th scope="col" class="text-nowrap">Id</th>
+        <th scope="col" class="text-nowrap">Аватарка</th>
+        <th scope="col" class="text-nowrap">Имя</th>
+        <th scope="col" class="text-nowrap">Фамилия</th>
+        <th scope="col" class="text-nowrap">Отчество</th>
+        <th scope="col" class="text-nowrap">Логин</th>
+        <th scope="col" class="text-nowrap">О себе</th>
+        <th scope="col" class="text-nowrap">E-mail</th>
+        <th scope="col" class="text-nowrap">День рождения</th>
+        <th scope="col" class="text-nowrap">Роль</th>
+        <th scope="col" class="text-nowrap">Статус</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var user in Model.ListOfUsers)
+    {
+        <tr>
+            <td>
+                <button class="toggle-edit btn btn-outline-secondary">Редактировать</button>
+                <input class="save btn btn-outline-primary" type="submit" value="Сохранить" hidden>
+            </td>
+            <td hidden>
+                <form method="post" id="Edit_@user.Id"></form>
+            </td>
+            <th scope="row">
+                <input asp-for="EditedUser.Id" id="Edit_Id_@user.Id" type="text" class="userId d-none" hidden value="@user.Id">
+                @user.Id
+            </th>
+            <td>
+                <img src="/@user.Avatar.Path" alt="@user.Avatar.Name" width="30" height="30" style="object-fit: cover">
+                <input asp-for="EditedUser.AvatarId" id="Edit_AvatarId_@user.Id" type="text" value="@user.AvatarId" class="avatarId d-none" readonly disabled form="Edit_@user.Id">
+                <a class="remove-avatar text-danger" hidden>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                    </svg>
+                </a>
+            </td>
+            <td>
+                <input asp-for="EditedUser.FirstName" id="Edit_FirstName_@user.Id" type="text" class="form-control-plaintext w-auto" readonly disabled value="@user.FirstName" form="Edit_@user.Id"/>
+            </td>
+            <td>
+                <input asp-for="EditedUser.LastName" id="Edit_LastName_@user.Id" type="text" class="form-control-plaintext w-auto" readonly disabled value="@user.LastName" form="Edit_@user.Id"/>
+            </td>
+            <td>
+                <input asp-for="EditedUser.Patronymic" id="Edit_Patronymic_@user.Id" type="text" class="form-control-plaintext w-auto" readonly disabled value="@user.Patronymic" form="Edit_@user.Id"/>
+            </td>
+            <td>
+                <input asp-for="EditedUser.Login" id="Edit_Login_@user.Id" type="text" class="form-control-plaintext w-auto" readonly disabled value="@user.Login" form="Edit_@user.Id"/>
+            </td>
+            <td>
+                <input asp-for="EditedUser.Description" id="Edit_Description_@user.Id" type="text" class="form-control-plaintext w-auto" readonly disabled value="@user.Description" form="Edit_@user.Id"/>
+            </td>
+            <td>
+                <input asp-for="EditedUser.Email" id="Edit_Email_@user.Id" type="email" class="form-control-plaintext w-auto" readonly disabled value="@user.Email" form="Edit_@user.Id"/>
+            </td>
+            <td>
+                <input asp-for="EditedUser.BirthDate" id="Edit_BirthDate_@user.Id" type="date" class="form-control-plaintext w-auto" readonly disabled value="@user.BirthDate?.ToString("yyyy-MM-dd")" form="Edit_@user.Id"/>
+            </td>
+            <td>
+                <select asp-for="@user.Role" asp-items="@Html.GetEnumSelectList<Role>()" id="Edit_Role_@user.Id" name="EditedUser.Role" class="form-control-plaintext w-auto" readonly disabled form="Edit_@user.Id">
+                </select>
+            </td>
+            <td>
+                <select asp-for="@user.Status" asp-items="@Html.GetEnumSelectList<Status>()" id="Edit_Status_@user.Id" name="EditedUser.Status" class="form-control-plaintext w-auto" readonly disabled form="Edit_@user.Id">
+                </select>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@{
+    var prevDisabled = !Model.ListOfUsers.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.ListOfUsers.HasNextPage ? "disabled" : "";
+}
+
+<nav class="position-absolute" style="bottom: 0; left: 50%; transform: translate(-50%, 0);" aria-label="Page navigation example">
+    <ul class="pagination">
+        <li class="page-item @prevDisabled">
+            <a class="page-link" asp-route-name="@Model.UsersOptions.Name" asp-route-role="@Model.UsersOptions.Role"
+               asp-route-status="@Model.UsersOptions.Status" asp-route-pageNumber="@(Model.ListOfUsers.PageIndex - 1)" asp-page="/Admin/Users">
+                Назад
+            </a>
+        </li>
+        <li class="page-item @nextDisabled">
+            <a class="page-link" asp-route-name="@Model.UsersOptions.Name" asp-route-role="@Model.UsersOptions.Role"
+               asp-route-status="@Model.UsersOptions.Status" asp-route-pageNumber="@(Model.ListOfUsers.PageIndex + 1)" asp-page="/Admin/Users">
+                Вперед
+            </a>
+        </li>
+    </ul>
+</nav>
