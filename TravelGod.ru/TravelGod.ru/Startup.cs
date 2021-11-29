@@ -24,7 +24,8 @@ namespace TravelGod.ru
         {
             services.AddRazorPages()
                     .AddRazorPagesOptions(options =>
-                        options.Conventions.AddPageRoute("/TripPage", "Trips/{id}")
+                        options.Conventions
+                               .AddPageRoute("/TripPage", "Trips/{id}")
                                .AddPageRoute("/AddTrip", "Trips/Add"));
             services.AddDbContext<ApplicationContext>(options =>
                 options

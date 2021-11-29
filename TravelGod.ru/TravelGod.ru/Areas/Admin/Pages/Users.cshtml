@@ -14,7 +14,7 @@
         </div>
         <div class="form-group col">
             <label asp-for="UsersOptions.Role">Роль</label>
-            @foreach (var c in Enum.GetValues(typeof(Role)).OfType<Role>())
+            @foreach (var c in Enum.GetValues<Role>())
             {
                 <div class="custom-control custom-radio">
                     <input type="radio" asp-for="UsersOptions.Role" id="UsersOptions_Role_@c" value="@((int) c)" class="custom-control-input" checked="@(c == Model?.UsersOptions.Role)"/>
@@ -24,7 +24,7 @@
         </div>
         <div class="form-group form-check col">
             <label asp-for="UsersOptions.Status">Статус</label>
-            @foreach (var c in Enum.GetValues(typeof(Status)).OfType<Status>())
+            @foreach (var c in Enum.GetValues<Status>())
             {
                 <div class="custom-control custom-radio">
                     <input type="radio" asp-for="UsersOptions.Status" id="UsersOptions_Status_@c" value="@((int) c)" class="custom-control-input" checked="@(c == Model?.UsersOptions.Status)"/>
