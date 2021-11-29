@@ -1,5 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using TravelGod.ru.Areas.Admin.ViewModels;
+using TravelGod.ru.Infrastructure;
 using TravelGod.ru.Models;
 
 namespace TravelGod.ru.Services
@@ -50,6 +53,34 @@ namespace TravelGod.ru.Services
             user.Avatar = await _fileService.GetFileAsync(1);
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<PaginatedList<User>> GetUsersAsync(UsersOptions usersOptions)
+        {
+            var users = from user in _context.Users
+                        select user;
+
+            if (!string.IsNullOrEmpty(usersOptions.Name))
+            {
+                users = users.Where(u => u.Login.ToLower()
+                                          .Contains(usersOptions.Name) ||
+                                         (u.LastName + ' ' + u.FirstName + ' ' + u.Patronymic).ToLower()
+                                         .Contains(usersOptions.Name));
+            }
+
+            users = users.Where(u => u.Role == usersOptions.Role &&
+                                     u.Status == usersOptions.Status);
+
+            users = users.OrderBy(u => u.Id);
+
+            var paginatedList = await PaginatedList<User>.CreateAsync(users, usersOptions.PageNumber, UsersOptions.PageSize);
+
+            foreach (var user in paginatedList)
+            {
+                user.Avatar = await _fileService.GetFileAsync(user.AvatarId);
+            }
+
+            return paginatedList;
         }
     }
 }
