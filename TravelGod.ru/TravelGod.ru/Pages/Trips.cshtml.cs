@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using TravelGod.ru.Areas.Admin.ViewModels;
 using TravelGod.ru.Infrastructure;
 using TravelGod.ru.Models;
 using TravelGod.ru.Services;
@@ -21,7 +22,6 @@ namespace TravelGod.ru.Pages
         }
 
         public PaginatedList<Trip> ListOfTrips { get; private set; }
-
         [BindProperty(SupportsGet = true)] public TripsOptions Options { get; set; }
 
         public async Task<IActionResult> OnGet()
