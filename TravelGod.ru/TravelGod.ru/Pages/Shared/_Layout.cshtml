@@ -36,32 +36,32 @@
                         @if (isAdmin)
                         {
                             <li class="text-center nav-item">
-                                <a class="nav-link text-dark" asp-page="/Admin/Index">Админка</a>
+                                <a maybe-active class="nav-link text-dark" asp-page="/Admin/Index" asp-page-folder="Admin">Админка</a>
                             </li>
                         }
                         <li class="text-center nav-item">
-                            <a class="nav-link text-dark" asp-page="/Index">Главная</a>
+                            <a maybe-active class="nav-link text-dark" asp-page="/Index">Главная</a>
                         </li>
                         <li class="text-center nav-item">
-                            <a class="nav-link text-dark" asp-page="/Trips/Index">Поездки</a>
+                            <a maybe-active class="nav-link text-dark" asp-page="/Trips/Index">Поездки</a>
                         </li>
                         @if (Model.User is not null)
                         {
                             <li class="text-center nav-item">
                                 <div class="dropdown position-relative">
-                                    <a class="nav-link dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <a maybe-active asp-page-folder="Profile" class="nav-link dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <img src="/@Model.User.Avatar.Path" class="rounded mr-2" style="object-fit: cover" alt="аватарка" width="30" height="30" title="@Model.User.Avatar.Name">
                                         <span>@Model.User.DisplayName</span>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-lg-right shadow mt-3" aria-labelledby="dropdownMenuLink">
-                                        <a class="dropdown-item" asp-page="/Profile/Index" asp-route-id="@Model.User.Id">
+                                        <a maybe-active class="dropdown-item" asp-page="/Profile/Index" asp-route-id="@Model.User.Id" id="Profile">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
                                                 <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
                                             </svg>
                                             Профиль
                                         </a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" asp-page="/Profile/Chats">
+                                        <a maybe-active class="dropdown-item" asp-page="/Profile/Chats" id="Profile.Chats">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-dots" viewBox="0 0 16 16">
                                                 <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
                                                 <path d="M5 6a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
@@ -83,10 +83,10 @@
                         else
                         {
                             <li class="text-center nav-item">
-                                <a class="nav-link text-primary" asp-page="/Profile/SignIn">Авторизация</a>
+                                <a maybe-active class="nav-link text-primary" asp-page="/Profile/SignIn">Авторизация</a>
                             </li>
                             <li class="text-center nav-item">
-                                <a class="nav-link text-primary" asp-page="/Profile/SignUp">Регистрация</a>
+                                <a maybe-active class="nav-link text-primary" asp-page="/Profile/SignUp">Регистрация</a>
                             </li>
                         }
                     </ul>

@@ -16,13 +16,11 @@ a {
     color: #0366d6;
 }
 
-.btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+.nav-link.active {
+    font-weight: bold;
 }
 
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+.btn-primary {
     color: #fff;
     background-color: #1b6ec2;
     border-color: #1861ac;

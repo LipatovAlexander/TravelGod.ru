@@ -1,10 +1,4 @@
 ﻿$(function () {
-/*
-    let currentPage = $('#CurrentPage').val();
-    let activeLink = $('#' + currentPage);
-    activeLink.addClass('active');
-*/
-
     function toggleEditable(row) {
         let inputs = row.find('input:not([type="submit"]), select');
         inputs.attr('readonly', (_, attr) => !attr);
