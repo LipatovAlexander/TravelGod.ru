@@ -8,7 +8,7 @@
 @{
     var imagePath = Model.Trip.Type switch {
         TripType.NatureTrip => "/nature-trip.jpeg",
-        TripType.CityTrip => "/city-trip.jpeg",
+        TripType.CityTrip => "/city-trip.jpg",
         TripType.CommonTrip => "/common-trip.jpg",
         _ => throw new ArgumentOutOfRangeException()
         };
