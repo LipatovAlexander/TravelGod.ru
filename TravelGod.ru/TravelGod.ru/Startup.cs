@@ -24,10 +24,9 @@ namespace TravelGod.ru
         {
             services.AddRazorPages();
             services.AddDbContext<ApplicationContext>(options =>
-                options
-                    .UseMySql(
-                        "server=localhost;user=root;password=66958357LaS!;database=travelgoddb;",
-                        new MySqlServerVersion(new Version(8, 0, 27))));
+                options.UseMySql(
+                        Configuration.GetConnectionString("DefaultConnection"),
+                        ServerVersion.AutoDetect(Configuration.GetConnectionString("DefaultConnection"))));
             services.AddTransient<UserService>();
             services.AddTransient<TripService>();
             services.AddTransient<SessionService>();
