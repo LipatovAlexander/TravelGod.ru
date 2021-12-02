@@ -48,7 +48,7 @@ namespace TravelGod.ru
                     var connDb = hostSide.Split("/")[1].Split("?")[0];
 
 
-                    connStr = $"server={connHost};Uid={connUser};Pwd={connPass};Database={connDb}";
+                    connStr = $"server={connHost};Uid={connUser};Pwd={connPass};Database={connDb};SSL Mode=None";
                 }
 
                 x.UseMySql(connStr, ServerVersion.AutoDetect(connStr));
@@ -69,7 +69,6 @@ namespace TravelGod.ru
         {
             app.UseDeveloperExceptionPage();
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
