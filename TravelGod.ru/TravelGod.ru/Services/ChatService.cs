@@ -85,5 +85,12 @@ namespace TravelGod.ru.Services
             _context.Trips.Update(trip);
             await _context.SaveChangesAsync();
         }
+
+        public async Task AddUserToChat(Chat chat, User user)
+        {
+            chat.Users.Add(user);
+            _context.Chats.Update(chat);
+            await _context.SaveChangesAsync();
+        }
     }
 }

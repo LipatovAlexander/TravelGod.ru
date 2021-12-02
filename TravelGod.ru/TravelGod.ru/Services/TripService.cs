@@ -122,6 +122,7 @@ namespace TravelGod.ru.Services
             user.JoinedTripsCount += 1;
 
             _context.Trips.Update(trip);
+            await _chatService.AddUserToChat(trip.Chat, user);
             await _userService.UpdateUserAsync(user);
             await _context.SaveChangesAsync();
         }
