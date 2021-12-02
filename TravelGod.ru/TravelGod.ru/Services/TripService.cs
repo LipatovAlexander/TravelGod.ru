@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -40,8 +41,8 @@ namespace TravelGod.ru.Services
 
             if (!string.IsNullOrEmpty(options.Dates))
             {
-                var startDate = DateTime.Parse(options.Dates[..10]);
-                var endDate = DateTime.Parse(options.Dates[13..23]);
+                var startDate = DateTime.ParseExact(options.Dates[..10], "dd.MM.yyyy", CultureInfo.InvariantCulture);
+                var endDate = DateTime.ParseExact(options.Dates[13..23], "dd.MM.yyyy", CultureInfo.InvariantCulture);
                 trips = trips.Where(t => t.StartDate >= startDate && t.EndDate <= endDate);
             }
 
