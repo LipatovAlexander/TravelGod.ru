@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
 using System.Linq;
 using TravelGod.ru.Infrastructure;
 
@@ -62,8 +63,8 @@ namespace TravelGod.ru.Models
             set
             {
                 value = value.Trim();
-                if (!DateTime.TryParse(value[..10], out var startDate) ||
-                    !DateTime.TryParse(value[13..23], out var endDate))
+                if (!DateTime.TryParseExact(value[..10], "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var startDate) ||
+                    !DateTime.TryParseExact(value[13..23], "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var endDate))
                 {
                     return;
                 }
