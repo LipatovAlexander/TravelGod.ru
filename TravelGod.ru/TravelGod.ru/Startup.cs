@@ -69,7 +69,6 @@ namespace TravelGod.ru
         {
             app.UseDeveloperExceptionPage();
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
