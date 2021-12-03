@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using TravelGod.ru.Models;
 using TravelGod.ru.Services;
 
@@ -12,12 +13,14 @@ namespace TravelGod.ru
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            _environment = environment;
         }
 
         public IConfiguration Configuration { get; }
+        private readonly IWebHostEnvironment _environment;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -25,13 +28,11 @@ namespace TravelGod.ru
             services.AddRazorPages();
             services.AddDbContext<ApplicationContext>(x =>
             {
-
-                var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
                 string connStr;
-
-                if (env == "Development")
+                if (_environment.IsDevelopment())
                 {
-                    connStr = Configuration.GetConnectionString("DemoConnection");
+                    connStr = Configuration.GetConnectionString("DefaultConnection");
+                    x.LogTo(Console.WriteLine, LogLevel.Information);
                 }
                 else
                 {
@@ -46,7 +47,6 @@ namespace TravelGod.ru
                     var connPass = userPassSide.Split(":")[1];
                     var connHost = hostSide.Split("/")[0];
                     var connDb = hostSide.Split("/")[1].Split("?")[0];
-
 
                     connStr = $"server={connHost};Uid={connUser};Pwd={connPass};Database={connDb};SSL Mode=None";
                 }
