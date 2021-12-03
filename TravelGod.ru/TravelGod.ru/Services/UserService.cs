@@ -16,19 +16,19 @@ namespace TravelGod.ru.Services
             _context = context;
         }
 
-        public async Task<User> GetUserAsync(int id)
+        public async Task<User> GetUserAsync(int id, Status status = Status.Normal)
         {
             var user = await _context.Users
                                      .Include(u => u.Avatar)
-                                     .FirstOrDefaultAsync(u => u.Id == id);
+                                     .FirstOrDefaultAsync(u => u.Id == id && u.Status == status);
             return user;
         }
 
-        public async Task<User> GetUserAsync(string login)
+        public async Task<User> GetUserAsync(string login, Status status = Status.Normal)
         {
             var user = await _context.Users
                                      .Include(u => u.Avatar)
-                                     .FirstOrDefaultAsync(u => u.Login == login);
+                                     .FirstOrDefaultAsync(u => u.Login == login && u.Status == status);
             return user;
         }
 

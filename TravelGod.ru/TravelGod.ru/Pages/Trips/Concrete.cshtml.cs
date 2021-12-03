@@ -9,14 +9,12 @@ namespace TravelGod.ru.Pages.Trips
     public class Concrete : MyPageModel
     {
         private readonly TripService _tripService;
-        private readonly FileService _fileService;
         private readonly CommentService _commentService;
         private readonly ChatService _chatService;
 
-        public Concrete(TripService tripService, FileService fileService, CommentService commentService, ChatService chatService)
+        public Concrete(TripService tripService, CommentService commentService, ChatService chatService)
         {
             _tripService = tripService;
-            _fileService = fileService;
             _commentService = commentService;
             _chatService = chatService;
         }
