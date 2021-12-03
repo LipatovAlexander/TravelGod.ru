@@ -22,7 +22,11 @@ namespace TravelGod.ru.Services
 
         public async Task<Session> GetSessionAsync(string token)
         {
-            return await _context.Sessions.FirstOrDefaultAsync(s => s.Token == token);
+            var session = await _context.Sessions
+                                        .Include(s => s.User)
+                                        .ThenInclude(u => u.Avatar)
+                                        .FirstOrDefaultAsync(s => s.Token == token);
+            return session;
         }
 
         public async Task RemoveSessionAsync(Session session)

@@ -9,14 +9,12 @@ namespace TravelGod.ru.Pages.Trips
 {
     public class Index : MyPageModel
     {
-        private readonly FileService _fileService;
         private readonly TripService _tripService;
         private readonly UserService _userService;
 
-        public Index(TripService tripService, FileService fileService, UserService userService)
+        public Index(TripService tripService, UserService userService)
         {
             _tripService = tripService;
-            _fileService = fileService;
             _userService = userService;
         }
 
@@ -31,11 +29,6 @@ namespace TravelGod.ru.Pages.Trips
             }
 
             ListOfTrips = await _tripService.GetTrips(Options);
-
-            foreach (var trip in ListOfTrips)
-            {
-                trip.Initiator = await _userService.GetUserAsync(trip.InitiatorId);
-            }
 
             return Page();
         }

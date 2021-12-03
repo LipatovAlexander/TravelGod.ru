@@ -10,39 +10,33 @@ namespace TravelGod.ru.Services
     public class UserService
     {
         private readonly ApplicationContext _context;
-        private readonly FileService _fileService;
 
-        public UserService(ApplicationContext context, FileService fileService)
+        public UserService(ApplicationContext context)
         {
             _context = context;
-            _fileService = fileService;
         }
 
         public async Task<User> GetUserAsync(int id)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
-            if (user is not null)
-            {
-                user.Avatar = await _fileService.GetFileAsync(user.AvatarId);
-            }
+            var user = await _context.Users
+                                     .Include(u => u.Avatar)
+                                     .FirstOrDefaultAsync(u => u.Id == id);
             return user;
         }
 
         public async Task<User> GetUserAsync(string login)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Login == login);
-            if (user is not null)
-            {
-                user.Avatar = await _fileService.GetFileAsync(user.AvatarId);
-            }
+            var user = await _context.Users
+                                     .Include(u => u.Avatar)
+                                     .FirstOrDefaultAsync(u => u.Login == login);
             return user;
         }
 
         public async Task UpdateUserAsync(User user)
         {
-            if (await _fileService.GetFileAsync(user.AvatarId) is null)
+            if (user.AvatarId == 0)
             {
-                user.Avatar = await _fileService.GetFileAsync(1);
+                user.AvatarId = 1;
             }
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
@@ -50,7 +44,7 @@ namespace TravelGod.ru.Services
 
         public async Task AddUserAsync(User user)
         {
-            user.Avatar = await _fileService.GetFileAsync(1);
+            user.AvatarId = 1;
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
         }
@@ -71,14 +65,10 @@ namespace TravelGod.ru.Services
             users = users.Where(u => u.Role == usersOptions.Role &&
                                      u.Status == usersOptions.Status);
 
-            users = users.OrderBy(u => u.Id);
+            users = users.OrderBy(u => u.Id)
+                         .Include(u => u.Avatar);
 
             var paginatedList = await PaginatedList<User>.CreateAsync(users, usersOptions.PageNumber, UsersOptions.PageSize);
-
-            foreach (var user in paginatedList)
-            {
-                user.Avatar = await _fileService.GetFileAsync(user.AvatarId);
-            }
 
             return paginatedList;
         }

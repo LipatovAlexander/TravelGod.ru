@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using TravelGod.ru.Models;
 using TravelGod.ru.Services;
 
@@ -27,6 +28,7 @@ namespace TravelGod.ru
             {
                 var connStr = Configuration.GetConnectionString("DefaultConnection");
                 x.UseMySql(connStr, ServerVersion.AutoDetect(connStr));
+                x.LogTo(Console.WriteLine, LogLevel.Information);
             });
             services.AddTransient<UserService>();
             services.AddTransient<TripService>();

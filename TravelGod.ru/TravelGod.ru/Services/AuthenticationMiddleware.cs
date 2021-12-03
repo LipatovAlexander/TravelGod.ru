@@ -21,7 +21,6 @@ namespace TravelGod.ru.Services
                 var session = await sessionService.GetSessionAsync(token);
                 if (session is not null && session.Expires > DateTimeOffset.Now && token is not null)
                 {
-                    session.User = await userService.GetUserAsync(session.UserId);
                     if (session.User.Status != Status.Normal)
                     {
                         await sessionService.RemoveSessionAsync(session);
@@ -32,9 +31,9 @@ namespace TravelGod.ru.Services
                         if (!session.RememberMe)
                         {
                             session.Expires = DateTimeOffset.Now.AddMinutes(20);
+                            await sessionService.UpdateSessionAsync(session);
                         }
 
-                        await sessionService.UpdateSessionAsync(session);
                         context.Response.Cookies.Append("token", token,
                             new CookieOptions
                             {
