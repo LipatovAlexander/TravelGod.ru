@@ -13,12 +13,14 @@ namespace TravelGod.ru
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            _environment = environment;
         }
 
         public IConfiguration Configuration { get; }
+        private readonly IWebHostEnvironment _environment;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -26,9 +28,30 @@ namespace TravelGod.ru
             services.AddRazorPages();
             services.AddDbContext<ApplicationContext>(x =>
             {
-                var connStr = Configuration.GetConnectionString("DefaultConnection");
+                string connStr;
+                if (_environment.IsDevelopment())
+                {
+                    connStr = Configuration.GetConnectionString("DefaultConnection");
+                    x.LogTo(Console.WriteLine, LogLevel.Information);
+                }
+                else
+                {
+                    // Use connection string provided at runtime by Heroku.
+                    var connUrl = Environment.GetEnvironmentVariable("CLEARDB_DATABASE_URL");
+
+                    connUrl = connUrl.Replace("mysql://", string.Empty);
+                    var userPassSide = connUrl.Split("@")[0];
+                    var hostSide = connUrl.Split("@")[1];
+
+                    var connUser = userPassSide.Split(":")[0];
+                    var connPass = userPassSide.Split(":")[1];
+                    var connHost = hostSide.Split("/")[0];
+                    var connDb = hostSide.Split("/")[1].Split("?")[0];
+
+                    connStr = $"server={connHost};Uid={connUser};Pwd={connPass};Database={connDb};SSL Mode=None";
+                }
+
                 x.UseMySql(connStr, ServerVersion.AutoDetect(connStr));
-                x.LogTo(Console.WriteLine, LogLevel.Information);
             });
             services.AddTransient<UserService>();
             services.AddTransient<TripService>();
