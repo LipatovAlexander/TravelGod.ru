@@ -26,7 +26,7 @@ namespace TravelGod.ru.Pages.Trips
                 return Page();
             }
 
-            ListOfTrips = await _tripService.GetTrips(Options);
+            ListOfTrips = await _tripService.GetTripsAsync(Options);
 
             return Page();
         }

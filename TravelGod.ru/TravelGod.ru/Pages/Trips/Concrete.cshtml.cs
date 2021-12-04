@@ -26,7 +26,7 @@ namespace TravelGod.ru.Pages.Trips
 
         public async Task<IActionResult> OnGet(int id)
         {
-            Trip = await _tripService.GetTripAsync(id);
+            Trip = await _tripService.GetTripAsync(id, Status.Normal);
             if (Trip is null)
             {
                 return NotFound();
@@ -37,7 +37,7 @@ namespace TravelGod.ru.Pages.Trips
 
         public async Task<IActionResult> OnGetJoin(int id)
         {
-            Trip = await _tripService.GetTripAsync(id);
+            Trip = await _tripService.GetTripAsync(id, Status.Normal);
             if (User is null || Trip is null || Trip.Users.Contains(User))
             {
                 return BadRequest();
@@ -49,7 +49,7 @@ namespace TravelGod.ru.Pages.Trips
 
         public async Task<IActionResult> OnGetCreateChat(int id)
         {
-            Trip = await _tripService.GetTripAsync(id);
+            Trip = await _tripService.GetTripAsync(id, Status.Normal);
             if (User is null || Trip is null || Trip.InitiatorId != User.Id || Trip.Chat is not null)
             {
                 return BadRequest();
@@ -61,7 +61,7 @@ namespace TravelGod.ru.Pages.Trips
 
         public async Task<IActionResult> OnPostAddComment(int id)
         {
-            Trip = await _tripService.GetTripAsync(id);
+            Trip = await _tripService.GetTripAsync(id, Status.Normal);
             if (User is null || Trip is null || NewComment is null || !ModelState.IsValid)
             {
                 return BadRequest();

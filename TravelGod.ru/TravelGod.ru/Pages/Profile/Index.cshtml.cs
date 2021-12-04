@@ -38,7 +38,7 @@ namespace TravelGod.ru.Pages.Profile
 
             CurrentUser = User.Id == id
                 ? User
-                : await _userService.GetUserAsync(id);
+                : await _userService.GetUserAsync(id, Status.Normal);
             if (CurrentUser is null)
             {
                 return NotFound();
@@ -51,7 +51,7 @@ namespace TravelGod.ru.Pages.Profile
 
         public async Task<JsonResult> OnPostEdit(int id)
         {
-            CurrentUser = await _userService.GetUserAsync(id);
+            CurrentUser = await _userService.GetUserAsync(id, Status.Normal);
             if (CurrentUser?.Id != User?.Id)
             {
                 return new JsonResult("Нет доступа!");

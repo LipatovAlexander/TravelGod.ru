@@ -20,10 +20,10 @@
         e.preventDefault();
         let row = $(this).parent().parent();
         let form = row.find('form');
-        let userId = row.find('.userId').val();
+        let id = row.find('.id').val();
         $.ajax({
             type: "POST",
-            url: '/Admin/Users?handler=EditUser&id=' + userId, // Replace YOUR_CUSTOM_HANDLER with your handler.
+            url: '?handler=Edit&id=' + id, // Replace YOUR_CUSTOM_HANDLER with your handler.
             data: form.serialize(),
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("XSRF-TOKEN",

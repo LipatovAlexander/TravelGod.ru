@@ -1,6 +1,6 @@
 ﻿$(function () {
 
-    let searchDatesInput = $('#dateRangePicker');
+    let searchDatesInput = $('#dateRangePicker, .daterange');
 
     searchDatesInput.daterangepicker({
         autoUpdateInput: false,

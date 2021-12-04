@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using TravelGod.ru.Infrastructure;
+using TravelGod.ru.Models;
 
 namespace TravelGod.ru.ViewModels
 {
@@ -20,5 +21,7 @@ namespace TravelGod.ru.ViewModels
         public string Dates { get; set; }
 
         public int PageNumber { get; set; } = 1;
+
+        public Status? Status { get; set; } = Models.Status.Normal;
     }
 }

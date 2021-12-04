@@ -35,7 +35,7 @@ namespace TravelGod.ru.Pages.Profile
                 return RedirectToPage("/Profile/Index", new {id = User.Id});
             }
 
-            if (await _userService.GetUserAsync(SignUpModel.Login) is not null)
+            if (await _userService.GetUserAsync(SignUpModel.Login, Status.Normal) is not null)
             {
                 ModelState.AddModelError("SignUpModel.Login", "Логин уже занят");
             }

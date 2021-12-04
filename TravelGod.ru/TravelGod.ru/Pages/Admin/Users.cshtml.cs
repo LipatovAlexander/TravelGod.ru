@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TravelGod.ru.Infrastructure;
 using TravelGod.ru.Models;
@@ -33,9 +34,9 @@ namespace TravelGod.ru.Pages.Admin
             return Page();
         }
 
-        public async Task<IActionResult> OnPostEditUser(int id)
+        public async Task<IActionResult> OnPostEdit(int id)
         {
-            EditedUser = await _userService.GetUserAsync(id);
+            EditedUser = await _userService.GetUserAsync(id, null);
 
             if (EditedUser is null)
             {
@@ -55,6 +56,19 @@ namespace TravelGod.ru.Pages.Admin
 
             await _userService.UpdateUserAsync(EditedUser);
             return new JsonResult("success");
+        }
+
+        public async Task<IActionResult> OnGetRemove(int id)
+        {
+            try
+            {
+                await _userService.RemoveUserAsync(id);
+            }
+            catch (Exception e)
+            {
+                return BadRequest("e");
+            }
+            return RedirectToPage("/Admin/Users", new {name = UsersOptions.Name, role = UsersOptions.Role, status = UsersOptions.Status, pageNumber = UsersOptions.PageNumber});
         }
     }
 }
