@@ -1,0 +1,107 @@
+﻿@page
+@using TravelGod.ru.Models
+@model TravelGod.ru.Pages.Admin.Chats
+
+@{
+    ViewData["Title"] = "Админка - Чаты";
+}
+
+<table class="table table-responsive mb-5">
+    <caption>Список поездок</caption>
+    <thead>
+    <tr>
+        <th scope="col" class="text-nowrap"></th>
+        <th scope="col" class="text-nowrap">Id</th>
+        <th scope="col" class="text-nowrap">Название</th>
+        <th scope="col" class="text-nowrap">Создатель</th>
+        <th scope="col" class="text-nowrap">Групповой чат</th>
+        <th scope="col" class="text-nowrap">Статус</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var chat in Model.ListOfChats)
+    {
+        <tr>
+            <td class="text-nowrap">
+                <button class="toggle-edit btn btn-outline-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen-fill m-0" viewBox="0 0 16 16">
+                        <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z"/>
+                    </svg>
+                </button>
+                <button class="save btn btn-outline-primary" type="submit" hidden>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg m-0" viewBox="0 0 16 16">
+                        <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
+                    </svg>
+                </button>
+                @if (chat.Status is Status.Normal)
+                {
+                    <a asp-page-handler="Remove" asp-route-id="@chat.Id" asp-route-pageIndex="@Model.ListOfChats.PageIndex" class="remove btn btn-outline-danger">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg m-0" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M13.854 2.146a.5.5 0 0 1 0 .708l-11 11a.5.5 0 0 1-.708-.708l11-11a.5.5 0 0 1 .708 0Z"/>
+                            <path fill-rule="evenodd" d="M2.146 2.146a.5.5 0 0 0 0 .708l11 11a.5.5 0 0 0 .708-.708l-11-11a.5.5 0 0 0-.708 0Z"/>
+                        </svg>
+                    </a>
+                }
+            </td>
+            <td hidden>
+                <form method="post" id="Edit_@chat.Id"></form>
+            </td>
+            <th scope="row">
+                <input asp-for="EditedChat.Id" id="Edit_Id_@chat.Id" type="text" class="id d-none" hidden value="@chat.Id">
+                @chat.Id
+            </th>
+            <td>
+                <input asp-for="EditedChat.Name" id="Edit_Name_@chat.Id" type="text" class="form-control-plaintext w-auto" readonly disabled value="@chat.Name" form="Edit_@chat.Id"/>
+            </td>
+            <td>
+                @if (chat.Initiator.Status == Status.Normal)
+                {
+                    <a asp-page="/Profile/Index" asp-route-id="@chat.Initiator.Id">@chat.Initiator.DisplayName</a>
+                }
+                else
+                {
+                    <span class="text-danger">@chat.Initiator.DisplayName</span>
+                }
+            </td>
+            <td>
+                @if (chat.IsGroupChat)
+                {
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                        <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
+                    </svg>
+                }
+                else
+                {
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M13.854 2.146a.5.5 0 0 1 0 .708l-11 11a.5.5 0 0 1-.708-.708l11-11a.5.5 0 0 1 .708 0Z"/>
+                        <path fill-rule="evenodd" d="M2.146 2.146a.5.5 0 0 0 0 .708l11 11a.5.5 0 0 0 .708-.708l-11-11a.5.5 0 0 0-.708 0Z"/>
+                    </svg>
+                }
+            </td>
+            <td>
+                <span>@chat.Status</span>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@{
+    var prevDisabled = !Model.ListOfChats.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.ListOfChats.HasNextPage ? "disabled" : "";
+}
+
+<nav class="position-absolute" style="bottom: 0; left: 50%; transform: translate(-50%, 0);" aria-label="Page navigation example">
+    <ul class="pagination">
+        <li class="page-item @prevDisabled">
+            <a class="page-link" asp-route-pageIndex="@(Model.ListOfChats.PageIndex - 1)" asp-page="/Admin/Chats">
+                Назад
+            </a>
+        </li>
+        <li class="page-item @nextDisabled">
+            <a class="page-link" asp-route-pageIndex="@(Model.ListOfChats.PageIndex + 1)" asp-page="/Admin/Chats">
+                Вперед
+            </a>
+        </li>
+    </ul>
+</nav>
