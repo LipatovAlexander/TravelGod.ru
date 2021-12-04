@@ -72,12 +72,12 @@ namespace TravelGod.ru.Services
         public async Task<Trip> GetTripAsync(int id, Status? status)
         {
             return await _context.Trips
-                                     .Include(t => t.Users)
+                                     .Include(t => t.Users.Where(u => u.Status == Status.Normal))
                                         .ThenInclude(u => u.Avatar)
                                      .Include(t => t.Chat)
                                      .Include(t => t.Chat)
                                          .ThenInclude(c => c.Messages)
-                                     .Include(t => t.Comments)
+                                     .Include(t => t.Comments.Where(c => c.Status == Status.Normal))
                                          .ThenInclude(c => c.User)
                                          .ThenInclude(u => u.Avatar)
                                      .FirstOrDefaultAsync(t => t.Id == id && (status == null || t.Status == status));

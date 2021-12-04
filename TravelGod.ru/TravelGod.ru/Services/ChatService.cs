@@ -16,14 +16,14 @@ namespace TravelGod.ru.Services
             _context = context;
         }
 
-        public async Task<List<Chat>> GetChatsAsync(User user, Status status = Status.Normal)
+        public async Task<List<Chat>> GetChatsAsync(User user, Status? status)
         {
             var chats = await _context.Chats
-                                      .Include(c => c.Users)
+                                      .Include(c => c.Users.Where(u => u.Status == Status.Normal))
                                       .ThenInclude(u => u.Avatar)
-                                      .Include(c => c.Messages)
+                                      .Include(c => c.Messages.Where(m => m.Status == Status.Normal))
                                       .Where(c => c.Users.Contains(user))
-                                      .Where(c => c.Status == status)
+                                      .Where(c => status == null || c.Status == status)
                                       .ToListAsync();
 
             var groupChats = chats
@@ -41,9 +41,9 @@ namespace TravelGod.ru.Services
         public async Task<Chat> GetChatAsync(int chatId)
         {
             var chat = await _context.Chats
-                                     .Include(c => c.Users)
+                                     .Include(c => c.Users.Where(u => u.Status == Status.Normal))
                                      .ThenInclude(u => u.Avatar)
-                                     .Include(c => c.Messages)
+                                     .Include(c => c.Messages.Where(m => m.Status == Status.Normal))
                                      .FirstOrDefaultAsync(c => c.Id == chatId);
 
             return chat;
