@@ -56,7 +56,7 @@
                     </div>
                 }
 
-                <div class="mb-3 p-4 shadow">
+                <div class="mb-3 p-4 shadow overflow-hidden">
                     <h4 class="font-italic">Организатор</h4>
                     <div class="my-1">
                         <a asp-page="/Profile/Index" asp-route-id="@Model.Trip.Initiator.Id" class="text-dark text-nowrap">
@@ -68,7 +68,7 @@
                     {
                         <p class="m-2">
                             О себе:
-                            <span class="font-italic text-nowrap overflow-hidden">
+                            <span class="font-italic text-nowrap">
                                 @Model.Trip.Initiator.Description
                             </span>
                         </p>
@@ -128,7 +128,7 @@
     </div>
 </div>
 
-@if (Model.User is not null && Model.Trip.EndDate < DateTime.Now && !Model.Trip.Ratings.Exists(r => r.User.Id == Model.User.Id))
+@if (Model.User is not null && Model.Trip.EndDate < DateTime.Now && Model.Trip.Users.Exists(u => u.Id == Model.User.Id) && !Model.Trip.Ratings.Exists(r => r.User.Id == Model.User.Id))
 {
     <div class="modal fade" id="ratingModal" tabindex="-1" role="dialog" aria-labelledby="ratingModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
