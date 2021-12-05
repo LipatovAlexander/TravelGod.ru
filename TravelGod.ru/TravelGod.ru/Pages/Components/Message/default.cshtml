@@ -19,6 +19,6 @@
         <div class="@if (isReceiverMessage) {@("bg-primary")} else {@("bg-light")} rounded py-2 px-3 mb-2 @if (!isReceiverMessage) {@("mt-1")}">
             <p class="text-small mb-0 wordwrap @if (isReceiverMessage) {@("text-white")} else {@("text-muted")}">@Model.Text</p>
         </div>
-        <p class="small text-muted">@Model.DateTime.ToString("hh:mm | dd MMM")</p>
+        <p class="small text-muted">@Model.DateTime.ToString("HH:mm | dd.MM.yy")</p>
     </div>
 </div>

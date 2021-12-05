@@ -30,7 +30,7 @@
                     @Model.Trip.Title
                 </h2>
                 <p class="blog-post-meta">
-                    @Model.Trip.StartDate.ToString("D") - @Model.Trip.EndDate.ToString("D")
+                    @Model.Trip.StartDate.ToString("dd.MM.yyyy") - @Model.Trip.EndDate.ToString("dd.MM.yyyy")
                     @if (Model.Trip.EndDate < DateTime.Now)
                     {
                         <span class="text-info ml-2">Поездка уже прошла</span>
