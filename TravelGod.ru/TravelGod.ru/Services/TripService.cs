@@ -80,6 +80,8 @@ namespace TravelGod.ru.Services
                                      .Include(t => t.Comments.Where(c => c.Status == Status.Normal))
                                          .ThenInclude(c => c.User)
                                          .ThenInclude(u => u.Avatar)
+                                     .Include(t => t.Ratings.Where(r => r.Status == Status.Normal))
+                                        .ThenInclude(r => r.User)
                                      .FirstOrDefaultAsync(t => t.Id == id && (status == null || t.Status == status));
         }
 
