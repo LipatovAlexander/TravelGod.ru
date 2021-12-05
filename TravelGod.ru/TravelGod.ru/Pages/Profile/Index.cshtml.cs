@@ -44,7 +44,7 @@ namespace TravelGod.ru.Pages.Profile
         {
             const int pageSize = 10;
 
-            CurrentUser = User.Id == id
+            CurrentUser = User?.Id == id
                 ? User
                 : await _userService.GetUserAsync(id, Status.Normal);
             if (CurrentUser is null)

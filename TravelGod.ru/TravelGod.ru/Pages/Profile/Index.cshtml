@@ -58,12 +58,6 @@
                 <li class="nav-item">
                     <a class="nav-link border-0" id="about-tab" data-toggle="tab" href="#about" role="tab" aria-controls="about" aria-selected="false">Обо мне</a>
                 </li>
-                @if (Model.CurrentUser?.Id == Model.User?.Id)
-                {
-                    <li class="nav-item">
-                        <a class="nav-link border-0" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">Настройки</a>
-                    </li>
-                }
             </ul>
             <div class="tab-content m-3" id="myTabContent">
                 <div class="tab-pane fade show active" id="trips" role="tabpanel" aria-labelledby="trips-tab">
@@ -191,19 +185,6 @@
                         }
                     </form>
                 </div>
-                @if (Model.CurrentUser?.Id == Model.User?.Id)
-                {
-                    <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
-                        <div class="row">
-                            <div class="col-auto">
-                                <a asp-page-handler="LogOut" class="btn btn-outline-warning">Выйти из аккаунта</a>
-                            </div>
-                            <div class="col-auto">
-                                <a class="btn btn-outline-danger">Удалить аккаунт</a>
-                            </div>
-                        </div>
-                    </div>
-                }
             </div>
         </div>
     </div>
