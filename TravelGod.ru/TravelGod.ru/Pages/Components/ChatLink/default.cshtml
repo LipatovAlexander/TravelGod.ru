@@ -17,7 +17,7 @@
         }
         <div class="media-body ml-0 ml-sm-4">
             <div class="d-flex align-items-center justify-content-between mb-1">
-                <h6 class="mb-0">
+                <h6 class="mb-0 text-nowrap overflow-hidden">
                     @if (isGroupChat)
                     {
                         @Model.Name
@@ -29,14 +29,14 @@
                 </h6>
                 @if (!isGroupChat)
                 {
-                    <small class="small font-weight-bold d-none d-md-inline-block">
-                        @lastMessage?.DateTime.ToString("dd MMM")
+                    <small class="small font-weight-bold d-none d-md-inline-block text-nowrap overflow-hidden ml-3">
+                        @lastMessage?.DateTime.ToString("dd.MM.yy")
                     </small>
                 }
             </div>
             @if (!isGroupChat)
             {
-                <p class="font-italic text-muted mb-0 text-small d-none d-md-inline-block text-truncate" style="max-width: 10rem">
+                <p class="font-italic text-muted mb-0 text-small d-none d-md-inline-block text-nowrap overflow-hidden">
                     @lastMessage?.Text
                 </p>
             }

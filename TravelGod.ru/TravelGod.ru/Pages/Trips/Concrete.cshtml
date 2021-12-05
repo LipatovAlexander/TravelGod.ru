@@ -61,17 +61,15 @@
                     <div class="my-1">
                         <a asp-page="/Profile/Index" asp-route-id="@Model.Trip.Initiator.Id" class="text-dark text-nowrap">
                             <img src="/@Model.Trip.Initiator.Avatar.Path" class="rounded mr-2" style="object-fit: cover" alt="аватарка" width="30" height="30" title="@Model.Trip.Initiator.Avatar.Name">
-                            <span>@Model.Trip.Initiator.DisplayName</span>
+                            <span class="text-nowrap overflow-hidden">@Model.Trip.Initiator.DisplayName</span>
                         </a>
                     </div>
                     @if (!string.IsNullOrEmpty(@Model.Trip.Initiator.Description))
                     {
                         <p class="m-2">
                             О себе:
-                            <span class="font-italic">
-                                @(Model.Trip.Initiator.Description.Length > 25
-                                    ? Model.Trip.Initiator.Description[..25] + "..."
-                                    : Model.Trip.Initiator.Description)
+                            <span class="font-italic text-nowrap overflow-hidden">
+                                @Model.Trip.Initiator.Description
                             </span>
                         </p>
                     }
@@ -84,9 +82,9 @@
                         @foreach (var user in Model.Trip.Users)
                         {
                             <li class="mt-1">
-                                <a asp-page="/Profile/Index" asp-route-id="@user.Id" class="text-dark text-nowrap">
+                                <a asp-page="/Profile/Index" asp-route-id="@user.Id" class="text-dark text-nowrap overflow-hidden">
                                     <img src="/@user.Avatar.Path" class="rounded mr-2" style="object-fit: cover"  alt="аватарка" width="25" height="25" title="@user.Avatar.Name">
-                                    <span>@user.DisplayName</span>
+                                    <span class="text-nowrap">@user.DisplayName</span>
                                 </a>
                             </li>
                         }
