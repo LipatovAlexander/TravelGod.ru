@@ -82,7 +82,11 @@ namespace TravelGod.ru.Pages.Trips
         {
             ModelState.Clear();
             Trip = await _tripService.GetTripAsync(id, Status.Normal);
-            if (User is null || Trip is null || Trip.Ratings.Exists(r => r.User.Id == User.Id) || NewRating is null || !TryValidateModel(NewRating, nameof(NewRating)))
+            if (User is null || Trip is null || Trip.Ratings.Exists(r => r.User.Id == User.Id) || NewRating is null)
+            {
+                return BadRequest();
+            }
+            if (!TryValidateModel(NewRating, nameof(NewRating)))
             {
                 return Page();
             }
