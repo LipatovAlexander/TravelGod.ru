@@ -15,9 +15,9 @@
         {
             <img src="/@otherUser?.Avatar.Path" alt="user" width="50" height="50" style="object-fit: cover" class="rounded-circle d-none d-md-block">
         }
-        <div class="media-body ml-0 ml-sm-4">
-            <div class="d-flex align-items-center justify-content-between mb-1">
-                <h6 class="mb-0 text-nowrap overflow-hidden">
+        <div class="media-body ml-0 ml-sm-4 overflow-hidden">
+            <div class="d-flex align-items-center justify-content-between mb-1 overflow-hidden">
+                <h6 class="mb-0 text-nowrap">
                     @if (isGroupChat)
                     {
                         @Model.Name
@@ -29,14 +29,14 @@
                 </h6>
                 @if (!isGroupChat)
                 {
-                    <small class="small font-weight-bold d-none d-md-inline-block text-nowrap overflow-hidden ml-3">
+                    <small class="small font-weight-bold d-none d-md-inline-block text-nowrap ml-3">
                         @lastMessage?.DateTime.ToString("dd.MM.yy")
                     </small>
                 }
             </div>
             @if (!isGroupChat)
             {
-                <p class="font-italic text-muted mb-0 text-small d-none d-md-inline-block text-nowrap overflow-hidden">
+                <p class="font-italic text-muted mb-0 text-small d-none d-md-inline-block text-nowrap">
                     @lastMessage?.Text
                 </p>
             }
