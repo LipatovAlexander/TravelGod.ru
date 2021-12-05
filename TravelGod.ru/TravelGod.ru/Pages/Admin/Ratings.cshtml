@@ -1,0 +1,110 @@
+﻿@page
+@using TravelGod.ru.Models
+@model TravelGod.ru.Pages.Admin.Ratings
+
+@{
+    ViewData["Title"] = "Админка - Отзывы";
+}
+
+<table class="table table-responsive mb-5">
+    <caption>Список отзывов</caption>
+    <thead>
+    <tr>
+        <th scope="col" class="text-nowrap"></th>
+        <th scope="col" class="text-nowrap">Id</th>
+        <th scope="col" class="text-nowrap">Оценка</th>
+        <th scope="col" class="text-nowrap">Текст</th>
+        <th scope="col" class="text-nowrap">Дата</th>
+        <th scope="col" class="text-nowrap">Пользователь</th>
+        <th scope="col" class="text-nowrap">Поездка</th>
+        <th scope="col" class="text-nowrap">Статус</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var rating in Model.ListOfRatings)
+    {
+        <tr>
+            <td class="text-nowrap">
+                <button class="toggle-edit btn btn-outline-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen-fill m-0" viewBox="0 0 16 16">
+                        <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z"/>
+                    </svg>
+                </button>
+                <button class="save btn btn-outline-primary" type="submit" hidden>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg m-0" viewBox="0 0 16 16">
+                        <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
+                    </svg>
+                </button>
+                @if (rating.Status is Status.Normal)
+                {
+                    <a asp-page-handler="Remove" asp-route-id="@rating.Id" asp-route-pageIndex="@Model.ListOfRatings.PageIndex" class="remove btn btn-outline-danger">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg m-0" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M13.854 2.146a.5.5 0 0 1 0 .708l-11 11a.5.5 0 0 1-.708-.708l11-11a.5.5 0 0 1 .708 0Z"/>
+                            <path fill-rule="evenodd" d="M2.146 2.146a.5.5 0 0 0 0 .708l11 11a.5.5 0 0 0 .708-.708l-11-11a.5.5 0 0 0-.708 0Z"/>
+                        </svg>
+                    </a>
+                }
+            </td>
+            <td hidden>
+                <form method="post" id="Edit_@rating.Id"></form>
+            </td>
+            <th scope="row">
+                <input asp-for="EditedRating.Id" id="Edit_Id_@rating.Id" type="text" class="id d-none" hidden value="@rating.Id">
+                @rating.Id
+            </th>
+            <td>
+                <span>@rating.Point</span>
+            </td>
+            <td>
+                <input asp-for="EditedRating.Text" id="Edit_Text_@rating.Id" type="text" class="form-control-plaintext w-auto" readonly disabled value="@rating.Text" form="Edit_@rating.Id"/>
+            </td>
+            <td>
+                <span>@rating.Date.ToString("dd.MM.yyyy")</span>
+            </td>
+            <td>
+                @if (rating.User.Status == Status.Normal)
+                {
+                    <a asp-page="/Profile/Index" asp-route-id="@rating.User.Id">@rating.User.DisplayName</a>
+                }
+                else
+                {
+                    <span class="text-danger">@rating.User.DisplayName</span>
+                }
+            </td>
+            <td>
+                @if (rating.Trip.Status == Status.Normal)
+                {
+                    <a asp-page="/Trips/Concrete" asp-route-id="@rating.Trip.Id">@rating.Trip.Title</a>
+                }
+                else
+                {
+                    <span class="text-danger">@rating.Trip.Title</span>
+                }
+            </td>
+            <td>
+                <span>@rating.Status</span>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@{
+    var prevDisabled = !Model.ListOfRatings.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.ListOfRatings.HasNextPage ? "disabled" : "";
+}
+
+<nav class="position-absolute" style="bottom: 0; left: 50%; transform: translate(-50%, 0);" aria-label="Page navigation example">
+    <ul class="pagination">
+        <li class="page-item @prevDisabled">
+            <a class="page-link" asp-route-pageIndex="@(Model.ListOfRatings.PageIndex - 1)">
+                Назад
+            </a>
+        </li>
+        <li class="page-item @nextDisabled">
+            <a class="page-link" asp-route-pageIndex="@(Model.ListOfRatings.PageIndex + 1)">
+                Вперед
+            </a>
+        </li>
+    </ul>
+</nav>
