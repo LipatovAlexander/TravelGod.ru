@@ -1,23 +1,33 @@
-﻿$('.radio-group .radio').click(function () {
-    $('.radio-group .radio').removeClass('selected');
-    $(this).addClass('selected');
-    let val = $(this).attr('data-value');
-    $('#radio-value').val(val);
-});
-
-$(function () {
+﻿$(function () {
     $('[data-toggle="tooltip"]').tooltip()
+
+    $('.radio-group .radio').click(function () {
+        $('.radio-group .radio').removeClass('selected');
+        $(this).addClass('selected');
+        let val = $(this).attr('data-value');
+        $('#radio-value').val(val);
+    });
+
+    let form = $('#trip-form');
+
+    $('.btnNext').click(function (e) {
+        e.preventDefault();
+        let tab = $(this).closest('.tab-pane');
+        let inputs = tab.find('input');
+        let validator = form.validate();
+        if (inputs.valid()) {
+            $('.nav-tabs .active').parent().next('li').find('a').trigger('click');
+        } else {
+            validator.showErrors();
+        }
+    });
+
+    $('.btnPrevious').click(function (e) {
+        e.preventDefault();
+        $('.nav-tabs .active').parent().prev('li').find('a').trigger('click');
+    });
+
 })
-
-$('.btnNext').click(function (e) {
-    e.preventDefault();
-    $('.nav-tabs .active').parent().next('li').find('a').trigger('click');
-});
-
-$('.btnPrevious').click(function (e) {
-    e.preventDefault();
-    $('.nav-tabs .active').parent().prev('li').find('a').trigger('click');
-});
 
 $(function () {
 

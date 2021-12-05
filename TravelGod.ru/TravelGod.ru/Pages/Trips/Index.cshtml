@@ -19,28 +19,36 @@
                 {
                     <div class="card w-100 shadow" style="margin: 4rem 0 4rem 0">
                         <div class="card-body position-relative">
-                            <div class="position-absolute" style="top: -35px; left: 0;">
+                            <div class="position-absolute text-nowrap overflow-hidden" style="top: -35px; left: 0;">
                                 <img src="/@trip.Initiator.Avatar.Path" class="rounded mr-2" style="object-fit: cover" alt="аватарка" width="30" height="30" title="@trip.Initiator.Avatar.Name">
-                                <a asp-page="/Profile/Index" asp-route-id="@trip.Initiator.Id" class="text-dark">
+                                <a asp-page="/Profile/Index" asp-route-id="@trip.Initiator.Id" class="text-dark text-nowrap">
                                     <strong>@trip.Initiator.DisplayName</strong>
                                 </a>
                             </div>
-                            <h5 class="card-title d-flex justify-content-between">
-                                <a asp-page="/Trips/Concrete" asp-route-id="@trip.Id" class="text-dark">
-                                    @(trip.Title.Length > 15 ? trip.Title[..15] + "..." : trip.Title)
+                            <h5 class="card-title d-flex justify-content-between overflow-hidden align-items-center">
+                                <a asp-page="/Trips/Concrete" asp-route-id="@trip.Id" class="text-dark text-nowrap">
+                                    @trip.Title
                                 </a>
-                                <small class="text-muted">
-                                    @(trip.Route[0].Length > 10 ? trip.Route[0][..10] + "..." : trip.Route[0])
+                                <small class="text-muted text-nowrap ml-3">
+                                    @trip.Route[0]
                                     @if (trip.Route.Count > 1)
                                     {
-                                        @(trip.Route.Last().Length > 10 ? " - " + trip.Route.Last()[..10] + "..." : " - " + trip.Route.Last())
+                                        @(" - " + trip.Route.Last())
                                     }
                                 </small>
                             </h5>
-                            <p class="card-text">@(trip.Description.Length > 45 ? trip.Description[..45] + "..." : trip.Description)</p>
+                            <p class="card-text text-nowrap overflow-hidden">@trip.Description</p>
                             <div class="d-flex justify-content-between">
-                                <span class="text-muted">Участников: @trip.UsersCount</span>
-                                <span class="text-muted">@trip.StartDate.ToString("D") - @trip.EndDate.ToString("D")</span>
+                                <span class="text-muted d-inline-flex align-items-center">
+                                    <span class="d-none d-sm-inline mr-2">Участников:</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-people-fill d-sm-none" viewBox="0 0 16 16">
+                                        <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                                        <path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/>
+                                        <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
+                                    </svg>
+                                    @trip.UsersCount
+                                </span>
+                                <span class="text-muted text-nowrap overflow-hidden ml-3">@trip.StartDate.ToString("dd.MM.yyyy") - @trip.EndDate.ToString("dd.MM.yyyy")</span>
                             </div>
                         </div>
                     </div>
@@ -124,6 +132,6 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
-    <script src="js/Trips/Index.js"></script>
+    <script src="/js/DateRangePicker.js"></script>
     <partial name="Shared/_ValidationScriptsPartial"/>
 }

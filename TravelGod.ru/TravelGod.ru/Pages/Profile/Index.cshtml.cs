@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
@@ -16,14 +17,19 @@ namespace TravelGod.ru.Pages.Profile
         private readonly SessionService _sessionService;
         private readonly TripService _tripService;
         private readonly UserService _userService;
+        private readonly ChatService _chatService;
+        private readonly MessageService _messageService;
 
         public Index(IWebHostEnvironment environment, UserService userService, FileService fileService,
-                       SessionService sessionService, TripService tripService)
+                     SessionService sessionService, TripService tripService, ChatService chatService,
+                     MessageService messageService)
         {
             _userService = userService;
             _fileService = fileService;
             _sessionService = sessionService;
             _tripService = tripService;
+            _chatService = chatService;
+            _messageService = messageService;
         }
 
         public User CurrentUser { get; set; }
@@ -32,13 +38,15 @@ namespace TravelGod.ru.Pages.Profile
         [Display(Name = "File")]
         public IFormFile Avatar { get; set; }
 
+        [BindProperty] public Message NewMessage { get; set; }
+
         public async Task<IActionResult> OnGet(int id, int pageNumber = 1)
         {
             const int pageSize = 10;
 
             CurrentUser = User.Id == id
                 ? User
-                : await _userService.GetUserAsync(id);
+                : await _userService.GetUserAsync(id, Status.Normal);
             if (CurrentUser is null)
             {
                 return NotFound();
@@ -51,7 +59,7 @@ namespace TravelGod.ru.Pages.Profile
 
         public async Task<JsonResult> OnPostEdit(int id)
         {
-            CurrentUser = await _userService.GetUserAsync(id);
+            CurrentUser = await _userService.GetUserAsync(id, Status.Normal);
             if (CurrentUser?.Id != User?.Id)
             {
                 return new JsonResult("Нет доступа!");
@@ -96,6 +104,40 @@ namespace TravelGod.ru.Pages.Profile
             await _sessionService.RemoveSessionAsync(session);
 
             return RedirectToPage("/Index");
+        }
+
+        public async Task<IActionResult> OnPostSendMessage(int id)
+        {
+            if (User is null)
+            {
+                return BadRequest();
+            }
+
+            CurrentUser = await _userService.GetUserAsync(id, Status.Normal);
+            if (CurrentUser is null || CurrentUser.Id == User.Id)
+            {
+                return BadRequest();
+            }
+
+            ModelState.Clear();
+            if (!TryValidateModel(NewMessage, nameof(NewMessage)))
+            {
+                return Page();
+            }
+
+            var chat = await _chatService.GetChatAsync(false, User, CurrentUser)
+                       ?? new Chat
+                       {
+                           Initiator = User,
+                           IsGroupChat = false,
+                           Users = new List<User> {User, CurrentUser}
+                       };
+
+            NewMessage.Chat = chat;
+            NewMessage.User = User;
+            NewMessage.DateTime = DateTime.Now;
+            await _messageService.AddMessageAsync(NewMessage);
+            return RedirectToPage("/Profile/Chats");
         }
     }
 }

@@ -25,22 +25,29 @@ namespace TravelGod.ru.Pages.Profile
 
         public async Task<IActionResult> OnGet()
         {
-            ListOfChats = await _chatService.GetChatsAsync(User);
+            ListOfChats = await _chatService.GetChatsAsync(User, Status.Normal);
             return Page();
         }
 
         public async Task<IActionResult> OnPostSendMessage()
         {
             Message.User = User;
-            Message.Chat = await _chatService.GetChatAsync(Message.Chat.Id);
+            Message.Chat = await _chatService.GetChatAsync(Message.Chat.Id, Status.Normal);
             await _messageService.AddMessageAsync(Message);
             return ViewComponent("Message", new {Message = Message});
         }
 
         public async Task<IActionResult> OnGetGetChat(int id)
         {
-            var chat = await _chatService.GetChatAsync(id);
-            return ViewComponent("MessagesBox", new {Chat = chat});
+            var chat = await _chatService.GetChatAsync(id, Status.Normal);
+            if (chat.Status == Status.Normal)
+            {
+                return ViewComponent("MessagesBox", new {Chat = chat});
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
     }
 }

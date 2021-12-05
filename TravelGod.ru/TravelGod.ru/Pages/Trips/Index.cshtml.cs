@@ -10,12 +10,10 @@ namespace TravelGod.ru.Pages.Trips
     public class Index : MyPageModel
     {
         private readonly TripService _tripService;
-        private readonly UserService _userService;
 
-        public Index(TripService tripService, UserService userService)
+        public Index(TripService tripService)
         {
             _tripService = tripService;
-            _userService = userService;
         }
 
         public PaginatedList<Trip> ListOfTrips { get; private set; }
@@ -28,7 +26,7 @@ namespace TravelGod.ru.Pages.Trips
                 return Page();
             }
 
-            ListOfTrips = await _tripService.GetTrips(Options);
+            ListOfTrips = await _tripService.GetTripsAsync(Options);
 
             return Page();
         }

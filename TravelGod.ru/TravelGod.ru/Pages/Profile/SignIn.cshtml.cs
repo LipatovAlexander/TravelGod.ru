@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TravelGod.ru.Infrastructure.Cryptography;
+using TravelGod.ru.Models;
 using TravelGod.ru.Services;
 using TravelGod.ru.ViewModels;
 
@@ -38,10 +39,16 @@ namespace TravelGod.ru.Pages.Profile
                 return RedirectToPage(nameof(Profile));
             }
 
-            var user = await _userService.GetUserAsync(SignInModel.Login);
+            var user = await _userService.GetUserAsync(SignInModel.Login, null);
             if (user is null)
             {
                 ModelState.AddModelError("SignInModel.Password", "Неправильный логин или пароль");
+                return Page();
+            }
+
+            if (user.Status is not Status.Normal)
+            {
+                ModelState.AddModelError("SignInModel.Login", "Аккаунт заблокирован.");
                 return Page();
             }
 

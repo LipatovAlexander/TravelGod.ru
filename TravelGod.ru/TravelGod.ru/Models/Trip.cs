@@ -14,7 +14,7 @@ namespace TravelGod.ru.Models
         public List<Comment> Comments { get; set; } = new();
 
         [Required(ErrorMessage = ValidationMessages.RequiredMessage)]
-        [RegularExpression(@"^[A-Za-zА-Яа-я\d ,\.!?""\-']*$",
+        [RegularExpression(RegularExpressions.Text,
             ErrorMessage = ValidationMessages.RegularExpressionMessage)]
         [MaxLength(300, ErrorMessage = ValidationMessages.MaxLengthMessage)]
         public string Description { get; set; }
@@ -40,7 +40,7 @@ namespace TravelGod.ru.Models
 
         [Required(ErrorMessage = ValidationMessages.RequiredMessage)]
         [MaxLength(30, ErrorMessage = ValidationMessages.MaxLengthMessage)]
-        [RegularExpression(@"^[A-Za-zА-Яа-я\d ,\.!?""']*$", ErrorMessage = ValidationMessages.RegularExpressionMessage)]
+        [RegularExpression(RegularExpressions.Text, ErrorMessage = ValidationMessages.RegularExpressionMessage)]
         public string Title { get; set; }
 
         public List<User> Users { get; set; } = new();
@@ -51,12 +51,12 @@ namespace TravelGod.ru.Models
 
         [Required(ErrorMessage = ValidationMessages.RequiredMessage)]
         [MaxLength(200, ErrorMessage = ValidationMessages.MaxLengthMessage)]
-        [RegularExpression(@"^[A-Za-zА-Яа-я ,-;]*$", ErrorMessage = ValidationMessages.RegularExpressionMessage)]
+        [RegularExpression(RegularExpressions.Text, ErrorMessage = ValidationMessages.RegularExpressionMessage)]
         public string RouteRaw { get; set; }
 
         [NotMapped]
         [Required(ErrorMessage = ValidationMessages.RequiredMessage)]
-        [RegularExpression(@"^\d\d\.\d\d\.\d\d\d\d - \d\d\.\d\d\.\d\d\d\d$", ErrorMessage = ValidationMessages.RegularExpressionMessage)]
+        [RegularExpression(RegularExpressions.Dates, ErrorMessage = ValidationMessages.RegularExpressionMessage)]
         public string DatesRaw
         {
             get => StartDate.ToString("dd.MM.yyyy") + " - " + EndDate.ToString("dd.MM.yyyy");

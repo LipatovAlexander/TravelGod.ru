@@ -19,12 +19,15 @@ namespace TravelGod.ru.Services
             _context = context;
         }
 
-        public async Task<PaginatedList<Trip>> GetTrips(TripsOptions options, Status status = Status.Normal)
+        public async Task<PaginatedList<Trip>> GetTripsAsync(TripsOptions options)
         {
             var trips = from t in _context.Trips
                         select t;
 
-            trips = trips.Where(t => t.Status == status);
+            if (options.Status is not null)
+            {
+                trips = trips.Where(t => t.Status == options.Status);
+            }
 
             if (!string.IsNullOrEmpty(options.Title))
             {
@@ -66,24 +69,20 @@ namespace TravelGod.ru.Services
             return await PaginatedList<Trip>.CreateAsync(trips, pageNumber, pageSize);
         }
 
-        public async Task<Trip> GetTripAsync(int id, Status status = Status.Normal)
+        public async Task<Trip> GetTripAsync(int id, Status? status)
         {
             return await _context.Trips
-                                     .Include(t => t.Users)
+                                     .Include(t => t.Users.Where(u => u.Status == Status.Normal))
                                         .ThenInclude(u => u.Avatar)
                                      .Include(t => t.Chat)
                                      .Include(t => t.Chat)
                                          .ThenInclude(c => c.Messages)
-                                     .Include(t => t.Comments)
+                                     .Include(t => t.Comments.Where(c => c.Status == Status.Normal))
                                          .ThenInclude(c => c.User)
                                          .ThenInclude(u => u.Avatar)
-                                     .FirstOrDefaultAsync(t => t.Id == id && t.Status == status);
-        }
-
-        private async Task AddTripAsync(Trip trip)
-        {
-            _context.Trips.Add(trip);
-            await _context.SaveChangesAsync();
+                                     .Include(t => t.Ratings.Where(r => r.Status == Status.Normal))
+                                        .ThenInclude(r => r.User)
+                                     .FirstOrDefaultAsync(t => t.Id == id && (status == null || t.Status == status));
         }
 
         public async Task AddTripAsync(Trip trip, User initiator)
@@ -114,6 +113,59 @@ namespace TravelGod.ru.Services
             trip.Chat.Users.Add(user);
             _context.Trips.Update(trip);
             _context.Users.Update(user);
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateTripAsync(Trip editedTrip)
+        {
+            _context.Trips.Update(editedTrip);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveTripAsync(int id)
+        {
+            var trip = await _context.Trips
+                               .Include(t => t.Users)
+                                .ThenInclude(u => u.JoinedTrips)
+                               .Include(t => t.Users)
+                                .ThenInclude(u => u.JoinedChats)
+                               .Include(t => t.Chat)
+                                .ThenInclude(t => t.Messages)
+                               .Include(t => t.Comments)
+                               .FirstOrDefaultAsync(t => t.Id == id);
+            if (trip is null)
+            {
+                throw new ArgumentException("Trip id doesn't match any exist trip.");
+            }
+
+            trip.Status = Status.RemovedByModerator;
+            foreach (var comment in trip.Comments)
+            {
+                comment.Status = Status.RemovedByModerator;
+            }
+            _context.Comments.UpdateRange(trip.Comments);
+
+            foreach (var user in trip.Users)
+            {
+                user.JoinedTripsCount -= 1;
+            }
+
+            trip.Initiator.OwnedTripsCount -= 1;
+            if (trip.Chat is not null)
+            {
+                trip.Chat.Status = Status.RemovedByModerator;
+
+                foreach (var message in trip.Chat.Messages)
+                {
+                    message.Status = Status.RemovedByModerator;
+                }
+                _context.Chats.Update(trip.Chat);
+                _context.Messages.UpdateRange(trip.Chat.Messages);
+            }
+
+            _context.Users.UpdateRange(trip.Users);
+            _context.Trips.Update(trip);
 
             await _context.SaveChangesAsync();
         }

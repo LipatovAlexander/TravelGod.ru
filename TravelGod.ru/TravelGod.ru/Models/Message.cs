@@ -13,7 +13,7 @@ namespace TravelGod.ru.Models
 
         [Required(ErrorMessage = ValidationMessages.RequiredMessage)]
         [MaxLength(100, ErrorMessage = ValidationMessages.MaxLengthMessage)]
-        [RegularExpression(@"^[A-Za-zА-Яа-я \.,\-!?""':\(\)\*]*$", ErrorMessage = ValidationMessages.RegularExpressionMessage)]
+        [RegularExpression(RegularExpressions.Text, ErrorMessage = ValidationMessages.RegularExpressionMessage)]
         public string Text { get; set; }
         public User User { get; set; }
     }
