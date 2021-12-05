@@ -94,5 +94,18 @@ namespace TravelGod.ru.Services
             _context.Messages.UpdateRange(chat.Messages);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<Chat> GetChatAsync(bool isGroupChat, params User[] users)
+        {
+            var chats = _context.Chats
+                                .Include(c => c.Users)
+                                .ThenInclude(u => u.Avatar)
+                                .Include(c => c.Messages)
+                                .Where(c => c.IsGroupChat == isGroupChat);
+            chats = users
+                .Aggregate(chats, (current, user) => current
+                    .Where(c => c.Users.Any(u => u.Id == user.Id)));
+            return await chats.FirstOrDefaultAsync();
+        }
     }
 }
