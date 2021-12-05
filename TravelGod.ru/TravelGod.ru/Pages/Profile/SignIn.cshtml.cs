@@ -39,10 +39,16 @@ namespace TravelGod.ru.Pages.Profile
                 return RedirectToPage(nameof(Profile));
             }
 
-            var user = await _userService.GetUserAsync(SignInModel.Login, Status.Normal);
+            var user = await _userService.GetUserAsync(SignInModel.Login, null);
             if (user is null)
             {
                 ModelState.AddModelError("SignInModel.Password", "Неправильный логин или пароль");
+                return Page();
+            }
+
+            if (user.Status is not Status.Normal)
+            {
+                ModelState.AddModelError("SignInModel.Login", "Аккаунт заблокирован.");
                 return Page();
             }
 
