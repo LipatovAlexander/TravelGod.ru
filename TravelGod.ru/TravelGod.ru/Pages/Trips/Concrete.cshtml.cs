@@ -65,10 +65,16 @@ namespace TravelGod.ru.Pages.Trips
 
         public async Task<IActionResult> OnPostAddComment(int id)
         {
+            ModelState.Clear();
             Trip = await _tripService.GetTripAsync(id, Status.Normal);
-            if (User is null || Trip is null || NewComment is null || !ModelState.IsValid)
+            if (User is null || Trip is null || NewComment is null)
             {
                 return BadRequest();
+            }
+
+            if (!TryValidateModel(NewComment, nameof(NewComment)))
+            {
+                return Page();
             }
 
             NewComment.Trip = Trip;
