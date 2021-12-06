@@ -100,7 +100,7 @@ namespace TravelGod.ru.Pages.Trips
             NewRating.Trip = Trip;
             NewRating.User = User;
             NewRating.Date = DateTime.Now;
-            await _ratingService.AddRatingAsync(NewRating);
+            await _ratingService.AddRatingAsync(Trip, NewRating);
             return RedirectToPage("/Trips/Concrete", new {id = Trip.Id});
         }
     }
