@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TravelGod.ru.Infrastructure;
 using TravelGod.ru.Models;
@@ -14,9 +16,15 @@ namespace TravelGod.ru.Services
             _context = context;
         }
 
-        public async Task AddRatingAsync(Rating rating)
+        public async Task AddRatingAsync(Trip trip, Rating rating)
         {
-            _context.Ratings.Add(rating);
+            trip.Ratings.Add(rating);
+            var average = trip.Ratings.Select(r => (int) r.Point).Average();
+            if (Math.Abs(average - trip.AverageRating) > 0.1)
+            {
+                trip.AverageRating = average;
+            }
+            _context.Trips.Update(trip);
             await _context.SaveChangesAsync();
         }
 
