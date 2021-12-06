@@ -1,4 +1,4 @@
-﻿#myTab .nav-item .nav-link {
+#myTab .nav-item .nav-link {
     background-color: inherit;
     color: grey;
 }
@@ -28,7 +28,7 @@ ul.timeline:before {
     background: #2D353C;
     display: inline-block;
     position: absolute;
-    left: 16px;
+    left: 1rem;
     width: 4px;
     height: 100%;
     z-index: 400;
@@ -37,6 +37,7 @@ ul.timeline:before {
 
 li.timeline-item {
     margin: 20px 0;
+    position: relative;
 }
 
 /* Timeline item arrow */
@@ -46,24 +47,34 @@ li.timeline-item {
     border-bottom: 0.5rem solid transparent;
     display: block;
     position: absolute;
-    left: 2rem;
+    left: -0.5rem;
 }
 
 /* Timeline item circle marker */
-li.timeline-item::before {
-    content: ' ';
+div.timeline-point {
     background: #ddd;
-    display: inline-block;
+    display: block;
     position: absolute;
     border-radius: 50%;
     border: 3px solid #2D353C;
-    left: 11px;
+    left: -1.82rem;
     width: 14px;
     height: 14px;
     z-index: 400;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
+span.timeline-dates {
+    position: absolute;
+    left: -5rem;
+    top: 1.1rem;
+}
+
+hr {
+    border: none;
+    height: 2px;
+    background-color: #333;
+}
 .picture-container {
     position: relative;
     text-align: center;

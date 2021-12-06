@@ -14,7 +14,7 @@ namespace TravelGod.ru.Models
         public Status Status { get; set; }
         [Required(ErrorMessage = ValidationMessages.RequiredMessage)]
         [RegularExpression(RegularExpressions.Text, ErrorMessage = ValidationMessages.RegularExpressionMessage)]
-        [MaxLength(400, ErrorMessage = ValidationMessages.MaxLengthMessage)]
+        [MaxLength(150, ErrorMessage = ValidationMessages.MaxLengthMessage)]
         public string Text { get; set; }
         public Trip Trip { get; set; }
         public User User { get; set; }

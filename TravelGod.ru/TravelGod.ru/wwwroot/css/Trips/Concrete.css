@@ -1,4 +1,4 @@
-﻿.rating {
+.rating {
     display: flex;
     width: 100%;
     justify-content: center;
@@ -88,3 +88,120 @@
 #rating-3:checked ~ .emoji-wrapper > .emoji { transform: translateY(-300px); }
 #rating-4:checked ~ .emoji-wrapper > .emoji { transform: translateY(-400px); }
 #rating-5:checked ~ .emoji-wrapper > .emoji { transform: translateY(-500px); }
+
+.average-rating {
+    font-size: 3rem;
+    font-weight: 500;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 0 3px #0000001a;
+    max-width: 20rem;
+    min-width: 15rem !important;
+}
+
+.owl-item {
+    padding: 10px;
+}
+
+.owl-carousel {
+    position: relative;
+}
+
+.owl-nav {
+    top: 50%;
+    width: 100%;
+    transform: translate(0, -50%);
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+}
+
+.owl-nav button {
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+}
+
+.card-yazı p {
+    margin: 0;
+    padding: 40px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    position: relative;
+}
+
+.card-yazı p svg {
+    position: absolute;
+}
+
+.card-yazı p svg.bi-quote-left {
+    left: 0;
+    top: 0;
+}
+
+.card-yazı p svg.bi-quote-right {
+    right: 0;
+    margin-right: 0;
+    bottom: 0;
+}
+
+.card-yazı {
+    background: rgb(1,41,112);
+    background: linear-gradient(135deg, rgba(1,41,112,1) 10%, rgba(65,84,241,1) 100%);
+}
+
+.favicon {
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+}
+
+.favicon img {
+    height: 90px;
+    width: 90px !important;
+    border-radius: 100px;
+    border: 8px solid white;
+}
+
+.puan {
+    margin-top: 20px;
+}
+
+
+.puan svg {
+    height: 20px;
+    width: 20px !important;
+    margin: 30px 5px 0 0;
+    fill: #E7AB2F;
+}
+
+.isim h1 {
+    font-size: 15px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    margin-top: 20px;
+}
+
+.isim p {
+    font-size: 12px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-family: sans-serif;
+}
+
+.owl-item {
+    display: flex;
+    justify-content: center;
+}
+
+.card-sahip {
+    transform: translate(0, 50%);
+}
+
+.owl-stage {
+    display: flex;
+    align-items: center;
+}

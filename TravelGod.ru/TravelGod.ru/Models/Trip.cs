@@ -29,6 +29,7 @@ namespace TravelGod.ru.Models
 
         public User Initiator { get; set; }
         public List<Rating> Ratings { get; set; } = new();
+        public double AverageRating { get; set; }
 
         [NotMapped] public List<string> Route => RouteRaw?.Split(';').ToList();
 

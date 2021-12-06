@@ -43,7 +43,7 @@
                             <a maybe-active class="nav-link text-dark" asp-page="/Index">Главная</a>
                         </li>
                         <li class="text-center nav-item">
-                            <a maybe-active class="nav-link text-dark" asp-page="/Trips/Index">Поездки</a>
+                            <a maybe-active class="nav-link text-dark" asp-page="/Trips/Index" asp-page-folder="Trips">Поездки</a>
                         </li>
                         @if (Model.User is not null)
                         {
