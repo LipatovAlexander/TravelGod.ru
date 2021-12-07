@@ -32,9 +32,9 @@ namespace TravelGod.ru.Pages.Profile
             _messageService = messageService;
         }
 
+        [BindProperty]
         public User CurrentUser { get; set; }
 
-        [BindProperty]
         [Display(Name = "File")]
         public IFormFile Avatar { get; set; }
 
@@ -65,13 +65,14 @@ namespace TravelGod.ru.Pages.Profile
                 return new JsonResult("Нет доступа!");
             }
 
+            ModelState.Clear();
             if (!await TryUpdateModelAsync(CurrentUser, "CurrentUser",
                 u => u.Description,
                 u => u.Email,
                 u => u.Patronymic,
                 u => u.BirthDate,
                 u => u.FirstName,
-                u => u.LastName) || !ModelState.IsValid)
+                u => u.LastName) || !TryValidateModel(CurrentUser, nameof(CurrentUser)))
             {
                 return new JsonResult(new {Success = false});
             }
