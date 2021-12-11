@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TravelGod.ru.Models;
 
 namespace TravelGod.ru.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20211208225504_AuditableEntity5")]
+    partial class AuditableEntity5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,28 +32,6 @@ namespace TravelGod.ru.Migrations
                     b.HasIndex("UsersId");
 
                     b.ToTable("userchat");
-                });
-
-            modelBuilder.Entity("TravelGod.ru.Models.Avatar", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("FileId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FileId");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("Avatars");
                 });
 
             modelBuilder.Entity("TravelGod.ru.Models.Chat", b =>
@@ -156,7 +136,8 @@ namespace TravelGod.ru.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById");
+                    b.HasIndex("CreatedById")
+                        .IsUnique();
 
                     b.HasIndex("ModifiedById");
 
@@ -434,25 +415,6 @@ namespace TravelGod.ru.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TravelGod.ru.Models.Avatar", b =>
-                {
-                    b.HasOne("TravelGod.ru.Models.File", "File")
-                        .WithMany()
-                        .HasForeignKey("FileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TravelGod.ru.Models.User", "User")
-                        .WithOne("Avatar")
-                        .HasForeignKey("TravelGod.ru.Models.Avatar", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("File");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("TravelGod.ru.Models.Chat", b =>
                 {
                     b.HasOne("TravelGod.ru.Models.User", "CreatedBy")
@@ -492,8 +454,8 @@ namespace TravelGod.ru.Migrations
             modelBuilder.Entity("TravelGod.ru.Models.File", b =>
                 {
                     b.HasOne("TravelGod.ru.Models.User", "CreatedBy")
-                        .WithMany("Files")
-                        .HasForeignKey("CreatedById");
+                        .WithOne("Avatar")
+                        .HasForeignKey("TravelGod.ru.Models.File", "CreatedById");
 
                     b.HasOne("TravelGod.ru.Models.User", "ModifiedBy")
                         .WithMany()
@@ -608,8 +570,6 @@ namespace TravelGod.ru.Migrations
             modelBuilder.Entity("TravelGod.ru.Models.User", b =>
                 {
                     b.Navigation("Avatar");
-
-                    b.Navigation("Files");
 
                     b.Navigation("OwnedChats");
 

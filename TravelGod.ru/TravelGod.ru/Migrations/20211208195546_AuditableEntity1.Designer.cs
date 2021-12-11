@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TravelGod.ru.Models;
 
 namespace TravelGod.ru.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20211208195546_AuditableEntity1")]
+    partial class AuditableEntity1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,48 +34,17 @@ namespace TravelGod.ru.Migrations
                     b.ToTable("userchat");
                 });
 
-            modelBuilder.Entity("TravelGod.ru.Models.Avatar", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("FileId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FileId");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("Avatars");
-                });
-
             modelBuilder.Entity("TravelGod.ru.Models.Chat", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int?>("CreatedById")
+                    b.Property<int?>("CreatedBy")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsGroupChat")
                         .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime>("ModifiedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int?>("ModifiedById")
-                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .HasColumnType("longtext");
@@ -83,9 +54,7 @@ namespace TravelGod.ru.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("ModifiedById");
+                    b.HasIndex("CreatedBy");
 
                     b.ToTable("Chats");
                 });
@@ -96,17 +65,12 @@ namespace TravelGod.ru.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int?>("CreatedById")
+                    b.Property<int?>("CreatedBy")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ModifiedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int?>("ModifiedById")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("CreatedAt");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -121,9 +85,7 @@ namespace TravelGod.ru.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("ModifiedById");
+                    b.HasIndex("CreatedBy");
 
                     b.HasIndex("TripId");
 
@@ -136,18 +98,6 @@ namespace TravelGod.ru.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int?>("CreatedById")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ModifiedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int?>("ModifiedById")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .HasColumnType("longtext");
 
@@ -156,18 +106,12 @@ namespace TravelGod.ru.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("ModifiedById");
-
                     b.ToTable("Files");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "default-avatar.png",
                             Path = "CustomFiles/Avatars/default-avatar.png"
                         });
@@ -182,17 +126,12 @@ namespace TravelGod.ru.Migrations
                     b.Property<int?>("ChatId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int?>("CreatedById")
+                    b.Property<int?>("CreatedBy")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ModifiedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int?>("ModifiedById")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("CreatedAt");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -206,9 +145,7 @@ namespace TravelGod.ru.Migrations
 
                     b.HasIndex("ChatId");
 
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("ModifiedById");
+                    b.HasIndex("CreatedBy");
 
                     b.ToTable("Messages");
                 });
@@ -219,17 +156,12 @@ namespace TravelGod.ru.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int?>("CreatedById")
+                    b.Property<int?>("CreatedBy")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ModifiedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int?>("ModifiedById")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("CreatedAt");
 
                     b.Property<int>("Point")
                         .HasColumnType("int");
@@ -247,9 +179,7 @@ namespace TravelGod.ru.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("ModifiedById");
+                    b.HasIndex("CreatedBy");
 
                     b.HasIndex("TripId");
 
@@ -293,10 +223,7 @@ namespace TravelGod.ru.Migrations
                     b.Property<int?>("ChatId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int?>("CreatedById")
+                    b.Property<int>("CreatedBy")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -306,12 +233,6 @@ namespace TravelGod.ru.Migrations
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("ModifiedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int?>("ModifiedById")
-                        .HasColumnType("int");
 
                     b.Property<string>("RouteRaw")
                         .IsRequired()
@@ -339,9 +260,7 @@ namespace TravelGod.ru.Migrations
 
                     b.HasIndex("ChatId");
 
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("ModifiedById");
+                    b.HasIndex("CreatedBy");
 
                     b.ToTable("Trips");
                 });
@@ -350,6 +269,9 @@ namespace TravelGod.ru.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("AvatarId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("BirthDate")
@@ -401,6 +323,9 @@ namespace TravelGod.ru.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AvatarId")
+                        .IsUnique();
+
                     b.ToTable("Users");
                 });
 
@@ -434,74 +359,28 @@ namespace TravelGod.ru.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TravelGod.ru.Models.Avatar", b =>
-                {
-                    b.HasOne("TravelGod.ru.Models.File", "File")
-                        .WithMany()
-                        .HasForeignKey("FileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TravelGod.ru.Models.User", "User")
-                        .WithOne("Avatar")
-                        .HasForeignKey("TravelGod.ru.Models.Avatar", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("File");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("TravelGod.ru.Models.Chat", b =>
                 {
-                    b.HasOne("TravelGod.ru.Models.User", "CreatedBy")
+                    b.HasOne("TravelGod.ru.Models.User", "Initiator")
                         .WithMany("OwnedChats")
-                        .HasForeignKey("CreatedById");
+                        .HasForeignKey("CreatedBy");
 
-                    b.HasOne("TravelGod.ru.Models.User", "ModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("ModifiedById");
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("ModifiedBy");
+                    b.Navigation("Initiator");
                 });
 
             modelBuilder.Entity("TravelGod.ru.Models.Comment", b =>
                 {
-                    b.HasOne("TravelGod.ru.Models.User", "CreatedBy")
+                    b.HasOne("TravelGod.ru.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("TravelGod.ru.Models.User", "ModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("ModifiedById");
+                        .HasForeignKey("CreatedBy");
 
                     b.HasOne("TravelGod.ru.Models.Trip", "Trip")
                         .WithMany("Comments")
                         .HasForeignKey("TripId");
 
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("ModifiedBy");
-
                     b.Navigation("Trip");
-                });
 
-            modelBuilder.Entity("TravelGod.ru.Models.File", b =>
-                {
-                    b.HasOne("TravelGod.ru.Models.User", "CreatedBy")
-                        .WithMany("Files")
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("TravelGod.ru.Models.User", "ModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("ModifiedById");
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("ModifiedBy");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TravelGod.ru.Models.Message", b =>
@@ -510,40 +389,28 @@ namespace TravelGod.ru.Migrations
                         .WithMany("Messages")
                         .HasForeignKey("ChatId");
 
-                    b.HasOne("TravelGod.ru.Models.User", "CreatedBy")
+                    b.HasOne("TravelGod.ru.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("TravelGod.ru.Models.User", "ModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("ModifiedById");
+                        .HasForeignKey("CreatedBy");
 
                     b.Navigation("Chat");
 
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("ModifiedBy");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TravelGod.ru.Models.Rating", b =>
                 {
-                    b.HasOne("TravelGod.ru.Models.User", "CreatedBy")
+                    b.HasOne("TravelGod.ru.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("TravelGod.ru.Models.User", "ModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("ModifiedById");
+                        .HasForeignKey("CreatedBy");
 
                     b.HasOne("TravelGod.ru.Models.Trip", "Trip")
                         .WithMany("Ratings")
                         .HasForeignKey("TripId");
 
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("ModifiedBy");
-
                     b.Navigation("Trip");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TravelGod.ru.Models.Session", b =>
@@ -563,19 +430,26 @@ namespace TravelGod.ru.Migrations
                         .WithMany()
                         .HasForeignKey("ChatId");
 
-                    b.HasOne("TravelGod.ru.Models.User", "CreatedBy")
+                    b.HasOne("TravelGod.ru.Models.User", "Initiator")
                         .WithMany("OwnedTrips")
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("TravelGod.ru.Models.User", "ModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("ModifiedById");
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Chat");
 
-                    b.Navigation("CreatedBy");
+                    b.Navigation("Initiator");
+                });
 
-                    b.Navigation("ModifiedBy");
+            modelBuilder.Entity("TravelGod.ru.Models.User", b =>
+                {
+                    b.HasOne("TravelGod.ru.Models.File", "Avatar")
+                        .WithOne("CreatedBy")
+                        .HasForeignKey("TravelGod.ru.Models.User", "AvatarId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Avatar");
                 });
 
             modelBuilder.Entity("TripUser", b =>
@@ -598,6 +472,11 @@ namespace TravelGod.ru.Migrations
                     b.Navigation("Messages");
                 });
 
+            modelBuilder.Entity("TravelGod.ru.Models.File", b =>
+                {
+                    b.Navigation("CreatedBy");
+                });
+
             modelBuilder.Entity("TravelGod.ru.Models.Trip", b =>
                 {
                     b.Navigation("Comments");
@@ -607,10 +486,6 @@ namespace TravelGod.ru.Migrations
 
             modelBuilder.Entity("TravelGod.ru.Models.User", b =>
                 {
-                    b.Navigation("Avatar");
-
-                    b.Navigation("Files");
-
                     b.Navigation("OwnedChats");
 
                     b.Navigation("OwnedTrips");
