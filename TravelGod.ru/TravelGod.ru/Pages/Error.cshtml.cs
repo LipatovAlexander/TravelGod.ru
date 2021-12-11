@@ -1,7 +1,5 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
 
 namespace TravelGod.ru.Pages
 {
@@ -9,10 +7,6 @@ namespace TravelGod.ru.Pages
     [IgnoreAntiforgeryToken]
     public class ErrorModel : MyPageModel
     {
-        public ErrorModel()
-        {
-        }
-
         public string RequestId { get; set; }
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);

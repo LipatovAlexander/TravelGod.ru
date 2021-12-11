@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -14,7 +13,8 @@ namespace TravelGod.ru.Services
             await Task.CompletedTask;
         }
 
-        public async Task OnPageHandlerExecutionAsync(PageHandlerExecutingContext context, PageHandlerExecutionDelegate next)
+        public async Task OnPageHandlerExecutionAsync(PageHandlerExecutingContext context,
+                                                      PageHandlerExecutionDelegate next)
         {
             if (context.HttpContext.Items["User"] is User)
             {

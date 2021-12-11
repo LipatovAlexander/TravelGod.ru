@@ -1,0 +1,7 @@
+﻿@model TravelGod.ru.Models.User
+
+@if (Model.Avatar is not null)
+{
+    <img src="/@Model.Avatar.File.Path" class="rounded mr-2" style="object-fit: cover" alt="аватарка" width="30" height="30" title="@Model.Avatar.File.Name">
+}
+<span>@Model.DisplayName</span>

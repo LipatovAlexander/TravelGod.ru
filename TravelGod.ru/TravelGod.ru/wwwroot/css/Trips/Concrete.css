@@ -50,7 +50,7 @@
 }
 
 .emoji-wrapper:before,
-.emoji-wrapper:after{
+.emoji-wrapper:after {
     content: "";
     height: 15px;
     width: 100%;
@@ -61,12 +61,12 @@
 
 .emoji-wrapper:before {
     top: 0;
-    background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(255,255,255,1) 35%,rgba(255,255,255,0) 100%);
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 35%, rgba(255, 255, 255, 0) 100%);
 }
 
-.emoji-wrapper:after{
+.emoji-wrapper:after {
     bottom: 0;
-    background: linear-gradient(to top, rgba(255,255,255,1) 0%,rgba(255,255,255,1) 35%,rgba(255,255,255,0) 100%);
+    background: linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 35%, rgba(255, 255, 255, 0) 100%);
 }
 
 .emoji {
@@ -83,11 +83,25 @@
     flex-shrink: 0;
 }
 
-#rating-1:checked ~ .emoji-wrapper > .emoji { transform: translateY(-100px); }
-#rating-2:checked ~ .emoji-wrapper > .emoji { transform: translateY(-200px); }
-#rating-3:checked ~ .emoji-wrapper > .emoji { transform: translateY(-300px); }
-#rating-4:checked ~ .emoji-wrapper > .emoji { transform: translateY(-400px); }
-#rating-5:checked ~ .emoji-wrapper > .emoji { transform: translateY(-500px); }
+#rating-1:checked ~ .emoji-wrapper > .emoji {
+    transform: translateY(-100px);
+}
+
+#rating-2:checked ~ .emoji-wrapper > .emoji {
+    transform: translateY(-200px);
+}
+
+#rating-3:checked ~ .emoji-wrapper > .emoji {
+    transform: translateY(-300px);
+}
+
+#rating-4:checked ~ .emoji-wrapper > .emoji {
+    transform: translateY(-400px);
+}
+
+#rating-5:checked ~ .emoji-wrapper > .emoji {
+    transform: translateY(-500px);
+}
 
 .average-rating {
     font-size: 3rem;
@@ -149,8 +163,8 @@
 }
 
 .card-yazı {
-    background: rgb(1,41,112);
-    background: linear-gradient(135deg, rgba(1,41,112,1) 10%, rgba(65,84,241,1) 100%);
+    background: rgb(1, 41, 112);
+    background: linear-gradient(135deg, rgba(1, 41, 112, 1) 10%, rgba(65, 84, 241, 1) 100%);
 }
 
 .favicon {

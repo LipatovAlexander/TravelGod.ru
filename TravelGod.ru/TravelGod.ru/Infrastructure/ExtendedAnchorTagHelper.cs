@@ -2,7 +2,6 @@
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace TravelGod.ru.Infrastructure
@@ -12,6 +11,7 @@ namespace TravelGod.ru.Infrastructure
     public class ExtendedAnchorTagHelper : TagHelper
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
+
         public ExtendedAnchorTagHelper(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
@@ -20,7 +20,9 @@ namespace TravelGod.ru.Infrastructure
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             if (_httpContextAccessor.HttpContext?.Request.RouteValues["Page"] is not string currentPage)
+            {
                 return;
+            }
 
             if (context.AllAttributes["asp-page"]?.Value is string pageName && pageName == currentPage)
             {
