@@ -37,7 +37,8 @@ namespace TravelGod.ru.Models
         public string LastName { get; set; }
 
         [Required]
-        [RegularExpression(RegularExpressions.LatinLettersAndDigits, ErrorMessage = "Логин содержит недопустимые символы")]
+        [RegularExpression(RegularExpressions.LatinLettersAndDigits,
+            ErrorMessage = "Логин содержит недопустимые символы")]
         [MaxLength(10, ErrorMessage = "Логин не должен быть длиннее 10 символов")]
         public string Login { get; set; }
 
@@ -49,16 +50,15 @@ namespace TravelGod.ru.Models
         [MaxLength(20, ErrorMessage = "Отчество не должно быть длиннее 20 символов")]
         public string Patronymic { get; set; }
 
-        public int AvatarId { get; set; }
-        public File Avatar { get; set; }
+        public Avatar Avatar { get; set; }
 
         [Required] public Role Role { get; set; }
 
         [Required] public Status Status { get; set; }
 
-        public List<Trip> JoinedTrips { get; set; } = new();
-        public List<Chat> OwnedChats { get; set; } = new();
-        public List<Trip> OwnedTrips { get; set; } = new();
+        public List<Trip> JoinedTrips { get; set; }
+        public List<Chat> OwnedChats { get; set; }
+        public List<Trip> OwnedTrips { get; set; }
 
         [NotMapped]
         public string DisplayName => !string.IsNullOrEmpty(FirstName) && !string.IsNullOrEmpty(LastName)
@@ -67,5 +67,6 @@ namespace TravelGod.ru.Models
 
         public int OwnedTripsCount { get; set; }
         public int JoinedTripsCount { get; set; }
+        public List<File> Files { get; set; }
     }
 }

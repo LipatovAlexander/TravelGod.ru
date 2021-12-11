@@ -1,13 +1,11 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using TravelGod.ru.Infrastructure;
 
 namespace TravelGod.ru.Models
 {
-    public class Message
+    public class Message : AuditableEntity
     {
         public Chat Chat { get; set; }
-        public DateTime DateTime { get; set; }
         public int Id { get; set; }
         public Status Status { get; set; }
 
@@ -15,6 +13,5 @@ namespace TravelGod.ru.Models
         [MaxLength(100, ErrorMessage = ValidationMessages.MaxLengthMessage)]
         [RegularExpression(RegularExpressions.Text, ErrorMessage = ValidationMessages.RegularExpressionMessage)]
         public string Text { get; set; }
-        public User User { get; set; }
     }
 }

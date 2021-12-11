@@ -8,10 +8,10 @@ using TravelGod.ru.Infrastructure;
 
 namespace TravelGod.ru.Models
 {
-    public class Trip
+    public class Trip : AuditableEntity
     {
         public Chat Chat { get; set; }
-        public List<Comment> Comments { get; set; } = new();
+        public List<Comment> Comments { get; set; }
 
         [Required(ErrorMessage = ValidationMessages.RequiredMessage)]
         [RegularExpression(RegularExpressions.Text,
@@ -25,10 +25,7 @@ namespace TravelGod.ru.Models
 
         public int Id { get; set; }
 
-        [Required] public int InitiatorId { get; set; }
-
-        public User Initiator { get; set; }
-        public List<Rating> Ratings { get; set; } = new();
+        public List<Rating> Ratings { get; set; }
         public double AverageRating { get; set; }
 
         [NotMapped] public List<string> Route => RouteRaw?.Split(';').ToList();
@@ -44,7 +41,7 @@ namespace TravelGod.ru.Models
         [RegularExpression(RegularExpressions.Text, ErrorMessage = ValidationMessages.RegularExpressionMessage)]
         public string Title { get; set; }
 
-        public List<User> Users { get; set; } = new();
+        public List<User> Users { get; set; }
 
         [Required] public int UsersCount { get; set; }
 
@@ -64,8 +61,10 @@ namespace TravelGod.ru.Models
             set
             {
                 value = value.Trim();
-                if (!DateTime.TryParseExact(value[..10], "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var startDate) ||
-                    !DateTime.TryParseExact(value[13..23], "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var endDate))
+                if (!DateTime.TryParseExact(value[..10], "dd.MM.yyyy", CultureInfo.InvariantCulture,
+                        DateTimeStyles.None, out var startDate) ||
+                    !DateTime.TryParseExact(value[13..23], "dd.MM.yyyy", CultureInfo.InvariantCulture,
+                        DateTimeStyles.None, out var endDate))
                 {
                     return;
                 }
