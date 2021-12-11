@@ -8,13 +8,15 @@ namespace TravelGod.ru.ViewModels
         [Required(ErrorMessage = ValidationMessages.RequiredMessage)]
         [MinLength(5, ErrorMessage = ValidationMessages.MinLengthMessage)]
         [MaxLength(10, ErrorMessage = ValidationMessages.MaxLengthMessage)]
-        [RegularExpression(RegularExpressions.LatinLettersAndDigits, ErrorMessage = ValidationMessages.RegularExpressionMessage)]
+        [RegularExpression(RegularExpressions.LatinLettersAndDigits,
+            ErrorMessage = ValidationMessages.RegularExpressionMessage)]
         public string Login { get; set; }
 
         [Required(ErrorMessage = ValidationMessages.RequiredMessage)]
         [MinLength(5, ErrorMessage = ValidationMessages.MinLengthMessage)]
         [MaxLength(10, ErrorMessage = ValidationMessages.MaxLengthMessage)]
-        [RegularExpression(RegularExpressions.LatinLettersAndDigits, ErrorMessage = ValidationMessages.RegularExpressionMessage)]
+        [RegularExpression(RegularExpressions.LatinLettersAndDigits,
+            ErrorMessage = ValidationMessages.RegularExpressionMessage)]
         public string Password1 { get; set; }
 
         [Compare(nameof(Password1), ErrorMessage = "Пароли должны совпадать")]

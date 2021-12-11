@@ -13,7 +13,8 @@ namespace TravelGod.ru.Services
             await Task.CompletedTask;
         }
 
-        public async Task OnPageHandlerExecutionAsync(PageHandlerExecutingContext context, PageHandlerExecutionDelegate next)
+        public async Task OnPageHandlerExecutionAsync(PageHandlerExecutingContext context,
+                                                      PageHandlerExecutionDelegate next)
         {
             if (context.HttpContext.Items["User"] is User {Role: Role.Administrator or Role.Moderator})
             {

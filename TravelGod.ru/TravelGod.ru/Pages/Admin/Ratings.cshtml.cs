@@ -1,19 +1,19 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using TravelGod.ru.DAL.Interfaces;
 using TravelGod.ru.Infrastructure;
 using TravelGod.ru.Models;
-using TravelGod.ru.Services;
 
 namespace TravelGod.ru.Pages.Admin
 {
     public class Ratings : MyPageModel
     {
-        private readonly RatingService _ratingService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public Ratings(RatingService ratingService)
+        public Ratings(IUnitOfWork unitOfWork)
         {
-            _ratingService = ratingService;
+            _unitOfWork = unitOfWork;
         }
 
         public PaginatedList<Rating> ListOfRatings { get; set; }
@@ -21,45 +21,43 @@ namespace TravelGod.ru.Pages.Admin
 
         public async Task<IActionResult> OnGet(int pageIndex = 1)
         {
-            ListOfRatings = await _ratingService.GetRatingsAsync(pageIndex);
+            const int pageSize = 10;
+            ListOfRatings = await _unitOfWork.Ratings.GetPaginatedListAsync(pageSize, pageIndex, null,
+                ratings => ratings
+                           .Include(r => r.CreatedBy)
+                           .Include(r => r.Trip));
 
             return Page();
         }
 
         public async Task<IActionResult> OnPostEdit(int id)
         {
-            EditedRating = await _ratingService.GetRatingAsync(id, null);
+            EditedRating = await _unitOfWork.Ratings.FindByIdAsync(id);
 
-            if (EditedRating is null)
+            ModelState.Clear();
+            if (EditedRating is null
+                || !await TryUpdateModelAsync(EditedRating, nameof(EditedRating))
+                || !TryValidateModel(EditedRating, nameof(EditedRating)))
             {
                 return BadRequest();
             }
 
-            if (!await TryUpdateModelAsync(EditedRating, nameof(EditedRating)))
-            {
-                return BadRequest();
-            }
-
-            ModelState.ClearValidationState(nameof(EditedRating));
-            if (!TryValidateModel(EditedRating, nameof(EditedRating)))
-            {
-                return BadRequest();
-            }
-
-            await _ratingService.UpdateRatingAsync(EditedRating);
+            _unitOfWork.Ratings.Update(EditedRating);
+            await _unitOfWork.SaveAsync();
             return new JsonResult("success");
         }
 
         public async Task<IActionResult> OnGetRemove(int id, int pageIndex)
         {
-            var message = await _ratingService.GetRatingAsync(id, Status.Normal);
-            if (message is null)
+            var rating = await _unitOfWork.Ratings.FindByIdAsync(id);
+            if (rating is null || rating.Status == Status.RemovedByModerator)
             {
                 return BadRequest();
             }
 
-            message.Status = Status.RemovedByModerator;
-            await _ratingService.UpdateRatingAsync(message);
+            rating.Status = Status.RemovedByModerator;
+            _unitOfWork.Ratings.Update(rating);
+            await _unitOfWork.SaveAsync();
 
             return RedirectToPage("/Admin/Ratings",
                 new {pageIndex});

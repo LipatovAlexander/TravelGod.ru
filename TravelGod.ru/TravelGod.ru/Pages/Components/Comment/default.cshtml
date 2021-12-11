@@ -1,15 +1,18 @@
 ﻿@model TravelGod.ru.Models.Comment
 <div class="row no-gutters mb-4">
     <div class="col-auto">
-        <img src="/@Model.User.Avatar.Path" class="rounded mr-2" style="object-fit: cover"  alt="аватарка" width="40" height="40" title="@Model.User.Avatar.Name">
+        @if (Model.CreatedBy.Avatar is not null)
+        {
+            <img src="/@Model.CreatedBy.Avatar.File.Path" class="rounded mr-2" style="object-fit: cover" alt="аватарка" width="40" height="40" title="@Model.CreatedBy.Avatar.File.Name">
+        }
     </div>
     <div class="col">
         <div>
-            <a asp-page="/Profile/Index" asp-route-id="@Model.User.Id" class="text-dark text-nowrap font-weight-bold overflow-hidden">
-                <span>@Model.User.DisplayName</span>
+            <a asp-page="/Profile/Index" asp-route-id="@Model.CreatedBy.Id" class="text-dark text-nowrap font-weight-bold overflow-hidden">
+                <span>@Model.CreatedBy.DisplayName</span>
             </a>
         </div>
-        <small>@Model.Date.ToString("dd.MM.yy")</small>
+        <small>@Model.CreatedAt.ToString("dd.MM.yy")</small>
         <p class="pt-2 mb-0">@Model.Text</p>
     </div>
 </div>

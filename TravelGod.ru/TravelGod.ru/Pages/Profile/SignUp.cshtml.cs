@@ -1,19 +1,19 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using TravelGod.ru.DAL.Interfaces;
 using TravelGod.ru.Infrastructure.Cryptography;
 using TravelGod.ru.Models;
-using TravelGod.ru.Services;
 using TravelGod.ru.ViewModels;
 
 namespace TravelGod.ru.Pages.Profile
 {
     public class SignUp : MyPageModel
     {
-        private readonly UserService _userService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public SignUp(UserService userService)
+        public SignUp(IUnitOfWork unitOfWork)
         {
-            _userService = userService;
+            _unitOfWork = unitOfWork;
         }
 
         [BindProperty] public SignUpModel SignUpModel { get; set; }
@@ -35,7 +35,7 @@ namespace TravelGod.ru.Pages.Profile
                 return RedirectToPage("/Profile/Index", new {id = User.Id});
             }
 
-            if (await _userService.GetUserAsync(SignUpModel.Login, null) is not null)
+            if (await _unitOfWork.Users.FirstOrDefaultAsync(u => u.Login == SignUpModel.Login) is not null)
             {
                 ModelState.AddModelError("SignUpModel.Login", "Логин уже занят");
             }
@@ -55,7 +55,8 @@ namespace TravelGod.ru.Pages.Profile
                 PasswordSalt = passwordSalt
             };
 
-            await _userService.AddUserAsync(newUser);
+            _unitOfWork.Users.Create(newUser);
+            await _unitOfWork.SaveAsync();
             return RedirectToPage("/Profile/SignIn");
         }
     }

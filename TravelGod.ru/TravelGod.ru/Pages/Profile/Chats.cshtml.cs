@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using TravelGod.ru.DAL.Interfaces;
 using TravelGod.ru.Models;
 using TravelGod.ru.Services;
 
@@ -9,45 +12,49 @@ namespace TravelGod.ru.Pages.Profile
     [AuthenticationPageFilter]
     public class Chats : MyPageModel
     {
-        private readonly ChatService _chatService;
-        private readonly MessageService _messageService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public Chats(ChatService chatService, MessageService messageService)
+        public Chats(IUnitOfWork unitOfWork)
         {
-            _chatService = chatService;
-            _messageService = messageService;
+            _unitOfWork = unitOfWork;
         }
 
-        public List<Chat> ListOfChats { get; set; }
+        public IEnumerable<Chat> ListOfChats { get; set; }
 
-        [FromForm]
-        public Message Message { get; set; }
+        [FromForm] public Message Message { get; set; }
 
         public async Task<IActionResult> OnGet()
         {
-            ListOfChats = await _chatService.GetChatsAsync(User, Status.Normal);
+            ListOfChats = await _unitOfWork.Chats.GetAsync(c => c.Users.Contains(User) && c.Status == Status.Normal,
+                chats => chats
+                         .Include(c => c.Users.Where(u => u.Status == Status.Normal))
+                         .ThenInclude(u => u.Avatar)
+                         .Include(c => c.Messages.Where(m => m.Status == Status.Normal))
+                         .ThenInclude(m => m.CreatedBy.Avatar),
+                chats => chats.OrderByDescending(c => c.Messages.FirstOrDefault().CreatedAt));
             return Page();
         }
 
         public async Task<IActionResult> OnPostSendMessage()
         {
-            Message.User = User;
-            Message.Chat = await _chatService.GetChatAsync(Message.Chat.Id, Status.Normal);
-            await _messageService.AddMessageAsync(Message);
-            return ViewComponent("Message", new {Message = Message});
+            _unitOfWork.Messages.Create(Message);
+            await _unitOfWork.SaveAsync();
+            return ViewComponent("Message", new {Message});
         }
 
         public async Task<IActionResult> OnGetGetChat(int id)
         {
-            var chat = await _chatService.GetChatAsync(id, Status.Normal);
-            if (chat.Status == Status.Normal)
-            {
-                return ViewComponent("MessagesBox", new {Chat = chat});
-            }
-            else
+            var chat = await _unitOfWork.Chats.FirstOrDefaultAsync(
+                c => c.Id == id && c.Status == Status.Normal,
+                chats => chats
+                         .Include(c => c.Messages.Where(m => m.Status == Status.Normal))
+                         .ThenInclude(m => m.CreatedBy.Avatar));
+            if (chat is null)
             {
                 return BadRequest();
             }
+
+            return ViewComponent("MessagesBox", new {Chat = chat});
         }
     }
 }

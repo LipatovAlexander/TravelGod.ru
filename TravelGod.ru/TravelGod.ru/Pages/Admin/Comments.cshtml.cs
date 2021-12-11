@@ -1,22 +1,21 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using TravelGod.ru.DAL.Interfaces;
 using TravelGod.ru.Infrastructure;
 using TravelGod.ru.Models;
 using TravelGod.ru.Services;
-using TravelGod.ru.ViewModels;
 
 namespace TravelGod.ru.Pages.Admin
 {
     [AdministratorPageFilter]
     public class Comments : MyPageModel
     {
-        private readonly CommentService _commentService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public Comments(CommentService commentService)
+        public Comments(IUnitOfWork unitOfWork)
         {
-            _commentService = commentService;
+            _unitOfWork = unitOfWork;
         }
 
         public PaginatedList<Comment> ListOfComments { get; private set; }
@@ -24,45 +23,43 @@ namespace TravelGod.ru.Pages.Admin
 
         public async Task<IActionResult> OnGet(int pageIndex = 1)
         {
-            ListOfComments = await _commentService.GetCommentsAsync(pageIndex);
+            const int pageSize = 10;
+            ListOfComments = await _unitOfWork.Comments.GetPaginatedListAsync(pageSize, pageIndex, null,
+                comments => comments
+                            .Include(c => c.Trip)
+                            .Include(c => c.CreatedBy.Avatar));
 
             return Page();
         }
 
         public async Task<IActionResult> OnPostEdit(int id)
         {
-            EditedComment = await _commentService.GetCommentAsync(id, null);
+            EditedComment = await _unitOfWork.Comments.FindByIdAsync(id);
 
-            if (EditedComment is null)
+            ModelState.Clear();
+            if (EditedComment is null
+                || !await TryUpdateModelAsync(EditedComment, nameof(EditedComment))
+                || !TryValidateModel(EditedComment, nameof(EditedComment)))
             {
                 return BadRequest();
             }
 
-            if (!await TryUpdateModelAsync(EditedComment, nameof(EditedComment)))
-            {
-                return BadRequest();
-            }
-
-            ModelState.ClearValidationState(nameof(EditedComment));
-            if (!TryValidateModel(EditedComment, nameof(EditedComment)))
-            {
-                return BadRequest();
-            }
-
-            await _commentService.UpdateCommentAsync(EditedComment);
+            _unitOfWork.Comments.Update(EditedComment);
+            await _unitOfWork.SaveAsync();
             return new JsonResult("success");
         }
 
         public async Task<IActionResult> OnGetRemove(int id, int pageIndex)
         {
-            var comment = await _commentService.GetCommentAsync(id, Status.Normal);
-            if (comment is null)
+            var comment = await _unitOfWork.Comments.FindByIdAsync(id);
+            if (comment?.Status is not Status.Normal)
             {
                 return BadRequest();
             }
 
             comment.Status = Status.RemovedByModerator;
-            await _commentService.UpdateCommentAsync(comment);
+            _unitOfWork.Comments.Update(comment);
+            await _unitOfWork.SaveAsync();
 
             return RedirectToPage("/Admin/Comments",
                 new {pageIndex});

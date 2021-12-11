@@ -1,19 +1,19 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using TravelGod.ru.DAL.Interfaces;
 using TravelGod.ru.Infrastructure;
 using TravelGod.ru.Models;
-using TravelGod.ru.Services;
 
 namespace TravelGod.ru.Pages.Admin
 {
     public class Chats : MyPageModel
     {
-        private readonly ChatService _chatService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public Chats(ChatService chatService)
+        public Chats(IUnitOfWork unitOfWork)
         {
-            _chatService = chatService;
+            _unitOfWork = unitOfWork;
         }
 
         public PaginatedList<Chat> ListOfChats { get; set; }
@@ -21,44 +21,41 @@ namespace TravelGod.ru.Pages.Admin
 
         public async Task<IActionResult> OnGet(int pageIndex = 1)
         {
-            ListOfChats = await _chatService.GetChatsAsync(pageIndex);
+            const int pageSize = 10;
+            ListOfChats = await _unitOfWork.Chats.GetPaginatedListAsync(pageSize, pageIndex, null,
+                chats => chats.Include(c => c.CreatedBy));
 
             return Page();
         }
 
         public async Task<IActionResult> OnPostEdit(int id)
         {
-            EditedChat = await _chatService.GetChatAsync(id, null);
+            EditedChat = await _unitOfWork.Chats.FindByIdAsync(id);
 
-            if (EditedChat is null)
+            ModelState.Clear();
+            if (EditedChat is null
+                || !await TryUpdateModelAsync(EditedChat, nameof(EditedChat))
+                || !TryValidateModel(EditedChat, nameof(EditedChat)))
             {
                 return BadRequest();
             }
 
-            if (!await TryUpdateModelAsync(EditedChat, nameof(EditedChat)))
-            {
-                return BadRequest();
-            }
-
-            ModelState.ClearValidationState(nameof(EditedChat));
-            if (!TryValidateModel(EditedChat, nameof(EditedChat)))
-            {
-                return BadRequest();
-            }
-
-            await _chatService.UpdateChatAsync(EditedChat);
+            _unitOfWork.Chats.Update(EditedChat);
+            await _unitOfWork.SaveAsync();
             return new JsonResult("success");
         }
 
         public async Task<IActionResult> OnGetRemove(int id, int pageIndex)
         {
-            var chat = await _chatService.GetChatAsync(id, Status.Normal);
+            var chat = await _unitOfWork.Chats.FirstOrDefaultAsync(c => c.Id == id && c.Status == Status.Normal);
             if (chat is null)
             {
                 return BadRequest();
             }
 
-            await _chatService.RemoveChatAsync(chat);
+            chat.Status = Status.RemovedByModerator;
+            _unitOfWork.Chats.Update(chat);
+            await _unitOfWork.SaveAsync();
 
             return RedirectToPage("/Admin/Chats",
                 new {pageIndex});

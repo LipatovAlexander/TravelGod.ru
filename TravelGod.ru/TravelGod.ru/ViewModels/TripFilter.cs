@@ -4,7 +4,7 @@ using TravelGod.ru.Models;
 
 namespace TravelGod.ru.ViewModels
 {
-    public class TripsOptions
+    public class TripFilter
     {
         public const int PageSize = 10;
 

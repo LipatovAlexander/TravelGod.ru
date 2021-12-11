@@ -1,36 +1,39 @@
-﻿using System;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using TravelGod.ru.DAL.Interfaces;
 using TravelGod.ru.Models;
-using TravelGod.ru.Services;
 
 namespace TravelGod.ru.Pages.Trips
 {
     public class Concrete : MyPageModel
     {
-        private readonly TripService _tripService;
-        private readonly CommentService _commentService;
-        private readonly ChatService _chatService;
-        private readonly RatingService _ratingService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public Concrete(TripService tripService, CommentService commentService, ChatService chatService, RatingService ratingService)
+        public Concrete(IUnitOfWork unitOfWork)
         {
-            _tripService = tripService;
-            _commentService = commentService;
-            _chatService = chatService;
-            _ratingService = ratingService;
+            _unitOfWork = unitOfWork;
         }
 
         public Trip Trip { get; set; }
 
-        [FromForm]
-        public Comment NewComment { get; set; }
-        [BindProperty]
-        public Rating NewRating { get; set; }
+        [FromForm] public Comment NewComment { get; set; }
+        [BindProperty] public Rating NewRating { get; set; }
 
         public async Task<IActionResult> OnGet(int id)
         {
-            Trip = await _tripService.GetTripAsync(id, Status.Normal);
+            Trip = await _unitOfWork.Trips.FirstOrDefaultAsync(
+                t => t.Id == id && t.Status == Status.Normal,
+                trips =>
+                    trips.Include(t => t.Users.Where(u => u.Status == Status.Normal))
+                         .ThenInclude(u => u.Avatar)
+                         .Include(t => t.Chat)
+                         .Include(t => t.Comments
+                                        .Where(c => c.Status == Status.Normal)
+                                        .OrderByDescending(c => c.CreatedAt))
+                         .ThenInclude(c => c.CreatedBy.Avatar)
+                         .Include(t => t.Ratings.Where(r => r.Status == Status.Normal)));
             if (Trip is null)
             {
                 return NotFound();
@@ -41,67 +44,94 @@ namespace TravelGod.ru.Pages.Trips
 
         public async Task<IActionResult> OnGetJoin(int id)
         {
-            Trip = await _tripService.GetTripAsync(id, Status.Normal);
-            if (User is null || Trip is null || Trip.Users.Contains(User))
+            if (User is null)
             {
                 return BadRequest();
             }
 
-            await _tripService.AddUserToTrip(Trip, User);
+            try
+            {
+                await _unitOfWork.Trips.AddUserAsync(id, User);
+                await _unitOfWork.SaveAsync();
+            }
+            catch
+            {
+                return BadRequest();
+            }
+
             return RedirectToPage("/Trips/Concrete", new {Id = id});
         }
 
         public async Task<IActionResult> OnGetCreateChat(int id)
         {
-            Trip = await _tripService.GetTripAsync(id, Status.Normal);
-            if (User is null || Trip is null || Trip.InitiatorId != User.Id || Trip.Chat is not null)
+            if (User is null)
             {
                 return BadRequest();
             }
 
-            await _chatService.CreateChatForTripAsync(Trip);
+            try
+            {
+                await _unitOfWork.Chats.CreateForTripAsync(id, User);
+                await _unitOfWork.SaveAsync();
+            }
+            catch
+            {
+                return BadRequest();
+            }
+
             return RedirectToPage("/Trips/Concrete", new {Id = id});
         }
 
         public async Task<IActionResult> OnPostAddComment(int id)
         {
-            ModelState.Clear();
-            Trip = await _tripService.GetTripAsync(id, Status.Normal);
-            if (User is null || Trip is null || NewComment is null)
+            if (User is null || NewComment is null)
             {
                 return BadRequest();
             }
 
+            ModelState.Clear();
             if (!TryValidateModel(NewComment, nameof(NewComment)))
             {
                 return Page();
             }
 
-            NewComment.Trip = Trip;
-            NewComment.User = User;
-            NewComment.Date = DateTime.Now;
-            await _commentService.AddCommentAsync(NewComment);
+            try
+            {
+                await _unitOfWork.Comments.CreateForTripAsync(id, NewComment);
+                await _unitOfWork.SaveAsync();
+            }
+            catch
+            {
+                return BadRequest();
+            }
+
             return ViewComponent("Comment", new {Comment = NewComment});
         }
 
         public async Task<IActionResult> OnPostAddRating(int id)
         {
-            ModelState.Clear();
-            Trip = await _tripService.GetTripAsync(id, Status.Normal);
-            if (User is null || Trip is null || !Trip.Users.Exists(u => u.Id == User.Id) || Trip.Ratings.Exists(r => r.User.Id == User.Id) || NewRating is null)
+            if (User is null || NewRating is null)
             {
                 return BadRequest();
             }
-            if (!TryValidateModel(NewRating, nameof(NewRating)))
+
+            ModelState.Clear();
+            if (!TryValidateModel(NewRating))
             {
                 return Page();
             }
 
-            NewRating.Trip = Trip;
-            NewRating.User = User;
-            NewRating.Date = DateTime.Now;
-            await _ratingService.AddRatingAsync(Trip, NewRating);
-            return RedirectToPage("/Trips/Concrete", new {id = Trip.Id});
+            try
+            {
+                await _unitOfWork.Ratings.CreateForTripAsync(id, NewRating, User);
+                await _unitOfWork.SaveAsync();
+            }
+            catch
+            {
+                return BadRequest();
+            }
+
+            return RedirectToPage("/Trips/Concrete", new {id});
         }
     }
 }

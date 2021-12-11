@@ -1,6 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using TravelGod.ru.DAL.Interfaces;
 using TravelGod.ru.Infrastructure;
 using TravelGod.ru.Models;
 using TravelGod.ru.Pages.Admin.ViewModels;
@@ -11,64 +12,66 @@ namespace TravelGod.ru.Pages.Admin
     [AdministratorPageFilter]
     public class Users : MyPageModel
     {
-        private readonly UserService _userService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public Users(UserService userService)
+        public Users(IUnitOfWork unitOfWork)
         {
-            _userService = userService;
+            _unitOfWork = unitOfWork;
         }
 
         public PaginatedList<User> ListOfUsers { get; private set; }
-        [BindProperty(SupportsGet = true)] public UsersOptions UsersOptions { get; set; }
+        [BindProperty(SupportsGet = true)] public UserFilter UserFilter { get; set; }
         public User EditedUser { get; set; }
 
-        public async Task<IActionResult> OnGet()
+        public async Task<IActionResult> OnGet(string name, Role role, Status status)
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            ListOfUsers = await _userService.GetUsersAsync(UsersOptions);
+            const int pageSize = 10;
+            ListOfUsers = await _unitOfWork.Users.GetPaginatedListAsync(pageSize, UserFilter.PageNumber, UserFilter);
 
             return Page();
         }
 
         public async Task<IActionResult> OnPostEdit(int id)
         {
-            EditedUser = await _userService.GetUserAsync(id, null);
+            EditedUser = await _unitOfWork.Users.FirstOrDefaultAsync(u => u.Id == id,
+                users => users.Include(u => u.Avatar));
 
-            if (EditedUser is null)
+            ModelState.Clear();
+            if (EditedUser is null
+                || !await TryUpdateModelAsync(EditedUser, nameof(EditedUser))
+                || !TryValidateModel(EditedUser, nameof(EditedUser)))
             {
                 return BadRequest();
             }
 
-            if (!await TryUpdateModelAsync(EditedUser, "EditedUser"))
-            {
-                return BadRequest();
-            }
-
-            ModelState.ClearValidationState(nameof(EditedUser));
-            if (!TryValidateModel(EditedUser, "EditedUser"))
-            {
-                return BadRequest();
-            }
-
-            await _userService.UpdateUserAsync(EditedUser);
+            _unitOfWork.Users.Update(EditedUser);
+            await _unitOfWork.SaveAsync();
             return new JsonResult("success");
         }
 
         public async Task<IActionResult> OnGetRemove(int id)
         {
-            try
+            var user = await _unitOfWork.Users.FindByIdAsync(id);
+            if (user?.Status is not Status.Normal)
             {
-                await _userService.RemoveUserAsync(id);
+                return BadRequest();
             }
-            catch (Exception e)
-            {
-                return BadRequest("e");
-            }
-            return RedirectToPage("/Admin/Users", new {name = UsersOptions.Name, role = UsersOptions.Role, status = UsersOptions.Status, pageNumber = UsersOptions.PageNumber});
+
+            user.Status = Status.RemovedByModerator;
+            _unitOfWork.Users.Update(user);
+            await _unitOfWork.SaveAsync();
+
+            return RedirectToPage("/Admin/Users",
+                new
+                {
+                    name = UserFilter.Name, role = UserFilter.Role, status = UserFilter.Status,
+                    pageNumber = UserFilter.PageNumber
+                });
         }
     }
 }

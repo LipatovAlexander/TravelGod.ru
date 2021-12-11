@@ -1,10 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using TravelGod.ru.DAL.Interfaces;
 using TravelGod.ru.Infrastructure;
 using TravelGod.ru.Models;
-using TravelGod.ru.Pages.Admin.ViewModels;
 using TravelGod.ru.Services;
 using TravelGod.ru.ViewModels;
 
@@ -13,73 +12,74 @@ namespace TravelGod.ru.Pages.Admin
     [AdministratorPageFilter]
     public class Trips : MyPageModel
     {
-        private readonly TripService _tripService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public Trips(TripService tripService)
+        public Trips(IUnitOfWork unitOfWork)
         {
-            _tripService = tripService;
+            _unitOfWork = unitOfWork;
         }
 
         public PaginatedList<Trip> ListOfTrips { get; private set; }
 
-        [BindProperty(SupportsGet = true)]
-        public TripsOptions TripsOptions { get; set; }
+        [BindProperty(SupportsGet = true)] public TripFilter TripFilter { get; set; }
+
         public Trip EditedTrip { get; set; }
 
 
         public async Task<IActionResult> OnGet()
         {
-            TripsOptions.Status = null;
+            TripFilter.Status = null;
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            ListOfTrips = await _tripService.GetTripsAsync(TripsOptions);
+            const int pageSize = 10;
+            ListOfTrips = await _unitOfWork.Trips.GetPaginatedListAsync(pageSize, TripFilter.PageNumber, TripFilter,
+                trips => trips.Include(t => t.CreatedBy));
 
             return Page();
         }
 
         public async Task<IActionResult> OnPostEdit(int id)
         {
-            EditedTrip = await _tripService.GetTripAsync(id, null);
+            EditedTrip = await _unitOfWork.Trips.FirstOrDefaultAsync(t => t.Id == id,
+                trips => trips.Include(t => t.CreatedBy));
 
-            if (EditedTrip is null)
+            ModelState.Clear();
+            if (EditedTrip is null
+                || !await TryUpdateModelAsync(EditedTrip, nameof(EditedTrip))
+                || !TryValidateModel(EditedTrip, nameof(EditedTrip)))
             {
                 return BadRequest();
             }
 
-            if (!await TryUpdateModelAsync(EditedTrip, nameof(EditedTrip)))
-            {
-                return BadRequest();
-            }
-
-            ModelState.ClearValidationState(nameof(EditedTrip));
-            if (!TryValidateModel(EditedTrip, nameof(EditedTrip)))
-            {
-                return BadRequest();
-            }
-
-            await _tripService.UpdateTripAsync(EditedTrip);
+            _unitOfWork.Trips.Update(EditedTrip);
+            await _unitOfWork.SaveAsync();
             return new JsonResult("success");
         }
 
         public async Task<IActionResult> OnGetRemove(int id)
         {
-            try
+            var trip = await _unitOfWork.Trips.FindByIdAsync(id);
+            if (trip?.Status is not Status.Normal)
             {
-                await _tripService.RemoveTripAsync(id);
+                return BadRequest();
             }
-            catch (Exception e)
-            {
-                return BadRequest(e);
-            }
+
+            trip.Status = Status.RemovedByModerator;
+            _unitOfWork.Trips.Update(trip);
+            await _unitOfWork.SaveAsync();
+
             return RedirectToPage("/Admin/Trips",
-                new {archive = TripsOptions.Archive,
-                    dates = TripsOptions.Dates,
-                    route = TripsOptions.Route,
-                    status = TripsOptions.Status,
-                    pageNumber = TripsOptions.PageNumber});
+                new
+                {
+                    archive = TripFilter.Archive,
+                    dates = TripFilter.Dates,
+                    route = TripFilter.Route,
+                    status = TripFilter.Status,
+                    pageNumber = TripFilter.PageNumber
+                });
         }
     }
 }

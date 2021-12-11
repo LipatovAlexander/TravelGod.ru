@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using TravelGod.ru.DAL.Interfaces;
 using TravelGod.ru.Models;
 
 namespace TravelGod.ru.Services
@@ -14,16 +15,17 @@ namespace TravelGod.ru.Services
             _next = next;
         }
 
-        public async Task InvokeAsync(HttpContext context, SessionService sessionService, UserService userService)
+        public async Task InvokeAsync(HttpContext context, IUnitOfWork unitOfWork)
         {
             if (context.Request.Cookies.TryGetValue("token", out var token))
             {
-                var session = await sessionService.GetSessionAsync(token);
+                var session = await unitOfWork.Sessions.FindByTokenAsync(token);
                 if (session is not null && session.Expires > DateTimeOffset.Now && token is not null)
                 {
                     if (session.User.Status != Status.Normal)
                     {
-                        await sessionService.RemoveSessionAsync(session);
+                        unitOfWork.Sessions.Remove(session);
+                        await unitOfWork.SaveAsync();
                     }
                     else
                     {
@@ -31,7 +33,8 @@ namespace TravelGod.ru.Services
                         if (!session.RememberMe)
                         {
                             session.Expires = DateTimeOffset.Now.AddMinutes(20);
-                            await sessionService.UpdateSessionAsync(session);
+                            unitOfWork.Sessions.Update(session);
+                            await unitOfWork.SaveAsync();
                         }
 
                         context.Response.Cookies.Append("token", token,
@@ -45,7 +48,8 @@ namespace TravelGod.ru.Services
                 }
                 else if (session is not null)
                 {
-                    await sessionService.RemoveSessionAsync(session);
+                    unitOfWork.Sessions.Remove(session);
+                    await unitOfWork.SaveAsync();
                 }
             }
 

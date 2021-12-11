@@ -7,7 +7,6 @@ namespace TravelGod.ru.Pages.Admin
     {
         public void OnGet()
         {
-
         }
     }
 }

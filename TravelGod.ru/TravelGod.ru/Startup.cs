@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using TravelGod.ru.DAL;
+using TravelGod.ru.DAL.Interfaces;
 using TravelGod.ru.Models;
 using TravelGod.ru.Services;
 
@@ -13,6 +15,8 @@ namespace TravelGod.ru
 {
     public class Startup
     {
+        private readonly IWebHostEnvironment _environment;
+
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
@@ -20,7 +24,6 @@ namespace TravelGod.ru
         }
 
         public IConfiguration Configuration { get; }
-        private readonly IWebHostEnvironment _environment;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -53,14 +56,9 @@ namespace TravelGod.ru
 
                 x.UseMySql(connStr, ServerVersion.AutoDetect(connStr));
             });
-            services.AddTransient<UserService>();
-            services.AddTransient<TripService>();
-            services.AddTransient<SessionService>();
-            services.AddTransient<FileService>();
-            services.AddTransient<ChatService>();
-            services.AddTransient<CommentService>();
-            services.AddTransient<MessageService>();
-            services.AddTransient<RatingService>();
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
             services.AddHttpContextAccessor();
         }

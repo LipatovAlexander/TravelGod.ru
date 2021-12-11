@@ -20,9 +20,9 @@
                     <div class="card w-100 shadow" style="margin: 4rem 0 4rem 0">
                         <div class="card-body position-relative">
                             <div class="position-absolute text-nowrap overflow-hidden" style="top: -35px; left: 0;">
-                                <img src="/@trip.Initiator.Avatar.Path" class="rounded mr-2" style="object-fit: cover" alt="аватарка" width="30" height="30" title="@trip.Initiator.Avatar.Name">
-                                <a asp-page="/Profile/Index" asp-route-id="@trip.Initiator.Id" class="text-dark text-nowrap">
-                                    <strong>@trip.Initiator.DisplayName</strong>
+
+                                <a asp-page="/Profile/Index" asp-route-id="@trip.CreatedBy.Id" class="text-dark text-nowrap font-weight-bold">
+                                    @await Component.InvokeAsync("UserDisplayName", new {User = trip.CreatedBy})
                                 </a>
                             </div>
                             <h5 class="card-title d-flex justify-content-between overflow-hidden align-items-center">
@@ -62,15 +62,15 @@
                     <nav class="position-absolute" style="bottom: 0; left: 50%; transform: translate(-50%, 100%);" aria-label="Page navigation example">
                         <ul class="pagination">
                             <li class="page-item @prevDisabled">
-                                <a class="page-link" asp-route-title="@Model.Options.Title" asp-route-route="@Model.Options.Route"
-                                   asp-route-archive="@Model.Options.Archive" asp-route-dates="@Model.Options.Dates"
+                                <a class="page-link" asp-route-title="@Model.Filter.Title" asp-route-route="@Model.Filter.Route"
+                                   asp-route-archive="@Model.Filter.Archive" asp-route-dates="@Model.Filter.Dates"
                                    asp-route-pageNumber="@(Model.ListOfTrips.PageIndex - 1)" asp-page="/Trips/Index">
                                     Назад
                                 </a>
                             </li>
                             <li class="page-item @nextDisabled">
-                                <a class="page-link" asp-route-title="@Model.Options.Title" asp-route-route="@Model.Options.Route"
-                                   asp-route-archive="@Model.Options.Archive" asp-route-dates="@Model.Options.Dates"
+                                <a class="page-link" asp-route-title="@Model.Filter.Title" asp-route-route="@Model.Filter.Route"
+                                   asp-route-archive="@Model.Filter.Archive" asp-route-dates="@Model.Filter.Dates"
                                    asp-route-pageNumber="@(Model.ListOfTrips.PageIndex + 1)" asp-page="/Trips/Index">
                                     Вперед
                                 </a>
@@ -93,24 +93,24 @@
                     </h2>
                     <form method="get">
                         <div class="form-group">
-                            <label asp-for="Options.Title">Название</label>
-                            <input asp-for="Options.Title" class="form-control" type="text">
-                            <span asp-validation-for="Options.Title" class="text-danger"></span>
+                            <label asp-for="Filter.Title">Название</label>
+                            <input asp-for="Filter.Title" class="form-control" type="text">
+                            <span asp-validation-for="Filter.Title" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Options.Dates">Даты</label>
-                            <input asp-for="Options.Dates" class="form-control bg-white" type="text" id="dateRangePicker" readonly>
-                            <span asp-validation-for="Options.Dates" class="text-danger"></span>
+                            <label asp-for="Filter.Dates">Даты</label>
+                            <input asp-for="Filter.Dates" class="form-control bg-white" type="text" id="dateRangePicker" readonly>
+                            <span asp-validation-for="Filter.Dates" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Options.Route">Маршрут</label>
-                            <input asp-for="Options.Route" class="form-control" type="text">
+                            <label asp-for="Filter.Route">Маршрут</label>
+                            <input asp-for="Filter.Route" class="form-control" type="text">
                             <small class="form-text text-muted">Введите населённые пункты через пробел.</small>
-                            <span asp-validation-for="Options.Route" class="text-danger"></span>
+                            <span asp-validation-for="Filter.Route" class="text-danger"></span>
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input asp-for="Options.Archive" type="checkbox"> Поездка уже прошла
+                                <input asp-for="Filter.Archive" type="checkbox"> Поездка уже прошла
                             </label>
                         </div>
                         <input type="submit" class="btn btn-outline-dark mt-3" value="Искать">

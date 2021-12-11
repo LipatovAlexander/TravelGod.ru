@@ -54,13 +54,13 @@
                 <input asp-for="EditedChat.Name" id="Edit_Name_@chat.Id" type="text" class="form-control-plaintext w-auto" readonly disabled value="@chat.Name" form="Edit_@chat.Id"/>
             </td>
             <td>
-                @if (chat.Initiator.Status == Status.Normal)
+                @if (chat.CreatedBy.Status == Status.Normal)
                 {
-                    <a asp-page="/Profile/Index" asp-route-id="@chat.Initiator.Id">@chat.Initiator.DisplayName</a>
+                    <a asp-page="/Profile/Index" asp-route-id="@chat.CreatedBy.Id">@chat.CreatedBy.DisplayName</a>
                 }
                 else
                 {
-                    <span class="text-danger">@chat.Initiator.DisplayName</span>
+                    <span class="text-danger">@chat.CreatedBy.DisplayName</span>
                 }
             </td>
             <td>

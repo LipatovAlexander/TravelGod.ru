@@ -35,14 +35,4 @@
             dataType: 'json'
         })
     })
-
-    $('.remove-avatar').on('click', function () {
-        let row = $(this).parent().parent();
-        let save = row.find('.save');
-        if (save.is(':visible')) {
-            row.find('.avatarId').attr('value', '1');
-            row.find('img').attr('src', '/CustomFiles/Avatars/default-avatar.png');
-            row.find('img').attr('alt', 'default-avatar.png');
-        }
-    })
 })

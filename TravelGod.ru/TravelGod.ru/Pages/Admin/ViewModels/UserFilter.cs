@@ -2,7 +2,7 @@
 
 namespace TravelGod.ru.Pages.Admin.ViewModels
 {
-    public class UsersOptions
+    public class UserFilter
     {
         public const int PageSize = 10;
         public int PageNumber { get; set; } = 1;

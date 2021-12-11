@@ -1,42 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using TravelGod.ru.DAL.Interfaces;
 using TravelGod.ru.Infrastructure;
 using TravelGod.ru.Models;
-using TravelGod.ru.Services;
 
 namespace TravelGod.ru.Pages.Profile
 {
     public class Index : MyPageModel
     {
-        private readonly FileService _fileService;
-        private readonly SessionService _sessionService;
-        private readonly TripService _tripService;
-        private readonly UserService _userService;
-        private readonly ChatService _chatService;
-        private readonly MessageService _messageService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public Index(IWebHostEnvironment environment, UserService userService, FileService fileService,
-                     SessionService sessionService, TripService tripService, ChatService chatService,
-                     MessageService messageService)
+        public Index(IWebHostEnvironment environment, IUnitOfWork unitOfWork)
         {
-            _userService = userService;
-            _fileService = fileService;
-            _sessionService = sessionService;
-            _tripService = tripService;
-            _chatService = chatService;
-            _messageService = messageService;
+            _unitOfWork = unitOfWork;
         }
 
-        [BindProperty]
-        public User CurrentUser { get; set; }
+        [BindProperty] public User CurrentUser { get; set; }
 
-        [Display(Name = "File")]
-        public IFormFile Avatar { get; set; }
+        [Display(Name = "File")] public IFormFile Avatar { get; set; }
 
         [BindProperty] public Message NewMessage { get; set; }
 
@@ -44,22 +32,25 @@ namespace TravelGod.ru.Pages.Profile
         {
             const int pageSize = 10;
 
-            CurrentUser = User?.Id == id
-                ? User
-                : await _userService.GetUserAsync(id, Status.Normal);
+            CurrentUser = await _unitOfWork.Users.FirstOrDefaultAsync(
+                u => u.Id == id && u.Status == Status.Normal,
+                source => source
+                          .Include(u => u.JoinedTrips
+                                         .OrderByDescending(t => t.EndDate)
+                                         .Where(t => t.Status == Status.Normal))
+                          .Include(u => u.Avatar));
             if (CurrentUser is null)
             {
                 return NotFound();
             }
 
-            CurrentUser.JoinedTrips = await _tripService.GetJoinedTripsAsync(CurrentUser.Id, pageNumber, pageSize);
-
             return Page();
         }
 
-        public async Task<JsonResult> OnPostEdit(int id)
+        public async Task<JsonResult> OnPostEdit(int id, [FromServices] IWebHostEnvironment environment)
         {
-            CurrentUser = await _userService.GetUserAsync(id, Status.Normal);
+            CurrentUser = await _unitOfWork.Users.FirstOrDefaultAsync(u => u.Id == id && u.Status == Status.Normal,
+                source => source.Include(u => u.Avatar));
             if (CurrentUser?.Id != User?.Id)
             {
                 return new JsonResult("Нет доступа!");
@@ -84,10 +75,13 @@ namespace TravelGod.ru.Pages.Profile
                     return new JsonResult(new {Success = false});
                 }
 
-                CurrentUser.Avatar = await _fileService.AddFileAsync(CurrentUser, Avatar);
+                CurrentUser.Avatar =
+                    await _unitOfWork.Avatars.CreateFromFormFileAsync(Avatar, environment.WebRootPath,
+                        CurrentUser.Id.ToString());
             }
 
-            await _userService.UpdateUserAsync(CurrentUser);
+            _unitOfWork.Users.Update(CurrentUser);
+            await _unitOfWork.SaveAsync();
             return new JsonResult(new {Success = true});
         }
 
@@ -102,7 +96,8 @@ namespace TravelGod.ru.Pages.Profile
             {
                 Expires = DateTimeOffset.Now.AddDays(-1)
             });
-            await _sessionService.RemoveSessionAsync(session);
+            _unitOfWork.Sessions.Remove(session);
+            await _unitOfWork.SaveAsync();
 
             return RedirectToPage("/Index");
         }
@@ -114,7 +109,12 @@ namespace TravelGod.ru.Pages.Profile
                 return BadRequest();
             }
 
-            CurrentUser = await _userService.GetUserAsync(id, Status.Normal);
+            CurrentUser = await _unitOfWork.Users.FirstOrDefaultAsync(u => u.Id == id && u.Status == Status.Normal,
+                source => source
+                          .Include(u => u.JoinedTrips.Where(t => t.Status == Status.Normal))
+                          .Include(u => u.JoinedChats.Where(c => c.Status == Status.Normal))
+                          .ThenInclude(c => c.Users.Where(u => u.Status == Status.Normal))
+                          .Include(u => u.Avatar));
             if (CurrentUser is null || CurrentUser.Id == User.Id)
             {
                 return BadRequest();
@@ -126,18 +126,16 @@ namespace TravelGod.ru.Pages.Profile
                 return Page();
             }
 
-            var chat = await _chatService.GetChatAsync(false, User, CurrentUser)
+            var chat = CurrentUser.JoinedChats.FirstOrDefault(c =>
+                           !c.IsGroupChat && c.Users.Select(u => u.Id).Contains(User.Id))
                        ?? new Chat
                        {
-                           Initiator = User,
-                           IsGroupChat = false,
                            Users = new List<User> {User, CurrentUser}
                        };
 
             NewMessage.Chat = chat;
-            NewMessage.User = User;
-            NewMessage.DateTime = DateTime.Now;
-            await _messageService.AddMessageAsync(NewMessage);
+            _unitOfWork.Messages.Create(NewMessage);
+            await _unitOfWork.SaveAsync();
             return RedirectToPage("/Profile/Chats");
         }
     }

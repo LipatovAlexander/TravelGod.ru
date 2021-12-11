@@ -1,23 +1,20 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TravelGod.ru.DAL.Interfaces;
 using TravelGod.ru.Infrastructure.Cryptography;
 using TravelGod.ru.Models;
-using TravelGod.ru.Services;
 using TravelGod.ru.ViewModels;
 
 namespace TravelGod.ru.Pages.Profile
 {
     public class SignIn : MyPageModel
     {
-        private readonly SessionService _sessionService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        private readonly UserService _userService;
-
-        public SignIn(UserService userService, SessionService sessionService)
+        public SignIn(IUnitOfWork unitOfWork)
         {
-            _userService = userService;
-            _sessionService = sessionService;
+            _unitOfWork = unitOfWork;
         }
 
         [BindProperty] public SignInModel SignInModel { get; set; }
@@ -39,7 +36,7 @@ namespace TravelGod.ru.Pages.Profile
                 return RedirectToPage(nameof(Profile));
             }
 
-            var user = await _userService.GetUserAsync(SignInModel.Login, null);
+            var user = await _unitOfWork.Users.FirstOrDefaultAsync(u => u.Login == SignInModel.Login);
             if (user is null)
             {
                 ModelState.AddModelError("SignInModel.Password", "Неправильный логин или пароль");
@@ -56,7 +53,8 @@ namespace TravelGod.ru.Pages.Profile
 
             if (actualPasswordHash == user.PasswordHash)
             {
-                var session = await _sessionService.AddSessionAsync(user, !SignInModel.RememberMe);
+                var session = _unitOfWork.Sessions.CreateFor(user, !SignInModel.RememberMe);
+                await _unitOfWork.SaveAsync();
                 HttpContext.Response.Cookies.Append("token", session.Token,
                     new CookieOptions
                     {

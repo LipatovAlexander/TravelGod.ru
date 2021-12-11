@@ -50,8 +50,7 @@
                             <li class="text-center nav-item">
                                 <div class="dropdown position-relative">
                                     <a maybe-active asp-page-folder="Profile" class="nav-link dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <img src="/@Model.User.Avatar.Path" class="rounded mr-2" style="object-fit: cover" alt="аватарка" width="30" height="30" title="@Model.User.Avatar.Name">
-                                        <span>@Model.User.DisplayName</span>
+                                        @await Component.InvokeAsync("UserDisplayName", new {Model.User})
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-lg-right shadow mt-3" aria-labelledby="dropdownMenuLink">
                                         <a maybe-active class="dropdown-item" asp-page="/Profile/Index" asp-route-id="@Model.User.Id" id="Profile">

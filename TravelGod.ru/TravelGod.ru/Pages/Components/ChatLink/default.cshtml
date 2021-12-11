@@ -1,5 +1,4 @@
-﻿@using System.Net.Http
-@using TravelGod.ru.Models
+﻿@using TravelGod.ru.Models
 @model TravelGod.ru.Models.Chat
 
 @{
@@ -11,9 +10,9 @@
 
 <a chat-id="@Model.Id" class="list-group-item list-group-item-action list-group-item-light rounded-0 chat-link">
     <div class="media">
-        @if (!isGroupChat)
+        @if (!isGroupChat && otherUser?.Avatar is not null)
         {
-            <img src="/@otherUser?.Avatar.Path" alt="user" width="50" height="50" style="object-fit: cover" class="rounded-circle d-none d-md-block">
+            <img src="/@otherUser.Avatar.File.Path" alt="user" width="50" height="50" style="object-fit: cover" class="rounded-circle d-none d-md-block">
         }
         <div class="media-body ml-0 ml-sm-4 overflow-hidden">
             <div class="d-flex align-items-center justify-content-between mb-1 overflow-hidden">
@@ -30,7 +29,7 @@
                 @if (!isGroupChat)
                 {
                     <small class="small font-weight-bold d-none d-md-inline-block text-nowrap ml-3">
-                        @lastMessage?.DateTime.ToString("dd.MM.yy")
+                        @lastMessage?.CreatedAt.ToString("dd.MM.yy")
                     </small>
                 }
             </div>

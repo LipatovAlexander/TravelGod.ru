@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using TravelGod.ru.DAL.Interfaces;
 using TravelGod.ru.Models;
 using TravelGod.ru.Services;
 
@@ -9,11 +9,11 @@ namespace TravelGod.ru.Pages.Trips
     [AuthenticationPageFilter]
     public class Add : MyPageModel
     {
-        private readonly TripService _tripService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public Add(TripService tripService)
+        public Add(IUnitOfWork unitOfWork)
         {
-            _tripService = tripService;
+            _unitOfWork = unitOfWork;
         }
 
         [BindProperty] public Trip Trip { get; set; }
@@ -31,18 +31,19 @@ namespace TravelGod.ru.Pages.Trips
                 return Page();
             }
 
+            _unitOfWork.Trips.Create(Trip);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.Trips.AddUserAsync(Trip, User);
+            User.OwnedTripsCount += 1;
+            _unitOfWork.Users.Update(User);
+            await _unitOfWork.SaveAsync();
+
             if (CreateChat)
             {
-                Trip.Chat = new Chat
-                {
-                    Initiator = User,
-                    Name = Trip.Title,
-                    Users = new List<User>{User},
-                    IsGroupChat = true
-                };
+                await _unitOfWork.Chats.CreateForAsync(Trip, User);
+                await _unitOfWork.SaveAsync();
             }
 
-            await _tripService.AddTripAsync(Trip, User);
             return RedirectToPage("/Trips/Concrete", new {id = Trip.Id});
         }
     }

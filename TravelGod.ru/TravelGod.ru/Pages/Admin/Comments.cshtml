@@ -55,16 +55,16 @@
                 <input asp-for="EditedComment.Text" id="Edit_Text_@comment.Id" type="text" class="form-control-plaintext w-auto" readonly disabled value="@comment.Text" form="Edit_@comment.Id"/>
             </td>
             <td>
-                <span>@comment.Date.ToString("dd.MM.yyyy")</span>
+                <span>@comment.CreatedAt.ToString("dd.MM.yyyy")</span>
             </td>
             <td>
-                @if (comment.User.Status == Status.Normal)
+                @if (comment.CreatedBy.Status == Status.Normal)
                 {
-                    <a asp-page="/Profile/Index" asp-route-id="@comment.User.Id">@comment.User.DisplayName</a>
+                    <a asp-page="/Profile/Index" asp-route-id="@comment.CreatedBy.Id">@comment.CreatedBy.DisplayName</a>
                 }
                 else
                 {
-                    <span class="text-danger">@comment.User.DisplayName</span>
+                    <span class="text-danger">@comment.CreatedBy.DisplayName</span>
                 }
             </td>
             <td>

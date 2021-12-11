@@ -55,20 +55,27 @@
                 <input asp-for="EditedMessage.Text" id="Edit_Text_@message.Id" type="text" class="form-control-plaintext w-auto" readonly disabled value="@message.Text" form="Edit_@message.Id"/>
             </td>
             <td>
-                <span>@message.DateTime.ToString("dd.MM.yyyy")</span>
+                <span>@message.CreatedAt.ToString("dd.MM.yyyy")</span>
             </td>
             <td>
-                @if (message.User.Status == Status.Normal)
+                @if (message.CreatedBy.Status == Status.Normal)
                 {
-                    <a asp-page="/Profile/Index" asp-route-id="@message.User.Id">@message.User.DisplayName</a>
+                    <a asp-page="/Profile/Index" asp-route-id="@message.CreatedBy.Id">@message.CreatedBy.DisplayName</a>
                 }
                 else
                 {
-                    <span class="text-danger">@message.User.DisplayName</span>
+                    <span class="text-danger">@message.CreatedBy.DisplayName</span>
                 }
             </td>
             <td>
-                <span @if (message.Chat.Status is Status.RemovedByModerator) {@("class=\"text-danger\"")}>@message.Chat.Name</span>
+                <span
+                    @if (message.Chat.Status is Status.RemovedByModerator)
+                    {
+                        @("class=\"text-danger\"")
+                    }
+                >
+                    @message.Chat.Name
+                </span>
             </td>
             <td>
                 <span>@message.Status</span>

@@ -59,16 +59,16 @@
                 <input asp-for="EditedRating.Text" id="Edit_Text_@rating.Id" type="text" class="form-control-plaintext w-auto" readonly disabled value="@rating.Text" form="Edit_@rating.Id"/>
             </td>
             <td>
-                <span>@rating.Date.ToString("dd.MM.yyyy")</span>
+                <span>@rating.CreatedAt.ToString("dd.MM.yyyy")</span>
             </td>
             <td>
-                @if (rating.User.Status == Status.Normal)
+                @if (rating.CreatedBy.Status == Status.Normal)
                 {
-                    <a asp-page="/Profile/Index" asp-route-id="@rating.User.Id">@rating.User.DisplayName</a>
+                    <a asp-page="/Profile/Index" asp-route-id="@rating.CreatedBy.Id">@rating.CreatedBy.DisplayName</a>
                 }
                 else
                 {
-                    <span class="text-danger">@rating.User.DisplayName</span>
+                    <span class="text-danger">@rating.CreatedBy.DisplayName</span>
                 }
             </td>
             <td>
