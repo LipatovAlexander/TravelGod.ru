@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TravelGod.ru.DAL.Interfaces;
 using TravelGod.ru.Models;
+using TravelGod.ru.Services;
 
 namespace TravelGod.ru.Pages.Trips
 {
+    [AllowSynchronousIO]
     public class Concrete : MyPageModel
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -21,23 +23,27 @@ namespace TravelGod.ru.Pages.Trips
         [FromForm] public Comment NewComment { get; set; }
         [BindProperty] public Rating NewRating { get; set; }
 
-        public async Task<IActionResult> OnGet(int id)
+        public async Task<IActionResult> OnGet(int id, int pageIndex = 1)
         {
+            const int pageSize = 10;
             Trip = await _unitOfWork.Trips.FirstOrDefaultAsync(
                 t => t.Id == id && t.Status == Status.Normal,
                 trips =>
                     trips.Include(t => t.Users.Where(u => u.Status == Status.Normal))
                          .ThenInclude(u => u.Avatar)
                          .Include(t => t.Chat)
-                         .Include(t => t.Comments
-                                        .Where(c => c.Status == Status.Normal)
-                                        .OrderByDescending(c => c.CreatedAt))
-                         .ThenInclude(c => c.CreatedBy.Avatar)
                          .Include(t => t.Ratings.Where(r => r.Status == Status.Normal)));
+
             if (Trip is null)
             {
                 return NotFound();
             }
+
+            Trip.Comments = await _unitOfWork.Comments.GetPaginatedListAsync(pageSize, pageIndex,
+                c => c.Trip.Id == Trip.Id && c.Status == Status.Normal,
+                comments => comments
+                    .Include(c => c.CreatedBy.Avatar),
+                comments => comments.OrderByDescending(c => c.CreatedAt));
 
             return Page();
         }
@@ -92,7 +98,7 @@ namespace TravelGod.ru.Pages.Trips
             ModelState.Clear();
             if (!TryValidateModel(NewComment, nameof(NewComment)))
             {
-                return Page();
+                return BadRequest();
             }
 
             try

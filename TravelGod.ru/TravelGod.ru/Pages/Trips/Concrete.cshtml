@@ -1,5 +1,6 @@
 ﻿@page "{id}"
 @using TravelGod.ru.Models
+@using TravelGod.ru.Infrastructure
 @model TravelGod.ru.Pages.Trips.Concrete
 @{
     ViewData["Title"] = Model.Trip.Title;
@@ -198,7 +199,7 @@
         </div>
     </div>
 }
-<div class="container pb-1 mt-4">
+<div class="container pb-1 mt-4 position-relative mb-5">
     @if (Model.User is not null)
     {
         <div class="row no-gutters mb-4">
@@ -222,6 +223,27 @@
             @await Component.InvokeAsync("Comment", new {Comment = comment})
         }
     </div>
+
+    @if (Model.Trip.Comments is PaginatedList<Comment> {TotalPages: > 1 } comments)
+    {
+        var prevDisabled = !comments.HasPreviousPage ? "disabled" : "";
+        var nextDisabled = !comments.HasNextPage ? "disabled" : "";
+
+        <nav class="position-absolute" style="bottom: 0; left: 50%; transform: translate(-50%, 100%);" aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item @prevDisabled">
+                    <a class="page-link" asp-route-id="@Model.Trip.Id" asp-route-pageIndex="@(comments.PageIndex - 1)" asp-page="/Trips/Concrete">
+                        Назад
+                    </a>
+                </li>
+                <li class="page-item @nextDisabled">
+                    <a class="page-link" asp-route-id="@Model.Trip.Id" asp-route-pageIndex="@(comments.PageIndex + 1)" asp-page="/Trips/Concrete">
+                        Вперед
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
 </div>
 
 @if (Model.User is not null && Model.Trip.EndDate < DateTime.Now && Model.Trip.Users.Exists(u => u.Id == Model.User.Id) && !Model.Trip.Ratings.Exists(r => r.CreatedBy.Id == Model.User.Id))

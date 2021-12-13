@@ -10,6 +10,7 @@ using TravelGod.ru.Services;
 namespace TravelGod.ru.Pages.Profile
 {
     [AuthenticationPageFilter]
+    [AllowSynchronousIO]
     public class Chats : MyPageModel
     {
         private readonly IUnitOfWork _unitOfWork;
