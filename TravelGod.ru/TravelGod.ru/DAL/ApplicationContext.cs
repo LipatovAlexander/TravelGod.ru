@@ -1,20 +1,27 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using TravelGod.ru.Models;
+using File = TravelGod.ru.Models.File;
 
-namespace TravelGod.ru.Models
+namespace TravelGod.ru.DAL
 {
     public class ApplicationContext : DbContext
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IWebHostEnvironment _environment;
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options,
-                                  IHttpContextAccessor httpContextAccessor) : base(options)
+                                  IHttpContextAccessor httpContextAccessor, IWebHostEnvironment environment) : base(
+            options)
         {
             _httpContextAccessor = httpContextAccessor;
+            _environment = environment;
         }
 
         public DbSet<Chat> Chats { get; set; }
@@ -76,7 +83,8 @@ namespace TravelGod.ru.Models
             {
                 Id = 1,
                 Name = "default-avatar.png",
-                Path = "CustomFiles/Avatars/default-avatar.png"
+                BinaryData = System.IO.File.ReadAllBytes(Path.Combine(_environment.WebRootPath, "CustomFiles", "Avatars",
+                    "default-avatar.png"))
             };
 
             builder

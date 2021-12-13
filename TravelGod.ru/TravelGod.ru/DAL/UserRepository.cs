@@ -23,12 +23,12 @@ namespace TravelGod.ru.DAL
             {
                 File = Context.Files.Find(1)
             };
-            item.Avatar.File ??= new File
+
+            if (item.Avatar.File is null)
             {
-                Id = 1,
-                Name = "default-avatar.png",
-                Path = "CustomFiles/Avatars/default-avatar.png"
-            };
+                item.Avatar = null;
+            }
+
             base.Create(item);
         }
 

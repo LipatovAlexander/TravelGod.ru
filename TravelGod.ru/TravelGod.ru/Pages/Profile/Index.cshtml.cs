@@ -76,7 +76,7 @@ namespace TravelGod.ru.Pages.Profile
                 }
 
                 CurrentUser.Avatar =
-                    await _unitOfWork.Avatars.CreateFromFormFileAsync(Avatar, environment.WebRootPath,
+                    _unitOfWork.Avatars.CreateFromFormFile(Avatar, environment.WebRootPath,
                         CurrentUser.Id.ToString());
             }
 

@@ -6,6 +6,6 @@ namespace TravelGod.ru.DAL.Interfaces
 {
     public interface IAvatarRepository : IGenericRepository<Avatar>
     {
-        Task<Avatar> CreateFromFormFileAsync(IFormFile formFile, string wwwroot, string name = null);
+        Avatar CreateFromFormFile(IFormFile formFile, string wwwroot, string name = null);
     }
 }

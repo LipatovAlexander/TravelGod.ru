@@ -169,10 +169,7 @@
                         </blockquote>
                         <div class="card-sahip">
                             <div class="favicon">
-                                @if (rating.CreatedBy.Avatar is not null)
-                                {
-                                    <img height="40" width="40" src="/@rating.CreatedBy.Avatar.File.Path" alt="аватарка">
-                                }
+                                <user-avatar height="40" width="40" asp-user="rating.CreatedBy"/>
                             </div>
                         </div>
                     </div>
@@ -206,10 +203,7 @@
     {
         <div class="row no-gutters mb-4">
             <div class="col-auto">
-                @if (Model.User.Avatar is not null)
-                {
-                    <img src="/@Model.User.Avatar.File.Path" class="rounded mr-2" style="object-fit: cover" alt="аватарка" width="40" height="40" title="@Model.User.Avatar.File.Name">
-                }
+                <user-avatar asp-user="Model.User" class="rounded mr-2" width="40" height="40"/>
             </div>
             <div class="col col-md-7">
                 <form method="Post" id="comment-form">

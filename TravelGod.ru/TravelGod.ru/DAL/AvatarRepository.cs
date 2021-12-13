@@ -11,12 +11,12 @@ namespace TravelGod.ru.DAL
         {
         }
 
-        public async Task<Avatar> CreateFromFormFileAsync(IFormFile formFile, string wwwroot, string name = null)
+        public Avatar CreateFromFormFile(IFormFile formFile, string wwwroot, string name = null)
         {
             var fileRepo = new FileRepository(Context);
             var avatar = new Avatar
             {
-                File = await fileRepo.CreateFromFormFileAsync(formFile, wwwroot, name)
+                File = fileRepo.CreateFromFormFile(formFile, wwwroot, name)
             };
             return avatar;
         }

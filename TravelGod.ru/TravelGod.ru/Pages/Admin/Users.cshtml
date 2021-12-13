@@ -90,10 +90,7 @@
                 @user.Id
             </th>
             <td>
-                @if (user.Avatar is not null)
-                {
-                    <img src="/@user.Avatar.File.Path" alt="@user.Avatar.File.Name" width="30" height="30" style="object-fit: cover">
-                }
+                <user-avatar asp-user="user" width="30" height="30"/>
             </td>
             <td>
                 <input asp-for="EditedUser.FirstName" id="Edit_FirstName_@user.Id" type="text" class="form-control-plaintext w-auto" readonly disabled value="@user.FirstName" form="Edit_@user.Id"/>

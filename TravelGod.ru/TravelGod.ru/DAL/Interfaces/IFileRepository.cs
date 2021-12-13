@@ -6,6 +6,6 @@ namespace TravelGod.ru.DAL.Interfaces
 {
     public interface IFileRepository : IGenericRepository<File>
     {
-        Task<File> CreateFromFormFileAsync(IFormFile formFile, string wwwroot, string name);
+        File CreateFromFormFile(IFormFile formFile, string wwwroot, string name);
     }
 }

@@ -17,16 +17,8 @@
     <div class="col-4 col-sm-auto p-2">
         <div class="picture-container">
             <div class="picture">
-                @{
-                    var avatarPath = Model.CurrentUser.Avatar is not null
-                        ? Model.CurrentUser.Avatar.File.Path
-                        : "CustomFiles/Avatars/default-avatar.png";
-                    var avatarName = Model.CurrentUser.Avatar is not null
-                        ? Model.CurrentUser.Avatar.File.Name
-                        : "default-avatar.png";
-                }
-                <img src="/@avatarPath" alt="default avatar" width="100" height="100" style="object-fit: cover" id="wizardPicturePreview" title="@avatarName"/>
-                <input asp-for="Avatar" id="wizard-picture" form="profile-form" disabled readonly title="@avatarName" accept="image/png, image/jpeg">
+                <user-avatar asp-user="Model.CurrentUser" width="100" height="100" id="wizardPicturePreview"/>
+                <input asp-for="Avatar" id="wizard-picture" form="profile-form" disabled readonly accept="image/png, image/jpeg">
                 <span asp-validation-for="Avatar" class="text-danger"></span>
             </div>
         </div>

@@ -1,10 +1,7 @@
 ﻿@model TravelGod.ru.Models.Comment
 <div class="row no-gutters mb-4">
     <div class="col-auto">
-        @if (Model.CreatedBy.Avatar is not null)
-        {
-            <img src="/@Model.CreatedBy.Avatar.File.Path" class="rounded mr-2" style="object-fit: cover" alt="аватарка" width="40" height="40" title="@Model.CreatedBy.Avatar.File.Name">
-        }
+        <user-avatar asp-user="Model.CreatedBy" class="rounded mr-2" width="40" height="40"/>
     </div>
     <div class="col">
         <div>

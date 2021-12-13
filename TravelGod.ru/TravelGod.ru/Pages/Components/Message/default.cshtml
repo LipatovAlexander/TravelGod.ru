@@ -7,9 +7,9 @@
 }
 
 <div class="media @if (isReceiverMessage) {@("ml-auto")} mb-3 message">
-    @if (!isReceiverMessage && Model.CreatedBy.Avatar is not null)
+    @if (!isReceiverMessage)
     {
-        <img src="/@Model.CreatedBy.Avatar.File.Path" alt="аватарка" width="50" height="50" class="rounded-circle" style="object-fit: cover">
+        <user-avatar asp-user="Model.CreatedBy" width="50" height="50" class="rounded-circle"/>
     }
     <div class="media-body @if (!isReceiverMessage) {@("ml-3")}">
         @if (!isReceiverMessage)

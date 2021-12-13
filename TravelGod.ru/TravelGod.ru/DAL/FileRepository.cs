@@ -13,18 +13,15 @@ namespace TravelGod.ru.DAL
         {
         }
 
-        public async Task<File> CreateFromFormFileAsync(IFormFile formFile, string wwwroot, string name = null)
+        public File CreateFromFormFile(IFormFile formFile, string wwwroot, string name)
         {
-            var path = name is not null
-                ? "CustomFiles/Avatars/" + name + Path.GetExtension(formFile.FileName).ToLowerInvariant()
-                : "CustomFiles/Avatars/" + formFile.FileName;
-            await using (var fileStream =
-                new FileStream(Path.Combine(wwwroot, path), FileMode.Create))
+            byte[] imageData;
+            using (var binaryReader = new BinaryReader(formFile.OpenReadStream()))
             {
-                await formFile.CopyToAsync(fileStream);
+                imageData = binaryReader.ReadBytes((int)formFile.Length);
             }
 
-            var file = new File {Name = formFile.FileName, Path = path};
+            var file = new File {Name = formFile.FileName, BinaryData = imageData};
             Create(file);
             return file;
         }
