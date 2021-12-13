@@ -64,6 +64,17 @@ namespace TravelGod.ru.DAL
                 trip.Users ??= new List<User>();
             }
 
+            if (trip.Chat is null)
+            {
+                await Context.Entry(trip).Reference(t => t.Chat).LoadAsync();
+
+                if (trip.Chat is not null && trip.Chat.Users is null)
+                {
+                    await Context.Entry(trip.Chat).Collection(c => c.Users).LoadAsync();
+                    trip.Chat.Users ??= new List<User>();
+                }
+            }
+
             trip.Users.Add(user);
             trip.UsersCount += 1;
             user.JoinedTripsCount += 1;
@@ -77,6 +88,7 @@ namespace TravelGod.ru.DAL
             var trip = Context.Trips
                               .Include(t => t.Users)
                               .Include(t => t.Chat)
+                              .ThenInclude(c => c.Users)
                               .FirstOrDefault(t => t.Id == tripId);
             if (trip is null)
             {
