@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TravelGod.ru.DAL.Interfaces;
-using TravelGod.ru.Models;
 
 namespace TravelGod.ru.DAL
 {

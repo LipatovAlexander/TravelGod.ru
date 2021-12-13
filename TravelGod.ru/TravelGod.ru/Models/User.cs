@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using TravelGod.ru.Infrastructure;
+using TravelGod.ru.Infrastructure.Validation;
 
 namespace TravelGod.ru.Models
 {

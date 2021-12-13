@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using TravelGod.ru.DAL.Interfaces;
 using TravelGod.ru.Models;
 
-namespace TravelGod.ru.Services
+namespace TravelGod.ru.Services.Middlewares
 {
     public class AuthenticationMiddleware
     {

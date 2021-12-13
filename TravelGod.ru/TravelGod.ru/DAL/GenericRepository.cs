@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using TravelGod.ru.DAL.Interfaces;
 using TravelGod.ru.Infrastructure;
-using TravelGod.ru.Models;
 
 namespace TravelGod.ru.DAL
 {

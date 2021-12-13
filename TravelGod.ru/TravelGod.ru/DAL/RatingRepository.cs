@@ -46,19 +46,6 @@ namespace TravelGod.ru.DAL
             Context.Trips.Update(trip);
         }
 
-        private void UpdateRating(Trip trip)
-        {
-            var average = trip.Ratings
-                              .Where(r => r.Status == Status.Normal)
-                              .Select(r => (int) r.Point)
-                              .Average();
-            if (Math.Abs(average - trip.AverageRating) > 0.1)
-            {
-                trip.AverageRating = average;
-                Context.Trips.Update(trip);
-            }
-        }
-
         public async Task CreateForTripAsync(int tripId, Rating rating, User creator = null)
         {
             var trip = creator is null
@@ -113,6 +100,22 @@ namespace TravelGod.ru.DAL
             await RemoveAsync(rating);
         }
 
-        public new void Remove(Rating rating) => RemoveAsync(rating).GetAwaiter().GetResult();
+        public new void Remove(Rating rating)
+        {
+            RemoveAsync(rating).GetAwaiter().GetResult();
+        }
+
+        private void UpdateRating(Trip trip)
+        {
+            var average = trip.Ratings
+                              .Where(r => r.Status == Status.Normal)
+                              .Select(r => (int) r.Point)
+                              .Average();
+            if (Math.Abs(average - trip.AverageRating) > 0.1)
+            {
+                trip.AverageRating = average;
+                Context.Trips.Update(trip);
+            }
+        }
     }
 }

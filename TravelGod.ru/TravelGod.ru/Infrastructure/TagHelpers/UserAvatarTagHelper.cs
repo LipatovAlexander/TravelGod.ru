@@ -1,10 +1,9 @@
 ﻿using System;
-using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using TravelGod.ru.DAL.Interfaces;
 using TravelGod.ru.Models;
 
-namespace TravelGod.ru.Infrastructure
+namespace TravelGod.ru.Infrastructure.TagHelpers
 {
     [HtmlTargetElement("user-avatar", Attributes = "asp-user", TagStructure = TagStructure.WithoutEndTag)]
     public class UserAvatarTagHelper : TagHelper

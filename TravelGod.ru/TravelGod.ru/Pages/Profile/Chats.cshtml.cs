@@ -5,12 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TravelGod.ru.DAL.Interfaces;
 using TravelGod.ru.Models;
-using TravelGod.ru.Services;
+using TravelGod.ru.Services.Filters;
 
 namespace TravelGod.ru.Pages.Profile
 {
     [AuthenticationPageFilter]
-    [AllowSynchronousIO]
+    [AllowSynchronousIo]
     public class Chats : MyPageModel
     {
         private readonly IUnitOfWork _unitOfWork;

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace TravelGod.ru.Infrastructure
+namespace TravelGod.ru.Infrastructure.TagHelpers
 {
     [HtmlTargetElement("a", Attributes = "asp-page, maybe-active")]
     [HtmlTargetElement("a", Attributes = "asp-page-folder")]

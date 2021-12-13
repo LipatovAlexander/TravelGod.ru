@@ -13,8 +13,8 @@ namespace TravelGod.ru.DAL
 {
     public class ApplicationContext : DbContext
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IWebHostEnvironment _environment;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options,
                                   IHttpContextAccessor httpContextAccessor, IWebHostEnvironment environment) : base(
@@ -83,7 +83,8 @@ namespace TravelGod.ru.DAL
             {
                 Id = 1,
                 Name = "default-avatar.png",
-                BinaryData = System.IO.File.ReadAllBytes(Path.Combine(_environment.WebRootPath, "CustomFiles", "Avatars",
+                BinaryData = System.IO.File.ReadAllBytes(Path.Combine(_environment.WebRootPath, "CustomFiles",
+                    "Avatars",
                     "default-avatar.png"))
             };
 

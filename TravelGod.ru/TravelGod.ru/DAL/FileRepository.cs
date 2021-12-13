@@ -1,8 +1,6 @@
 ﻿using System.IO;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using TravelGod.ru.DAL.Interfaces;
-using TravelGod.ru.Models;
 using File = TravelGod.ru.Models.File;
 
 namespace TravelGod.ru.DAL
@@ -18,7 +16,7 @@ namespace TravelGod.ru.DAL
             byte[] imageData;
             using (var binaryReader = new BinaryReader(formFile.OpenReadStream()))
             {
-                imageData = binaryReader.ReadBytes((int)formFile.Length);
+                imageData = binaryReader.ReadBytes((int) formFile.Length);
             }
 
             var file = new File {Name = formFile.FileName, BinaryData = imageData};

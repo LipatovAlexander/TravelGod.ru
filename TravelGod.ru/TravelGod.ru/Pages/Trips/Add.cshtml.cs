@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TravelGod.ru.DAL.Interfaces;
 using TravelGod.ru.Models;
-using TravelGod.ru.Services;
+using TravelGod.ru.Services.Filters;
 
 namespace TravelGod.ru.Pages.Trips
 {

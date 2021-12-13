@@ -13,200 +13,200 @@
 }
 
 <div class="container">
-<div class="row" id="profile-header">
-    <div class="col-4 col-sm-auto p-2">
-        <div class="picture-container">
-            <div class="picture">
-                <user-avatar asp-user="Model.CurrentUser" width="100" height="100" id="wizardPicturePreview"/>
-                <input asp-for="Avatar" id="wizard-picture" form="profile-form" disabled readonly accept="image/png, image/jpeg">
-                <span asp-validation-for="Avatar" class="text-danger"></span>
+    <div class="row" id="profile-header">
+        <div class="col-4 col-sm-auto p-2">
+            <div class="picture-container">
+                <div class="picture">
+                    <user-avatar asp-user="Model.CurrentUser" width="100" height="100" id="wizardPicturePreview"/>
+                    <input asp-for="Avatar" id="wizard-picture" form="profile-form" disabled readonly accept="image/png, image/jpeg">
+                    <span asp-validation-for="Avatar" class="text-danger"></span>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-8 col-sm col-md-3 p-2">
-        <span class="d-block text-truncate font-weight-bold">
-            @if (string.IsNullOrEmpty(Model.CurrentUser.FirstName) || string.IsNullOrEmpty(Model.CurrentUser.LastName))
-            {
-                @Model.CurrentUser.Login
-            }
-            else
-            {
-                @($"{Model.CurrentUser.FirstName} {Model.CurrentUser.LastName}")
-            }
-        </span>
-        @if (!string.IsNullOrEmpty(Model.CurrentUser.Description))
-        {
-            <span class="d-block text-truncate mt-2 text-muted">
-                @Model.CurrentUser.Description
+        <div class="col-8 col-sm col-md-3 p-2">
+            <span class="d-block text-truncate font-weight-bold">
+                @if (string.IsNullOrEmpty(Model.CurrentUser.FirstName) || string.IsNullOrEmpty(Model.CurrentUser.LastName))
+                {
+                    @Model.CurrentUser.Login
+                }
+                else
+                {
+                    @($"{Model.CurrentUser.FirstName} {Model.CurrentUser.LastName}")
+                }
             </span>
-        }
-        @if (Model.User is not null && Model.User.Id != Model.CurrentUser.Id)
-        {
-            <button type="button" class="btn btn-outline-primary mt-2" data-toggle="modal" data-target="#messageModal">Написать сообщение</button>
-        }
+            @if (!string.IsNullOrEmpty(Model.CurrentUser.Description))
+            {
+                <span class="d-block text-truncate mt-2 text-muted">
+                    @Model.CurrentUser.Description
+                </span>
+            }
+            @if (Model.User is not null && Model.User.Id != Model.CurrentUser.Id)
+            {
+                <button type="button" class="btn btn-outline-primary mt-2" data-toggle="modal" data-target="#messageModal">Написать сообщение</button>
+            }
+        </div>
+        <div class="col-12 col-md order-first order-md-last p-2 text-center">
+            <img src="/profile-bg.png" alt="" style="max-height: 100px" class="img-fluid">
+        </div>
     </div>
-    <div class="col-12 col-md order-first order-md-last p-2 text-center">
-        <img src="/profile-bg.png" alt="" style="max-height: 100px" class="img-fluid">
-    </div>
-</div>
-<div class="row">
-    <div class="col">
-        <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active border-0" id="trips-tab" data-toggle="tab" href="#trips" role="tab" aria-controls="trips" aria-selected="true">История поездок</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link border-0" id="about-tab" data-toggle="tab" href="#about" role="tab" aria-controls="about" aria-selected="false">Обо мне</a>
-            </li>
-        </ul>
-        <div class="tab-content m-3" id="myTabContent">
-            <div class="tab-pane fade show active" id="trips" role="tabpanel" aria-labelledby="trips-tab">
-                <div class="container py-1">
+    <div class="row">
+        <div class="col">
+            <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active border-0" id="trips-tab" data-toggle="tab" href="#trips" role="tab" aria-controls="trips" aria-selected="true">История поездок</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link border-0" id="about-tab" data-toggle="tab" href="#about" role="tab" aria-controls="about" aria-selected="false">Обо мне</a>
+                </li>
+            </ul>
+            <div class="tab-content m-3" id="myTabContent">
+                <div class="tab-pane fade show active" id="trips" role="tabpanel" aria-labelledby="trips-tab">
+                    <div class="container py-1">
 
-                    <div class="row">
-                        <div class="col-lg-7 mx-auto mb-5 position-relative">
-                            @if (Model.CurrentUser.JoinedTrips.Any())
-                            {
-                                @foreach (var group in Model.CurrentUser.JoinedTrips
-                                                            .GroupBy(t => t.StartDate.Year)
-                                                            .OrderByDescending(g => g.Key))
+                        <div class="row">
+                            <div class="col-lg-7 mx-auto mb-5 position-relative">
+                                @if (Model.CurrentUser.JoinedTrips.Any())
                                 {
-                                    <div class="row no-gutters">
-                                        <div class="col">
-                                            <hr>
+                                    @foreach (var group in Model.CurrentUser.JoinedTrips
+                                                                .GroupBy(t => t.StartDate.Year)
+                                                                .OrderByDescending(g => g.Key))
+                                    {
+                                        <div class="row no-gutters">
+                                            <div class="col">
+                                                <hr>
+                                            </div>
+                                            <div class="col-auto mx-2 font-weight-bold text-monospace">@group.Key</div>
+                                            <div class="col">
+                                                <hr>
+                                            </div>
                                         </div>
-                                        <div class="col-auto mx-2 font-weight-bold text-monospace">@group.Key</div>
-                                        <div class="col">
-                                            <hr>
-                                        </div>
-                                    </div>
 
-                                    <!-- Timeline -->
-                                    <ul class="timeline">
+                                        <!-- Timeline -->
+                                        <ul class="timeline">
 
-                                        @foreach (var trip in group)
-                                        {
-                                            <li class="timeline-item bg-white rounded ml-3 p-4 shadow">
-                                                <div class="timeline-arrow"></div>
-                                                <div class="timeline-point"></div>
-                                                <h2 class="h5 mb-0 overflow-hidden">
-                                                    <a asp-route-id="@trip.Id" asp-page="/Trips/Concrete" class="text-dark text-nowrap">
-                                                        @trip.Title
-                                                    </a>
-                                                </h2>
-                                                <span class="text-dark font-weight-bold timeline-dates">
-                                                    @trip.StartDate.ToString("dd.MM")
-                                                </span>
-                                                <p class="text-small mt-2 font-weight-light text-nowrap overflow-hidden">
-                                                    @trip.Description
-                                                </p>
-                                                <span class="text-muted d-inline-flex align-items-center">
-                                                    <span class="d-none d-sm-inline mr-2">Участников:</span>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-people-fill d-sm-none" viewBox="0 0 16 16">
-                                                        <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-                                                        <path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/>
-                                                        <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
-                                                    </svg>
-                                                    @trip.UsersCount
-                                                </span>
-                                            </li>
-                                            <!-- End -->
-                                        }
-                                    </ul>
-                                }
-
-                                if (Model.CurrentUser.JoinedTrips is PaginatedList<Trip> {TotalPages: > 1 } paginatedList)
-                                {
-                                    var prevDisabled = !paginatedList.HasPreviousPage ? "disabled" : "";
-                                    var nextDisabled = !paginatedList.HasNextPage ? "disabled" : "";
-
-                                    <nav class="position-absolute" style="bottom: 0; left: 50%; transform: translate(-50%, 100%);" aria-label="Page navigation example">
-                                        <ul class="pagination">
-                                            <li class="page-item @prevDisabled">
-                                                <a class="page-link" asp-route-pageNumber="@(paginatedList.PageIndex - 1)"
-                                                   asp-route-id="@Model.CurrentUser.Id" asp-page="/Profile/Index">
-                                                    Назад
-                                                </a>
-                                            </li>
-                                            <li class="page-item @nextDisabled">
-                                                <a class="page-link" asp-route-pageNumber="@(paginatedList.PageIndex + 1)"
-                                                   asp-route-id="@Model.CurrentUser.Id" asp-page="/Profile/Index">
-                                                    Вперед
-                                                </a>
-                                            </li>
+                                            @foreach (var trip in group)
+                                            {
+                                                <li class="timeline-item bg-white rounded ml-3 p-4 shadow">
+                                                    <div class="timeline-arrow"></div>
+                                                    <div class="timeline-point"></div>
+                                                    <h2 class="h5 mb-0 overflow-hidden">
+                                                        <a asp-route-id="@trip.Id" asp-page="/Trips/Concrete" class="text-dark text-nowrap">
+                                                            @trip.Title
+                                                        </a>
+                                                    </h2>
+                                                    <span class="text-dark font-weight-bold timeline-dates">
+                                                        @trip.StartDate.ToString("dd.MM")
+                                                    </span>
+                                                    <p class="text-small mt-2 font-weight-light text-nowrap overflow-hidden">
+                                                        @trip.Description
+                                                    </p>
+                                                    <span class="text-muted d-inline-flex align-items-center">
+                                                        <span class="d-none d-sm-inline mr-2">Участников:</span>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-people-fill d-sm-none" viewBox="0 0 16 16">
+                                                            <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                                                            <path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/>
+                                                            <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
+                                                        </svg>
+                                                        @trip.UsersCount
+                                                    </span>
+                                                </li>
+                                                <!-- End -->
+                                            }
                                         </ul>
-                                    </nav>
-                                }
-                            }
-                            else
-                            {
-                                <p class="text-center">Данный пользователь ещё не участвовал в поездках.</p>
-                            }
+                                    }
 
+                                    if (Model.CurrentUser.JoinedTrips is PaginatedList<Trip> {TotalPages: > 1 } paginatedList)
+                                    {
+                                        var prevDisabled = !paginatedList.HasPreviousPage ? "disabled" : "";
+                                        var nextDisabled = !paginatedList.HasNextPage ? "disabled" : "";
+
+                                        <nav class="position-absolute" style="bottom: 0; left: 50%; transform: translate(-50%, 100%);" aria-label="Page navigation example">
+                                            <ul class="pagination">
+                                                <li class="page-item @prevDisabled">
+                                                    <a class="page-link" asp-route-pageNumber="@(paginatedList.PageIndex - 1)"
+                                                       asp-route-id="@Model.CurrentUser.Id" asp-page="/Profile/Index">
+                                                        Назад
+                                                    </a>
+                                                </li>
+                                                <li class="page-item @nextDisabled">
+                                                    <a class="page-link" asp-route-pageNumber="@(paginatedList.PageIndex + 1)"
+                                                       asp-route-id="@Model.CurrentUser.Id" asp-page="/Profile/Index">
+                                                        Вперед
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    }
+                                }
+                                else
+                                {
+                                    <p class="text-center">Данный пользователь ещё не участвовал в поездках.</p>
+                                }
+
+                            </div>
                         </div>
                     </div>
-                </div>
 
-            </div>
-            <div class="tab-pane fade" id="about" role="tabpanel" aria-labelledby="about-tab">
-                <form method="post" id="profile-form" enctype="multipart/form-data">
-                    <div class="form-group row">
-                        <label asp-for="CurrentUser.FirstName" class="font-weight-bold col-sm-2 col-form-label">Имя</label>
-                        <div class="col-sm-7">
-                            <input asp-for="CurrentUser.FirstName" type="text" readonly disabled class="form-control-plaintext">
-                            <span class="text-danger" asp-validation-for="CurrentUser.FirstName"></span>
+                </div>
+                <div class="tab-pane fade" id="about" role="tabpanel" aria-labelledby="about-tab">
+                    <form method="post" id="profile-form" enctype="multipart/form-data">
+                        <div class="form-group row">
+                            <label asp-for="CurrentUser.FirstName" class="font-weight-bold col-sm-2 col-form-label">Имя</label>
+                            <div class="col-sm-7">
+                                <input asp-for="CurrentUser.FirstName" type="text" readonly disabled class="form-control-plaintext">
+                                <span class="text-danger" asp-validation-for="CurrentUser.FirstName"></span>
+                            </div>
+                            @if (Model.User?.Id == Model.CurrentUser?.Id)
+                            {
+                                <div class="col-sm-3 order-first order-sm-last">
+                                    <input id="toggle-edit" type="button" class="btn btn-outline-secondary" value="Редактировать">
+                                </div>
+                            }
+                        </div>
+                        <div class="form-group row">
+                            <label asp-for="CurrentUser.LastName" class="font-weight-bold col-sm-2 col-form-label">Фамилия</label>
+                            <div class="col-sm-7">
+                                <input asp-for="CurrentUser.LastName" type="text" readonly disabled class="form-control-plaintext">
+                                <span class="text-danger" asp-validation-for="CurrentUser.LastName"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label asp-for="CurrentUser.Patronymic" class="font-weight-bold col-sm-2 col-form-label">Отчество</label>
+                            <div class="col-sm-7">
+                                <input asp-for="CurrentUser.Patronymic" type="text" readonly disabled class="form-control-plaintext">
+                                <span class="text-danger" asp-validation-for="CurrentUser.Patronymic"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label asp-for="CurrentUser.Description" class="font-weight-bold col-sm-2 col-form-label">О себе</label>
+                            <div class="col-sm-7">
+                                <input asp-for="CurrentUser.Description" type="text" readonly disabled class="form-control-plaintext">
+                                <span class="text-danger" asp-validation-for="CurrentUser.Description"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label asp-for="CurrentUser.Email" class="font-weight-bold col-sm-2 col-form-label">Email</label>
+                            <div class="col-sm-7">
+                                <input asp-for="CurrentUser.Email" type="email" readonly disabled class="form-control-plaintext">
+                                <span class="text-danger" asp-validation-for="CurrentUser.Email"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label asp-for="CurrentUser.BirthDate" class="font-weight-bold col-sm-2 col-form-label">День рождения</label>
+                            <div class="col-sm-7">
+                                <input asp-for="CurrentUser.BirthDate" type="date" readonly disabled class="form-control-plaintext">
+                                <span class="text-danger" asp-validation-for="CurrentUser.BirthDate"></span>
+                            </div>
                         </div>
                         @if (Model.User?.Id == Model.CurrentUser?.Id)
                         {
-                            <div class="col-sm-3 order-first order-sm-last">
-                                <input id="toggle-edit" type="button" class="btn btn-outline-secondary" value="Редактировать">
-                            </div>
+                            <input class="btn btn-outline-primary" type="submit" value="Сохранить" hidden>
                         }
-                    </div>
-                    <div class="form-group row">
-                        <label asp-for="CurrentUser.LastName" class="font-weight-bold col-sm-2 col-form-label">Фамилия</label>
-                        <div class="col-sm-7">
-                            <input asp-for="CurrentUser.LastName" type="text" readonly disabled class="form-control-plaintext">
-                            <span class="text-danger" asp-validation-for="CurrentUser.LastName"></span>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label asp-for="CurrentUser.Patronymic" class="font-weight-bold col-sm-2 col-form-label">Отчество</label>
-                        <div class="col-sm-7">
-                            <input asp-for="CurrentUser.Patronymic" type="text" readonly disabled class="form-control-plaintext">
-                            <span class="text-danger" asp-validation-for="CurrentUser.Patronymic"></span>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label asp-for="CurrentUser.Description" class="font-weight-bold col-sm-2 col-form-label">О себе</label>
-                        <div class="col-sm-7">
-                            <input asp-for="CurrentUser.Description" type="text" readonly disabled class="form-control-plaintext">
-                            <span class="text-danger" asp-validation-for="CurrentUser.Description"></span>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label asp-for="CurrentUser.Email" class="font-weight-bold col-sm-2 col-form-label">Email</label>
-                        <div class="col-sm-7">
-                            <input asp-for="CurrentUser.Email" type="email" readonly disabled class="form-control-plaintext">
-                            <span class="text-danger" asp-validation-for="CurrentUser.Email"></span>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label asp-for="CurrentUser.BirthDate" class="font-weight-bold col-sm-2 col-form-label">День рождения</label>
-                        <div class="col-sm-7">
-                            <input asp-for="CurrentUser.BirthDate" type="date" readonly disabled class="form-control-plaintext">
-                            <span class="text-danger" asp-validation-for="CurrentUser.BirthDate"></span>
-                        </div>
-                    </div>
-                    @if (Model.User?.Id == Model.CurrentUser?.Id)
-                    {
-                        <input class="btn btn-outline-primary" type="submit" value="Сохранить" hidden>
-                    }
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 </div>
 
 @if (Model.User is not null && Model.User.Id != Model.CurrentUser.Id)

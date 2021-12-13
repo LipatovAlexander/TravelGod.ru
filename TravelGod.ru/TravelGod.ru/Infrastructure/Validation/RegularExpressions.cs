@@ -1,4 +1,4 @@
-﻿namespace TravelGod.ru.Infrastructure
+﻿namespace TravelGod.ru.Infrastructure.Validation
 {
     public static class RegularExpressions
     {

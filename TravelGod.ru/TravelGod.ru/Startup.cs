@@ -8,8 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using TravelGod.ru.DAL;
 using TravelGod.ru.DAL.Interfaces;
-using TravelGod.ru.Models;
-using TravelGod.ru.Services;
+using TravelGod.ru.Services.Middlewares;
 
 namespace TravelGod.ru
 {

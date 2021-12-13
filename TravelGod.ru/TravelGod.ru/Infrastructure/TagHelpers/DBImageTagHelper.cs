@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Linq;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using TravelGod.ru.Models;
 
-namespace TravelGod.ru.Infrastructure
+namespace TravelGod.ru.Infrastructure.TagHelpers
 {
     [HtmlTargetElement("img", Attributes = "asp-file", TagStructure = TagStructure.WithoutEndTag)]
     public class DbImageTagHelper : TagHelper

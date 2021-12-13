@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using TravelGod.ru.DAL.Interfaces;
 using TravelGod.ru.Models;
 

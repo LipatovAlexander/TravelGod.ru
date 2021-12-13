@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using TravelGod.ru.Infrastructure;
+using TravelGod.ru.Infrastructure.Validation;
 using TravelGod.ru.Models;
 
 namespace TravelGod.ru.ViewModels

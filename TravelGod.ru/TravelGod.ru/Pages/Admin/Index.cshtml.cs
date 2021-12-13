@@ -1,4 +1,4 @@
-﻿using TravelGod.ru.Services;
+﻿using TravelGod.ru.Services.Filters;
 
 namespace TravelGod.ru.Pages.Admin
 {

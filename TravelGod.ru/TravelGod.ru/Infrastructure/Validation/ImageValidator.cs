@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
 
-namespace TravelGod.ru.Infrastructure
+namespace TravelGod.ru.Infrastructure.Validation
 {
     public static class ImageValidator
     {
