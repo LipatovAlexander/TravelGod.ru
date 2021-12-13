@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TravelGod.ru.DAL.Interfaces;
@@ -49,15 +50,15 @@ namespace TravelGod.ru.Pages.Admin
 
         public async Task<IActionResult> OnGetRemove(int id, int pageIndex)
         {
-            var rating = await _unitOfWork.Ratings.FindByIdAsync(id);
-            if (rating is null || rating.Status == Status.RemovedByModerator)
+            try
+            {
+                await _unitOfWork.Ratings.RemoveAsync(id);
+                await _unitOfWork.SaveAsync();
+            }
+            catch
             {
                 return BadRequest();
             }
-
-            rating.Status = Status.RemovedByModerator;
-            _unitOfWork.Ratings.Update(rating);
-            await _unitOfWork.SaveAsync();
 
             return RedirectToPage("/Admin/Ratings",
                 new {pageIndex});

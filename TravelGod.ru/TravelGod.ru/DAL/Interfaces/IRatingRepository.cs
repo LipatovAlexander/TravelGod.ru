@@ -7,5 +7,9 @@ namespace TravelGod.ru.DAL.Interfaces
     {
         void CreateFor(Trip trip, Rating rating, User creator);
         Task CreateForTripAsync(int tripId, Rating rating, User creator);
+        Task RemoveAsync(Rating rating);
+        Task RemoveAsync(int id);
+
+        new void Remove(Rating rating);
     }
 }

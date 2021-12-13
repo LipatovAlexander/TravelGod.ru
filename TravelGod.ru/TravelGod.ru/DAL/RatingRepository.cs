@@ -33,7 +33,7 @@ namespace TravelGod.ru.DAL
                     throw new Exception("Creator hasn't access to this action");
                 }
 
-                if (trip.Ratings is not null && trip.Ratings.Exists(r => r.CreatedById == creator.Id))
+                if (trip.Ratings?.FirstOrDefault(r => r.CreatedById == creator.Id && r.Status == Status.Normal) != null)
                 {
                     throw new Exception("This creator already has left rating for this trip");
                 }
@@ -41,13 +41,22 @@ namespace TravelGod.ru.DAL
 
             trip.Ratings ??= new List<Rating>();
             trip.Ratings.Add(rating);
-            var average = trip.Ratings.Select(r => (int) r.Point).Average();
+            UpdateRating(trip);
+
+            Context.Trips.Update(trip);
+        }
+
+        private void UpdateRating(Trip trip)
+        {
+            var average = trip.Ratings
+                              .Where(r => r.Status == Status.Normal)
+                              .Select(r => (int) r.Point)
+                              .Average();
             if (Math.Abs(average - trip.AverageRating) > 0.1)
             {
                 trip.AverageRating = average;
+                Context.Trips.Update(trip);
             }
-
-            Context.Trips.Update(trip);
         }
 
         public async Task CreateForTripAsync(int tripId, Rating rating, User creator = null)
@@ -60,5 +69,50 @@ namespace TravelGod.ru.DAL
                                .FirstOrDefaultAsync(t => t.Id == tripId);
             CreateFor(trip, rating, creator);
         }
+
+        public async Task RemoveAsync(Rating rating)
+        {
+            if (rating.Status is not Status.Normal)
+            {
+                throw new InvalidOperationException("This rating has already been removed");
+            }
+
+            rating.Status = Status.RemovedByModerator;
+
+            if (rating.Trip is null)
+            {
+                await Context.Entry(rating).Reference(r => r.Trip).LoadAsync();
+            }
+
+            if (rating.Trip is not null)
+            {
+                if (rating.Trip.Ratings is null)
+                {
+                    await Context.Entry(rating.Trip).Collection(t => t.Ratings).LoadAsync();
+                }
+
+                if (rating.Trip.Ratings is not null)
+                {
+                    UpdateRating(rating.Trip);
+                }
+            }
+        }
+
+        public async Task RemoveAsync(int id)
+        {
+            var rating = await FirstOrDefaultAsync(
+                r => r.Id == id,
+                ratings => ratings
+                    .Include(r => r.Trip.Ratings));
+
+            if (rating is null)
+            {
+                throw new ArgumentException("Id doesn't match any exists rating");
+            }
+
+            await RemoveAsync(rating);
+        }
+
+        public new void Remove(Rating rating) => RemoveAsync(rating).GetAwaiter().GetResult();
     }
 }
