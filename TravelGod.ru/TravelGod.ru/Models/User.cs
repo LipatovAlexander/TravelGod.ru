@@ -9,7 +9,6 @@ namespace TravelGod.ru.Models
     public enum Role
     {
         User,
-        Moderator,
         Administrator
     }
 

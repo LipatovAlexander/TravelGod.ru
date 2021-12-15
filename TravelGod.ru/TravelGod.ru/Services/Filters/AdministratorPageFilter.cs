@@ -16,7 +16,7 @@ namespace TravelGod.ru.Services.Filters
         public async Task OnPageHandlerExecutionAsync(PageHandlerExecutingContext context,
                                                       PageHandlerExecutionDelegate next)
         {
-            if (context.HttpContext.Items["User"] is User {Role: Role.Administrator or Role.Moderator})
+            if (context.HttpContext.Items["User"] is User {Role: Role.Administrator})
             {
                 await next();
             }

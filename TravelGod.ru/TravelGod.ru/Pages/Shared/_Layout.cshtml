@@ -2,7 +2,7 @@
 @model MyPageModel
 
 @{
-    var isAdmin = Model.User?.Role is Role.Administrator or Role.Moderator;
+    var isAdmin = Model.User?.Role is Role.Administrator;
 }
 
 <!DOCTYPE html>
