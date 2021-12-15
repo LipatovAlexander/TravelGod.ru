@@ -28,7 +28,7 @@ namespace TravelGod.ru.Pages.Profile
         {
             ListOfChats = await _unitOfWork.Chats.GetAsync(c => c.Users.Contains(User) && c.Status == Status.Normal,
                 chats => chats
-                         .Include(c => c.Users.Where(u => u.Status == Status.Normal))
+                         .Include(c => c.Users)
                          .ThenInclude(u => u.Avatar)
                          .Include(c => c.Messages.Where(m => m.Status == Status.Normal).OrderBy(m => m.CreatedAt))
                          .ThenInclude(m => m.CreatedBy.Avatar),

@@ -107,10 +107,13 @@ namespace TravelGod.ru.DAL
 
         private void UpdateRating(Trip trip)
         {
-            var average = trip.Ratings
+            var points = trip.Ratings
                               .Where(r => r.Status == Status.Normal)
                               .Select(r => (int) r.Point)
-                              .Average();
+                              .ToList();
+            var average = points.Any()
+                ? points.Average()
+                : 0;
             if (Math.Abs(average - trip.AverageRating) > 0.1)
             {
                 trip.AverageRating = average;

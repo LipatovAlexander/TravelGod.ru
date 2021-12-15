@@ -31,6 +31,7 @@ namespace TravelGod.ru.Pages.Trips
                 trips =>
                     trips.Include(t => t.Users.Where(u => u.Status == Status.Normal))
                          .ThenInclude(u => u.Avatar)
+                         .Include(t => t.CreatedBy.Avatar)
                          .Include(t => t.Chat)
                          .Include(t => t.Ratings.Where(r => r.Status == Status.Normal)));
 
