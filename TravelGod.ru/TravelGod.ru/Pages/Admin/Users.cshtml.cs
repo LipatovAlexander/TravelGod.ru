@@ -57,7 +57,7 @@ namespace TravelGod.ru.Pages.Admin
         public async Task<IActionResult> OnGetRemove(int id)
         {
             var user = await _unitOfWork.Users.FindByIdAsync(id);
-            if (user?.Status is not Status.Normal)
+            if (user is null || user.Status is not Status.Normal && user.Id == User.Id)
             {
                 return BadRequest();
             }
