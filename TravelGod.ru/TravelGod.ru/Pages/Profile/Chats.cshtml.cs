@@ -30,9 +30,9 @@ namespace TravelGod.ru.Pages.Profile
                 chats => chats
                          .Include(c => c.Users.Where(u => u.Status == Status.Normal))
                          .ThenInclude(u => u.Avatar)
-                         .Include(c => c.Messages.Where(m => m.Status == Status.Normal))
+                         .Include(c => c.Messages.Where(m => m.Status == Status.Normal).OrderBy(m => m.CreatedAt))
                          .ThenInclude(m => m.CreatedBy.Avatar),
-                chats => chats.OrderByDescending(c => c.Messages.FirstOrDefault().CreatedAt));
+                chats => chats.OrderByDescending(c => c.ModifiedAt));
             return Page();
         }
 

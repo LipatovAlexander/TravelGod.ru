@@ -1,4 +1,5 @@
-﻿using TravelGod.ru.DAL.Interfaces;
+﻿using System;
+using TravelGod.ru.DAL.Interfaces;
 using TravelGod.ru.Models;
 
 namespace TravelGod.ru.DAL
@@ -13,7 +14,9 @@ namespace TravelGod.ru.DAL
         {
             if (item.Chat is not null)
             {
+                item.Chat.ModifiedAt = DateTime.Now;
                 Context.Chats.Attach(item.Chat);
+                Context.Chats.Update(item.Chat);
             }
 
             base.Create(item);

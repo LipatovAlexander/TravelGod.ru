@@ -11,11 +11,16 @@
     link.find('p').removeClass('text-muted');
 }
 
+function scrollMessages() {
+    $("#messages-box").animate({ scrollTop: $('#messages-box').prop("scrollHeight")}, 1000);
+}
+
 $(document).ready(function () {
     let chatLinks = $('.chat-link');
     let form = $('#message-form');
 
     toggleActiveChatLink(chatLinks.first());
+    scrollMessages();
 
     form.find('[type="submit"]').on('click', function () {
         let validator = form.validate();
@@ -57,6 +62,7 @@ $(document).ready(function () {
             success: function (html) {
                 $('#messages-box').remove();
                 $('#chat-box').prepend(html);
+                scrollMessages();
             }
         })
         toggleActiveChatLink($(this));
