@@ -127,11 +127,16 @@ namespace TravelGod.ru.Pages.Profile
             }
 
             var chat = CurrentUser.JoinedChats.FirstOrDefault(c =>
-                           !c.IsGroupChat && c.Users.Select(u => u.Id).Contains(User.Id))
-                       ?? new Chat
-                       {
-                           Users = new List<User> {User, CurrentUser}
-                       };
+                !c.IsGroupChat && c.Users.Select(u => u.Id).Contains(User.Id));
+            if (chat is null)
+            {
+                chat = new Chat
+                {
+                    Users = new List<User> {User, CurrentUser}
+                };
+                _unitOfWork.Chats.Create(chat);
+                await _unitOfWork.SaveAsync();
+            }
 
             NewMessage.Chat = chat;
             _unitOfWork.Messages.Create(NewMessage);
