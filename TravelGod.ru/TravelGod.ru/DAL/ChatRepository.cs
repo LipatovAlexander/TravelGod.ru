@@ -37,7 +37,7 @@ namespace TravelGod.ru.DAL
                 Users = trip.Users,
                 IsGroupChat = true
             };
-            Context.Trips.Update(trip);
+            Create(trip.Chat);
         }
 
         public async Task CreateForTripAsync(int tripId, User creator = null)

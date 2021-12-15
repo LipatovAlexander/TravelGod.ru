@@ -12,11 +12,15 @@ namespace TravelGod.ru.DAL
 
         public new void Create(Message item)
         {
+            item.Chat = Context.Chats.Find(item.Chat.Id);
             if (item.Chat is not null)
             {
                 item.Chat.ModifiedAt = DateTime.Now;
-                Context.Chats.Attach(item.Chat);
                 Context.Chats.Update(item.Chat);
+            }
+            else
+            {
+                throw new ArgumentException("Message.Chat.Id doesn't match any exists chat");
             }
 
             base.Create(item);
