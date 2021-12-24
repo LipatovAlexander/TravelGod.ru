@@ -1,6 +1,6 @@
 ﻿using TravelGod.ru.Models;
 
-namespace TravelGod.ru.Pages.Admin.ViewModels
+namespace TravelGod.ru.ViewModels
 {
     public class UserFilter
     {

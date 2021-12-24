@@ -1,6 +1,8 @@
 using System;
+using System.ComponentModel;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,7 +10,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using TravelGod.ru.DAL;
 using TravelGod.ru.DAL.Interfaces;
+using TravelGod.ru.Infrastructure.Validation;
+using TravelGod.ru.Infrastructure.Validation.Interfaces;
 using TravelGod.ru.Services.Middlewares;
+using TravelGod.ru.ViewModels;
 
 namespace TravelGod.ru
 {
@@ -27,7 +32,18 @@ namespace TravelGod.ru
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages();
+            services.AddRazorPages().AddMvcOptions(options =>
+            {
+                options.ModelValidatorProviders.Add(new ValidationProvider(services.BuildServiceProvider()));
+            });
+
+            // Register ModelValidator<TModel> adapter class
+            services.AddSingleton(typeof(ModelValidator<>), typeof(ModelValidator<>));
+            // Auto-register all validator implementations
+            services.AddScoped(typeof(IValidator<SignInModel>), typeof(SignInValidator));
+            services.AddScoped(typeof(IValidator<SignUpModel>), typeof(SignUpValidator));
+            services.AddScoped(typeof(IValidator<FormFile>), typeof(ImageValidator));
+
             services.AddDbContext<ApplicationContext>(x =>
             {
                 string connStr;

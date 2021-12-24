@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using TravelGod.ru.DAL.Interfaces;
 using TravelGod.ru.Infrastructure.Cryptography;
@@ -9,8 +10,22 @@ namespace TravelGod.ru.DAL
 {
     public class SessionRepository : GenericRepository<Session>, ISessionRepository
     {
-        public SessionRepository(ApplicationContext context) : base(context)
+        private readonly IHttpContextAccessor _accessor;
+
+        public SessionRepository(ApplicationContext context, IHttpContextAccessor accessor) : base(context)
         {
+            _accessor = accessor;
+        }
+
+        public new void Remove(Session session)
+        {
+            _accessor.HttpContext?.Response.Cookies.Append("token", session.Token,
+                new CookieOptions
+                {
+                    Expires = DateTimeOffset.Now.AddDays(-1)
+                });
+
+            base.Remove(session);
         }
 
         public async Task<Session> FindByTokenAsync(string token)
@@ -35,6 +50,14 @@ namespace TravelGod.ru.DAL
                 User = user
             };
             Create(session);
+
+            _accessor.HttpContext?.Response.Cookies.Append("token", session.Token,
+                new CookieOptions
+                {
+                    Expires = session.Expires,
+                    Path = "/"
+                });
+
             return session;
         }
     }

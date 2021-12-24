@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using TravelGod.ru.DAL.Interfaces;
 using TravelGod.ru.Infrastructure;
 using TravelGod.ru.Models;
-using TravelGod.ru.Pages.Admin.ViewModels;
 using TravelGod.ru.Services.Filters;
+using TravelGod.ru.ViewModels;
 
 namespace TravelGod.ru.Pages.Admin
 {

@@ -194,7 +194,7 @@
                         <div class="form-group row">
                             <label asp-for="CurrentUser.BirthDate" class="font-weight-bold col-sm-2 col-form-label">День рождения</label>
                             <div class="col-sm-7">
-                                <input asp-for="CurrentUser.BirthDate" type="date" readonly disabled class="form-control-plaintext">
+                                <input asp-for="CurrentUser.BirthDate" type="date" min="1900-01-01" max="2021-01-01" id="birthdateInput" readonly disabled class="form-control-plaintext">
                                 <span class="text-danger" asp-validation-for="CurrentUser.BirthDate"></span>
                             </div>
                         </div>
@@ -225,7 +225,7 @@
                         <div class="form-group">
                             <label for="message-text" class="col-form-label">Сообщение:</label>
                             <textarea asp-for="NewMessage.Text" class="form-control" id="message-text" placeholder="Введите сообщение"></textarea>
-                            <span asp-validation-for="NewMessage.Text" class="text-danger"></span>
+                            <span  asp-validation-for="NewMessage.Text" class="text-danger"></span>
                         </div>
                     </form>
                 </div>

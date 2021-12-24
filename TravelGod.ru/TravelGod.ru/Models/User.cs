@@ -12,7 +12,7 @@ namespace TravelGod.ru.Models
         Administrator
     }
 
-    public class User
+    public class User : IValidatableObject
     {
         [RegularExpression(RegularExpressions.Text, ErrorMessage = "Описание содержит недопустимые символы")]
         [MaxLength(100, ErrorMessage = "Описание не должно быть длиннее 100 символов")]
@@ -67,5 +67,12 @@ namespace TravelGod.ru.Models
         public int OwnedTripsCount { get; set; }
         public int JoinedTripsCount { get; set; }
         public List<File> Files { get; set; }
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (BirthDate is not null && BirthDate > DateTime.Now.Date)
+            {
+                yield return new ValidationResult("User must have a birthdate no later that today", new[] {nameof(BirthDate)});
+            }
+        }
     }
 }

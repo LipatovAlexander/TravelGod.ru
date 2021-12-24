@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using TravelGod.ru.DAL.Interfaces;
 
 namespace TravelGod.ru.DAL
@@ -10,7 +11,7 @@ namespace TravelGod.ru.DAL
 
         private bool _disposed;
 
-        public UnitOfWork(ApplicationContext context)
+        public UnitOfWork(ApplicationContext context, IHttpContextAccessor accessor)
         {
             _context = context;
             Users = new UserRepository(context);
@@ -19,7 +20,7 @@ namespace TravelGod.ru.DAL
             Files = new FileRepository(context);
             Messages = new MessageRepository(context);
             Ratings = new RatingRepository(context);
-            Sessions = new SessionRepository(context);
+            Sessions = new SessionRepository(context, accessor);
             Trips = new TripRepository(context);
             Avatars = new AvatarRepository(context);
         }

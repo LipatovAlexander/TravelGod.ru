@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TravelGod.ru.DAL.Interfaces;
 using TravelGod.ru.Models;
@@ -31,17 +32,14 @@ namespace TravelGod.ru.Pages.Trips
                 return Page();
             }
 
-            _unitOfWork.Trips.Create(Trip);
-            await _unitOfWork.SaveAsync();
-            await _unitOfWork.Trips.AddUserAsync(Trip, User);
-            User.OwnedTripsCount += 1;
-            _unitOfWork.Users.Update(User);
-            await _unitOfWork.SaveAsync();
-
-            if (CreateChat)
+            try
             {
-                await _unitOfWork.Chats.CreateForAsync(Trip, User);
+                await _unitOfWork.Trips.CreateAsync(Trip, User, CreateChat);
                 await _unitOfWork.SaveAsync();
+            }
+            catch
+            {
+                return BadRequest();
             }
 
             return RedirectToPage("/Trips/Concrete", new {id = Trip.Id});

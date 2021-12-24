@@ -7,5 +7,6 @@ namespace TravelGod.ru.DAL.Interfaces
     {
         Task<Session> FindByTokenAsync(string token);
         Session CreateFor(User user, bool temporary);
+        new void Remove(Session session);
     }
 }

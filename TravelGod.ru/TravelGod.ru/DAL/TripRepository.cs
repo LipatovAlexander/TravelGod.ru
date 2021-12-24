@@ -18,7 +18,10 @@ namespace TravelGod.ru.DAL
         {
         }
 
-        public new void Create(Trip trip)
+        public void Create(Trip trip, User creator, bool createChat) =>
+            CreateAsync(trip, creator, createChat).GetAwaiter().GetResult();
+
+        public async Task CreateAsync(Trip trip, User creator, bool createChat)
         {
             trip.RouteRaw = string.Join(';', trip.RouteRaw
                                                  .Split(new[] {';', ','},
@@ -27,6 +30,15 @@ namespace TravelGod.ru.DAL
                                                  .Select(r => char.ToUpper(r[0]) + r[1..].ToLower()));
             trip.EndDate = trip.EndDate.AddHours(23).AddMinutes(59);
             base.Create(trip);
+            await Context.SaveChangesAsync();
+            await AddUserAsync(trip, creator);
+            creator.OwnedTripsCount += 1;
+            Context.Users.Update(creator);
+
+            if (createChat)
+            {
+                await new ChatRepository(Context).CreateForAsync(trip, creator);
+            }
         }
 
         public IEnumerable<Trip> Get(TripFilter filter,

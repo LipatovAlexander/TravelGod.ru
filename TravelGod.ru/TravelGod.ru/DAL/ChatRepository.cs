@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TravelGod.ru.DAL.Interfaces;
@@ -63,6 +64,29 @@ namespace TravelGod.ru.DAL
             chat.Users ??= new List<User>();
             chat.Users.Add(user);
             Update(chat);
+        }
+
+        public async Task SendMessageAsync(User sender, User receiver, Message message)
+        {
+            if (receiver.JoinedChats is null)
+            {
+                await Context.Entry(receiver).Collection(r => r.JoinedChats).LoadAsync();
+            }
+
+            var chat = receiver.JoinedChats?.FirstOrDefault(c =>
+                !c.IsGroupChat && c.Users.Select(u => u.Id).Contains(sender.Id));
+            if (chat is null)
+            {
+                chat = new Chat
+                {
+                    Users = new List<User> {sender, receiver}
+                };
+                Create(chat);
+                await Context.SaveChangesAsync();
+            }
+
+            message.Chat = chat;
+            new MessageRepository(Context).Create(message);
         }
     }
 }

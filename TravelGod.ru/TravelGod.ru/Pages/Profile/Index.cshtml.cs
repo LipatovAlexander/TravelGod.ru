@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
@@ -8,7 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TravelGod.ru.DAL.Interfaces;
-using TravelGod.ru.Infrastructure.Validation;
 using TravelGod.ru.Models;
 
 namespace TravelGod.ru.Pages.Profile
@@ -22,16 +19,15 @@ namespace TravelGod.ru.Pages.Profile
             _unitOfWork = unitOfWork;
         }
 
-        [BindProperty] public User CurrentUser { get; set; }
+        public User CurrentUser { get; set; }
 
-        [Display(Name = "File")] public IFormFile Avatar { get; set; }
+        [Display(Name = "File")]
+        public IFormFile Avatar { get; set; }
 
         [BindProperty] public Message NewMessage { get; set; }
 
         public async Task<IActionResult> OnGet(int id, int pageNumber = 1)
         {
-            const int pageSize = 10;
-
             CurrentUser = await _unitOfWork.Users.FirstOrDefaultAsync(
                 u => u.Id == id && u.Status == Status.Normal,
                 source => source
@@ -70,18 +66,25 @@ namespace TravelGod.ru.Pages.Profile
 
             if (Avatar != null)
             {
-                if (!ImageValidator.IsValid(Avatar))
+                if (!TryValidateModel(Avatar, nameof(Avatar)))
                 {
                     return new JsonResult(new {Success = false});
                 }
-
                 CurrentUser.Avatar =
                     _unitOfWork.Avatars.CreateFromFormFile(Avatar, environment.WebRootPath,
                         CurrentUser.Id.ToString());
             }
 
-            _unitOfWork.Users.Update(CurrentUser);
-            await _unitOfWork.SaveAsync();
+            try
+            {
+                _unitOfWork.Users.Update(CurrentUser);
+                await _unitOfWork.SaveAsync();
+            }
+            catch
+            {
+                return new JsonResult(new {Success = false});
+            }
+
             return new JsonResult(new {Success = true});
         }
 
@@ -92,12 +95,15 @@ namespace TravelGod.ru.Pages.Profile
                 return RedirectToPage("/Index");
             }
 
-            HttpContext.Response.Cookies.Append("token", session.Token, new CookieOptions
+            try
             {
-                Expires = DateTimeOffset.Now.AddDays(-1)
-            });
-            _unitOfWork.Sessions.Remove(session);
-            await _unitOfWork.SaveAsync();
+                _unitOfWork.Sessions.Remove(session);
+                await _unitOfWork.SaveAsync();
+            }
+            catch
+            {
+                return BadRequest();
+            }
 
             return RedirectToPage("/Index");
         }
@@ -126,21 +132,16 @@ namespace TravelGod.ru.Pages.Profile
                 return Page();
             }
 
-            var chat = CurrentUser.JoinedChats.FirstOrDefault(c =>
-                !c.IsGroupChat && c.Users.Select(u => u.Id).Contains(User.Id));
-            if (chat is null)
+            try
             {
-                chat = new Chat
-                {
-                    Users = new List<User> {User, CurrentUser}
-                };
-                _unitOfWork.Chats.Create(chat);
+                await _unitOfWork.Chats.SendMessageAsync(User, CurrentUser, NewMessage);
                 await _unitOfWork.SaveAsync();
             }
+            catch
+            {
+                return BadRequest();
+            }
 
-            NewMessage.Chat = chat;
-            _unitOfWork.Messages.Create(NewMessage);
-            await _unitOfWork.SaveAsync();
             return RedirectToPage("/Profile/Chats");
         }
     }

@@ -8,5 +8,6 @@ namespace TravelGod.ru.DAL.Interfaces
         Task CreateForAsync(Trip trip, User creator = null);
         Task CreateForTripAsync(int tripId, User creator = null);
         Task AddUserAsync(Chat chat, User user);
+        Task SendMessageAsync(User sender, User receiver, Message message);
     }
 }

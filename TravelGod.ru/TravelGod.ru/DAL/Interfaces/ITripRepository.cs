@@ -13,7 +13,8 @@ namespace TravelGod.ru.DAL.Interfaces
     {
         Task AddUserAsync(int tripId, User user);
         Task AddUserAsync(Trip trip, User user);
-        new void Create(Trip trip);
+        void Create(Trip trip, User creator, bool createChat);
+        Task CreateAsync(Trip trip, User creator, bool createChat);
 
         IEnumerable<Trip> Get(TripFilter filter,
                               Func<IQueryable<Trip>, IIncludableQueryable<Trip, object>> include = null,

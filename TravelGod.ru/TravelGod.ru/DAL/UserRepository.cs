@@ -6,8 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using TravelGod.ru.DAL.Interfaces;
 using TravelGod.ru.Infrastructure;
+using TravelGod.ru.Infrastructure.Cryptography;
 using TravelGod.ru.Models;
-using TravelGod.ru.Pages.Admin.ViewModels;
+using TravelGod.ru.ViewModels;
 
 namespace TravelGod.ru.DAL
 {
@@ -30,6 +31,21 @@ namespace TravelGod.ru.DAL
             }
 
             base.Create(item);
+        }
+
+        public void Create(SignUpModel item)
+        {
+            var passwordSalt = Cryptography.GenerateRandomCryptographicKey(32);
+            var passwordHash = Cryptography.ComputeMd5HashString(item.Password1 + passwordSalt);
+
+            var newUser = new User
+            {
+                Login = item.Login,
+                PasswordHash = passwordHash,
+                PasswordSalt = passwordSalt
+            };
+
+            Create(newUser);
         }
 
         public IEnumerable<User> Get(UserFilter filter,

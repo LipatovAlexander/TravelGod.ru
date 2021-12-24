@@ -3,10 +3,12 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using TravelGod.ru.Infrastructure.Validation.Interfaces;
 
 namespace TravelGod.ru.Infrastructure.Validation
 {
-    public static class ImageValidator
+    public class ImageValidator : IValidator<FormFile>
     {
         private static readonly string[] PermittedExtensions = {".png", ".jpg", ".jpeg"};
 
@@ -37,21 +39,22 @@ namespace TravelGod.ru.Infrastructure.Validation
                 }
             };
 
-
-        public static bool IsValid(IFormFile image)
+        public IEnumerable<ModelValidationResult> Validate(FormFile instance)
         {
-            var extension = Path.GetExtension(image.FileName).ToLowerInvariant();
+            var extension = Path.GetExtension(instance.FileName).ToLowerInvariant();
             if (string.IsNullOrEmpty(extension) || !PermittedExtensions.Contains(extension))
             {
-                return false;
+                yield return new ModelValidationResult(nameof(instance), "Недопустимое расширение у изображения.");
+                yield break;
             }
 
-            if (image.Length > 1024 * 1024) // больше чем мегабайт
+            if (instance.Length > 1024 * 1024) // больше чем мегабайт
             {
-                return false;
+                yield return new ModelValidationResult(nameof(instance), "Файл не должен весить больше 1 мб.");
+                yield break;
             }
 
-            using (var reader = new BinaryReader(image.OpenReadStream()))
+            using (var reader = new BinaryReader(instance.OpenReadStream()))
             {
                 var signatures = FileSignature[extension];
                 var headerBytes = reader.ReadBytes(signatures.Max(m => m.Length));
@@ -59,16 +62,15 @@ namespace TravelGod.ru.Infrastructure.Validation
                 if (signatures.Any(signature =>
                     headerBytes.Take(signature.Length).SequenceEqual(signature)) == false)
                 {
-                    return false;
+                    yield return new ModelValidationResult(nameof(instance), "Некорректный файл.");
+                    yield break;
                 }
             }
 
-            if (!Regex.IsMatch(image.FileName, @"^[\w\-. ]+$"))
+            if (!Regex.IsMatch(instance.FileName, @"^[\w\-. ]+$"))
             {
-                return false;
+                yield return new ModelValidationResult(nameof(instance), "Недопустимое название файла.");
             }
-
-            return true;
         }
     }
 }

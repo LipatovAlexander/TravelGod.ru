@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -38,8 +39,21 @@ namespace TravelGod.ru.Pages.Profile
 
         public async Task<IActionResult> OnPostSendMessage()
         {
-            _unitOfWork.Messages.Create(Message);
-            await _unitOfWork.SaveAsync();
+            if (!TryValidateModel(Message, nameof(Message)))
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                _unitOfWork.Messages.Create(Message);
+                await _unitOfWork.SaveAsync();
+            }
+            catch
+            {
+                return BadRequest();
+            }
+
             return ViewComponent("Message", new {Message});
         }
 
