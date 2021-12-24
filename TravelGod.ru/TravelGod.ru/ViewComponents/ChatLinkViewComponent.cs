@@ -6,7 +6,7 @@ namespace TravelGod.ru.ViewComponents
 {
     public class ChatLinkViewComponent : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync(Chat chat)
+        public IViewComponentResult Invoke(Chat chat)
         {
             return View(chat);
         }

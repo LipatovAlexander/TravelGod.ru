@@ -6,7 +6,7 @@ namespace TravelGod.ru.ViewComponents
 {
     public class MessageViewComponent : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync(Message message)
+        public IViewComponentResult Invoke(Message message)
         {
             return View(message);
         }

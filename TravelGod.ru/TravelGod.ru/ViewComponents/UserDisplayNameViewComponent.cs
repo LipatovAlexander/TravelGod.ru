@@ -6,7 +6,7 @@ namespace TravelGod.ru.ViewComponents
 {
     public class UserDisplayNameViewComponent : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync(User user)
+        public IViewComponentResult Invoke(User user)
         {
             return View(user);
         }
