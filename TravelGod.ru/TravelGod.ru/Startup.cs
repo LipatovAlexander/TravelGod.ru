@@ -32,10 +32,15 @@ namespace TravelGod.ru
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages().AddMvcOptions(options =>
-            {
-                options.ModelValidatorProviders.Add(new ValidationProvider(services.BuildServiceProvider()));
-            });
+            services.AddRazorPages()
+                    .AddMvcOptions(options =>
+                    {
+                        options.ModelValidatorProviders.Add(new ValidationProvider(services.BuildServiceProvider()));
+                    })
+                    .AddRazorPagesOptions(options =>
+                    {
+                        options.Conventions.AddPageRoute("/Trips/Concrete", "Trips/{id}");
+                    });
 
             // Register ModelValidator<TModel> adapter class
             services.AddSingleton(typeof(ModelValidator<>), typeof(ModelValidator<>));
