@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TravelGod.ru.DAL.Interfaces;
 using TravelGod.ru.ViewModels;
@@ -21,7 +20,7 @@ namespace TravelGod.ru.Pages.Profile
         {
             if (User is not null)
             {
-                return RedirectToPage(nameof(Profile));
+                return RedirectToPage("/Profile/Index", new{id = User.Id});
             }
 
             return Page();
@@ -31,7 +30,7 @@ namespace TravelGod.ru.Pages.Profile
         {
             if (User is not null)
             {
-                return RedirectToPage(nameof(Profile));
+                return RedirectToPage("/Profile/Index", new{id = User.Id});
             }
 
             if (!ModelState.IsValid)
