@@ -1,4 +1,4 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
 .content {
@@ -81,4 +81,128 @@ html {
 
 .bi {
     margin-right: .5rem;
+}
+
+#loaders {
+    position: fixed;
+    bottom: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#loaders, #loading, #success, #failure{
+    display: none;
+}
+
+.lds-ring {
+    width: 35px;
+    height: 35px;
+}
+.lds-ring div {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    margin: 4px;
+    border: 4px solid #1b6ec2;
+    border-radius: 50%;
+    animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    border-color: #1b6ec2 transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+    animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+    animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+    animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+svg.am_Success_Icon,
+svg.am_Error_Icon{
+    width: 35px; /* Размер иконок */
+    margin: auto auto;
+}
+.am_sdp_Header_Status{
+    color: #fff;
+    font-size: 140%;
+}
+
+svg.am_Success_Icon path, svg.am_Success_Icon polyline, svg.am_Success_Icon line {
+    stroke: #1e7e34;
+}
+
+svg.am_Error_Icon path, svg.am_Error_Icon polyline, svg.am_Error_Icon line {
+    stroke: red;
+}
+
+svg.am_Success_Icon path, svg.am_Success_Icon polyline, svg.am_Success_Icon line,
+svg.am_Error_Icon path, svg.am_Error_Icon polyline, svg.am_Error_Icon line{
+    fill: none;
+    stroke-width: 45; /* Толщина линий */
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+svg.am_Success_Icon .am_SVG_circle,
+svg.am_Error_Icon .am_SVG_circle{
+    stroke-dasharray: 1460;
+    animation: am_SVG_circle 2s ease-in infinite;
+}
+
+svg.am_Success_Icon .am_SVG_check{
+    stroke-dasharray: 630;
+    animation: am_SVG_check 2s ease-in infinite;
+}
+
+svg.am_Error_Icon .am_SVG_error1{
+    stroke-dasharray: 630;
+    animation: am_SVG_error1 2s ease-in infinite;
+}
+svg.am_Error_Icon .am_SVG_error2{
+    stroke-dasharray: 630;
+    animation: am_SVG_error2 3s ease-in infinite;
+}
+
+@keyframes am_SVG_circle {
+    0%, 60% {
+        stroke-dashoffset: -1460;
+    }
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+@keyframes am_SVG_check {
+    0% {
+        stroke-dashoffset: 630;
+    }
+    40% {
+        stroke-dashoffset: 0;
+    }
+}
+@keyframes am_SVG_error1 {
+    0% {
+        stroke-dashoffset: 630;
+    }
+    20% {
+        stroke-dashoffset: 0;
+    }
+}
+@keyframes am_SVG_error2 {
+    0%, 20% {
+        stroke-dashoffset: 630;
+    }
+    40% {
+        stroke-dashoffset: 0;
+    }
 }
