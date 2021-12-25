@@ -43,13 +43,12 @@ namespace TravelGod.ru.Pages.Profile
             return Page();
         }
 
-        public async Task<JsonResult> OnPostEdit(int id, [FromServices] IWebHostEnvironment environment)
+        public async Task<IActionResult> OnPostEdit(int id, [FromServices] IWebHostEnvironment environment)
         {
-            CurrentUser = await _unitOfWork.Users.FirstOrDefaultAsync(u => u.Id == id && u.Status == Status.Normal,
-                source => source.Include(u => u.Avatar));
+            CurrentUser = await _unitOfWork.Users.FirstOrDefaultAsync(u => u.Id == id && u.Status == Status.Normal);
             if (CurrentUser?.Id != User?.Id)
             {
-                return new JsonResult("Нет доступа!");
+                return BadRequest();
             }
 
             ModelState.Clear();
@@ -61,14 +60,14 @@ namespace TravelGod.ru.Pages.Profile
                 u => u.FirstName,
                 u => u.LastName) || !TryValidateModel(CurrentUser, nameof(CurrentUser)))
             {
-                return new JsonResult(new {Success = false});
+                return BadRequest();
             }
 
             if (Avatar != null)
             {
                 if (!TryValidateModel(Avatar, nameof(Avatar)))
                 {
-                    return new JsonResult(new {Success = false});
+                    return BadRequest();
                 }
                 CurrentUser.Avatar =
                     _unitOfWork.Avatars.CreateFromFormFile(Avatar, environment.WebRootPath,
@@ -82,10 +81,10 @@ namespace TravelGod.ru.Pages.Profile
             }
             catch
             {
-                return new JsonResult(new {Success = false});
+                return BadRequest();
             }
 
-            return new JsonResult(new {Success = true});
+            return new OkResult();
         }
 
         public async Task<IActionResult> OnGetLogOut(int id)

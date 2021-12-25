@@ -54,10 +54,9 @@ $(document).ready(function () {
                     xhr.setRequestHeader("XSRF-TOKEN",
                         $('input:hidden[name="__RequestVerificationToken"]').val());
                 },
-                dataType: "json"
-            }).done(function (data) {
-                if (data.success)
+                success: function () {
                     toggleEditable();
+                }
             })
         } else {
             validator.showErrors();
