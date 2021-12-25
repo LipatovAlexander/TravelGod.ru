@@ -95,6 +95,8 @@ namespace TravelGod.ru
                 app.UseHsts();
             }
 
+            app.UseStatusCodePagesWithReExecute("/Errors/{0}");
+
             app.UseStaticFiles();
 
             app.UseRouting();

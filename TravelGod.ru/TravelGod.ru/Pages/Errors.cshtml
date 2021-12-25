@@ -1,0 +1,17 @@
+﻿@page "{code:int}"
+@using System.Net
+@model TravelGod.ru.Pages.Errors
+@{
+    var statusCode = RouteData.Values["code"] as string;
+    ViewData["Title"] = $"Ошибка {statusCode}";
+    if (Enum.TryParse<HttpStatusCode>(statusCode, out var statusCodeName))
+    {
+        statusCode += $" - {statusCodeName}";
+    }
+}
+
+<div class="container text-center">
+    <img src="/sad-man.gif" alt="грустный человек плачет.gif" class="img-fluid">
+
+    <h1>@statusCode</h1>
+</div>
