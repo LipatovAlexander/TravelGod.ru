@@ -33,7 +33,8 @@ namespace TravelGod.ru.Pages.Trips
                          .ThenInclude(u => u.Avatar)
                          .Include(t => t.CreatedBy.Avatar)
                          .Include(t => t.Chat)
-                         .Include(t => t.Ratings.Where(r => r.Status == Status.Normal)));
+                         .Include(t => t.Ratings.Where(r => r.Status == Status.Normal))
+                         .ThenInclude(r => r.CreatedBy.Avatar));
 
             if (Trip is null)
             {
