@@ -38,8 +38,7 @@ namespace TravelGod.ru.Pages.Admin
 
         public async Task<IActionResult> OnPostEdit(int id)
         {
-            EditedUser = await _unitOfWork.Users.FirstOrDefaultAsync(u => u.Id == id,
-                users => users.Include(u => u.Avatar));
+            EditedUser = await _unitOfWork.Users.FindByIdAsync(id);
 
             ModelState.Clear();
             if (EditedUser is null
