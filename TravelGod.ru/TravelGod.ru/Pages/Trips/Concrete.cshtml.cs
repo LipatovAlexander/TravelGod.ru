@@ -69,26 +69,6 @@ namespace TravelGod.ru.Pages.Trips
             return RedirectToPage("/Trips/Concrete", new {Id = id});
         }
 
-        public async Task<IActionResult> OnGetCreateChat(int id)
-        {
-            if (User is null)
-            {
-                return BadRequest();
-            }
-
-            try
-            {
-                await _unitOfWork.Chats.CreateForTripAsync(id, User);
-                await _unitOfWork.SaveAsync();
-            }
-            catch
-            {
-                return BadRequest();
-            }
-
-            return RedirectToPage("/Trips/Concrete", new {Id = id});
-        }
-
         public async Task<IActionResult> OnPostAddComment(int id)
         {
             if (User is null || NewComment is null)

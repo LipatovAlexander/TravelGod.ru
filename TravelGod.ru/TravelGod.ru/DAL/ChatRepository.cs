@@ -17,7 +17,7 @@ namespace TravelGod.ru.DAL
         public async Task CreateForAsync(Trip trip, User creator = null)
         {
             await Context.Entry(trip).Reference(t => t.Chat).LoadAsync();
-            if (trip.Chat is not null)
+            if (trip.Chat?.Status is Status.Normal)
             {
                 throw new Exception("This trip already has chat");
             }

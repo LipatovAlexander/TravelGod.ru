@@ -53,16 +53,16 @@
 
         <aside class="col-md-4 blog-sidebar">
             <div class="sticky-top">
+                @if (Model.User is not null && Model.User.Id == Model.Trip.CreatedById && Model.Trip.EndDate > DateTime.Now)
+                {
+                    <div class="mb-3 text-center">
+                        <a asp-page="/Trips/Edit" asp-route-id="@Model.Trip.Id" class="btn btn-outline-primary mx-4">Редактировать</a>
+                    </div>
+                }
                 @if (Model.User is not null && !Model.Trip.Users.Contains(Model.User) && Model.Trip.EndDate > DateTime.Now)
                 {
                     <div class="mb-3 text-center">
                         <a asp-page="/Trips/Concrete" asp-page-handler="Join" class="btn btn-outline-primary mx-4">Присоединиться</a>
-                    </div>
-                }
-                @if (Model.User == Model.Trip.CreatedBy && Model.Trip.Chat is null)
-                {
-                    <div class="mb-3 text-center">
-                        <a asp-page="/Trips/Concrete" asp-page-handler="CreateChat" class="btn btn-outline-primary mx-4">Создать общий чат</a>
                     </div>
                 }
 

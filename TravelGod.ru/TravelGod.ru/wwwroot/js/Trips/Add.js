@@ -1,4 +1,5 @@
 ﻿$(function () {
+    $('.radio-group .radio[data-value="' + $('#radio-value').val() +'"]').toggleClass('selected')
     $('[data-toggle="tooltip"]').tooltip()
 
     $('.radio-group .radio').click(function () {

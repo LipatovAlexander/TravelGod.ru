@@ -30,5 +30,8 @@ namespace TravelGod.ru.DAL.Interfaces
                                                         Func<IQueryable<Trip>, IIncludableQueryable<Trip, object>>
                                                             include = null,
                                                         Func<IQueryable<Trip>, IOrderedQueryable<Trip>> orderBy = null);
+
+        Task UpdateAsync(Trip trip, bool createChat);
+        new void Update(Trip trip);
     }
 }

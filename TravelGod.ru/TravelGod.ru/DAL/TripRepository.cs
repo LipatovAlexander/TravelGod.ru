@@ -18,17 +18,22 @@ namespace TravelGod.ru.DAL
         {
         }
 
-        public void Create(Trip trip, User creator, bool createChat) =>
-            CreateAsync(trip, creator, createChat).GetAwaiter().GetResult();
-
-        public async Task CreateAsync(Trip trip, User creator, bool createChat)
+        private void UpdateDefault(Trip trip)
         {
             trip.RouteRaw = string.Join(';', trip.RouteRaw
                                                  .Split(new[] {';', ','},
                                                      StringSplitOptions.RemoveEmptyEntries)
                                                  .Select(t => t.Trim())
                                                  .Select(r => char.ToUpper(r[0]) + r[1..].ToLower()));
-            trip.EndDate = trip.EndDate.AddHours(23).AddMinutes(59);
+            trip.EndDate = trip.EndDate.Date.AddHours(23).AddMinutes(59);
+        }
+
+        public void Create(Trip trip, User creator, bool createChat) =>
+            CreateAsync(trip, creator, createChat).GetAwaiter().GetResult();
+
+        public async Task CreateAsync(Trip trip, User creator, bool createChat)
+        {
+            UpdateDefault(trip);
             base.Create(trip);
             await Context.SaveChangesAsync();
             await AddUserAsync(trip, creator);
@@ -66,6 +71,47 @@ namespace TravelGod.ru.DAL
         {
             var source = ApplyFilter(filter, include, orderBy);
             return await PaginatedList<Trip>.CreateAsync(source, pageIndex, pageSize);
+        }
+
+        public new void Update(Trip trip)
+        {
+            UpdateDefault(trip);
+            if (Context.Entry(trip).Property(t => t.Title).IsModified)
+            {
+                if (trip.Chat is null)
+                {
+                    Context.Entry(trip).Reference(t => t.Chat).Load();
+                }
+
+                if (trip.Chat is not null)
+                {
+                    trip.Chat.Name = trip.Title;
+                    Context.Chats.Update(trip.Chat);
+                }
+            }
+            base.Update(trip);
+        }
+
+        public async Task UpdateAsync(Trip trip, bool createChat)
+        {
+            if (trip.Chat is null)
+            {
+                await Context.Entry(trip).Reference(t => t.Chat).LoadAsync();
+            }
+
+            switch (createChat)
+            {
+                case true when trip.Chat?.Status is not Status.Normal:
+                    await new ChatRepository(Context).CreateForAsync(trip);
+                    break;
+                case false when trip.Chat?.Status is Status.Normal:
+                    trip.Chat.Status = Status.RemovedByUser;
+                    Context.Chats.Update(trip.Chat);
+                    break;
+            }
+
+            UpdateDefault(trip);
+            Update(trip);
         }
 
         public async Task AddUserAsync(Trip trip, User user)
