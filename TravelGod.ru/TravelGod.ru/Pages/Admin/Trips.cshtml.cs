@@ -59,7 +59,9 @@ namespace TravelGod.ru.Pages.Admin
             return new JsonResult("success");
         }
 
-        public async Task<IActionResult> OnGetRemove(int id)
+
+
+        public async Task<IActionResult> OnPostRemove(int id)
         {
             var trip = await _unitOfWork.Trips.FindByIdAsync(id);
             if (trip?.Status is not Status.Normal)
@@ -71,15 +73,7 @@ namespace TravelGod.ru.Pages.Admin
             _unitOfWork.Trips.Update(trip);
             await _unitOfWork.SaveAsync();
 
-            return RedirectToPage("/Admin/Trips",
-                new
-                {
-                    archive = TripFilter.Archive,
-                    dates = TripFilter.Dates,
-                    route = TripFilter.Route,
-                    status = TripFilter.Status,
-                    pageNumber = TripFilter.PageNumber
-                });
+            return new OkResult();
         }
     }
 }

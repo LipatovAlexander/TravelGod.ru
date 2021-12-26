@@ -53,10 +53,10 @@ namespace TravelGod.ru.Pages.Admin
             return new JsonResult("success");
         }
 
-        public async Task<IActionResult> OnGetRemove(int id)
+        public async Task<IActionResult> OnPostRemove(int id)
         {
             var user = await _unitOfWork.Users.FindByIdAsync(id);
-            if (user is null || user.Status is not Status.Normal && user.Id == User.Id)
+            if (user?.Status is not Status.Normal || user.Id == User.Id)
             {
                 return BadRequest();
             }
@@ -65,12 +65,7 @@ namespace TravelGod.ru.Pages.Admin
             _unitOfWork.Users.Update(user);
             await _unitOfWork.SaveAsync();
 
-            return RedirectToPage("/Admin/Users",
-                new
-                {
-                    name = UserFilter.Name, role = UserFilter.Role, status = UserFilter.Status,
-                    pageNumber = UserFilter.PageNumber
-                });
+            return new OkResult();
         }
     }
 }

@@ -45,10 +45,10 @@ namespace TravelGod.ru.Pages.Admin
             return new JsonResult("success");
         }
 
-        public async Task<IActionResult> OnGetRemove(int id, int pageIndex)
+        public async Task<IActionResult> OnPostRemove(int id)
         {
-            var chat = await _unitOfWork.Chats.FirstOrDefaultAsync(c => c.Id == id && c.Status == Status.Normal);
-            if (chat is null)
+            var chat = await _unitOfWork.Chats.FindByIdAsync(id);
+            if (chat?.Status is not Status.Normal)
             {
                 return BadRequest();
             }
@@ -57,8 +57,7 @@ namespace TravelGod.ru.Pages.Admin
             _unitOfWork.Chats.Update(chat);
             await _unitOfWork.SaveAsync();
 
-            return RedirectToPage("/Admin/Chats",
-                new {pageIndex});
+            return new OkResult();
         }
     }
 }

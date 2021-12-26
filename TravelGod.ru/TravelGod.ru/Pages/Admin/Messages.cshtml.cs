@@ -47,7 +47,7 @@ namespace TravelGod.ru.Pages.Admin
             return new JsonResult("success");
         }
 
-        public async Task<IActionResult> OnGetRemove(int id, int pageIndex)
+        public async Task<IActionResult> OnPostRemove(int id)
         {
             var message = await _unitOfWork.Messages.FindByIdAsync(id);
             if (message?.Status is not Status.Normal)
@@ -59,8 +59,7 @@ namespace TravelGod.ru.Pages.Admin
             _unitOfWork.Messages.Update(message);
             await _unitOfWork.SaveAsync();
 
-            return RedirectToPage("/Admin/Messages",
-                new {pageIndex});
+            return new OkResult();
         }
     }
 }

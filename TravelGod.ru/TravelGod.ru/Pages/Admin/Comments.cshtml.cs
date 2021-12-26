@@ -49,7 +49,7 @@ namespace TravelGod.ru.Pages.Admin
             return new JsonResult("success");
         }
 
-        public async Task<IActionResult> OnGetRemove(int id, int pageIndex)
+        public async Task<IActionResult> OnPostRemove(int id)
         {
             var comment = await _unitOfWork.Comments.FindByIdAsync(id);
             if (comment?.Status is not Status.Normal)
@@ -61,8 +61,7 @@ namespace TravelGod.ru.Pages.Admin
             _unitOfWork.Comments.Update(comment);
             await _unitOfWork.SaveAsync();
 
-            return RedirectToPage("/Admin/Comments",
-                new {pageIndex});
+            return new OkResult();
         }
     }
 }

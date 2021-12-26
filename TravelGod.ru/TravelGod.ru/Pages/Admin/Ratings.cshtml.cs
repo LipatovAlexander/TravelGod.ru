@@ -47,7 +47,7 @@ namespace TravelGod.ru.Pages.Admin
             return new JsonResult("success");
         }
 
-        public async Task<IActionResult> OnGetRemove(int id, int pageIndex)
+        public async Task<IActionResult> OnPostRemove(int id)
         {
             try
             {
@@ -59,8 +59,7 @@ namespace TravelGod.ru.Pages.Admin
                 return BadRequest();
             }
 
-            return RedirectToPage("/Admin/Ratings",
-                new {pageIndex});
+            return new OkResult();
         }
     }
 }

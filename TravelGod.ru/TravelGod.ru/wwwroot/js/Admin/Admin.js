@@ -35,4 +35,21 @@
             dataType: 'json'
         })
     })
+
+    $('.remove-form').on('submit', function (e) {
+        e.preventDefault();
+        let form = $(this);
+        $.ajax({
+            type: form.attr('method'),
+            url: form.attr('action'),
+            data: form.serialize(),
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("XSRF-TOKEN",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            success: function () {
+                form.remove()
+            }
+        })
+    })
 })
