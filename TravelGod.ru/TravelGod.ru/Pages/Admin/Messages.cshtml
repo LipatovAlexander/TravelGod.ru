@@ -80,7 +80,7 @@
                     }
                     else
                     {
-                        var otherUser = message.Chat.Users.FirstOrDefault(u => u.Id != message.Chat.CreatedById);
+                        var otherUser = message.Chat.Users.FirstOrDefault(u => u.Id != message.CreatedById);
                         @if (otherUser?.Status == Status.Normal)
                         {
                             <a asp-page="/Profile/Index" asp-route-id="@otherUser.Id">@otherUser.DisplayName</a>
