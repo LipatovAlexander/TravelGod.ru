@@ -45,6 +45,7 @@
         <th scope="col" class="text-nowrap"></th>
         <th scope="col" class="text-nowrap">Id</th>
         <th scope="col" class="text-nowrap">Аватарка</th>
+        <th scope="col" class="text-nowrap"></th>
         <th scope="col" class="text-nowrap">Имя</th>
         <th scope="col" class="text-nowrap">Фамилия</th>
         <th scope="col" class="text-nowrap">Отчество</th>
@@ -92,6 +93,17 @@
             </th>
             <td>
                 <user-avatar asp-user="user" width="30" height="30"/>
+            </td>
+            <td>
+                @if (user.Status is Status.Normal)
+                {
+                    <a asp-page="/Profile/Index" asp-route-id="@user.Id" class="link-removable">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
+                            <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/>
+                        </svg>
+                    </a>
+                }
             </td>
             <td>
                 <input asp-for="EditedUser.FirstName" id="Edit_FirstName_@user.Id" type="text" class="form-control-plaintext w-auto" readonly disabled value="@user.FirstName" form="Edit_@user.Id"/>

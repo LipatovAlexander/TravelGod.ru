@@ -25,7 +25,8 @@ namespace TravelGod.ru.Pages.Admin
             ListOfMessages = await _unitOfWork.Messages.GetPaginatedListAsync(pageSize, pageIndex, null,
                 messages => messages
                             .Include(m => m.CreatedBy)
-                            .Include(m => m.Chat));
+                            .Include(m => m.Chat)
+                            .ThenInclude(c => c.Users));
 
             return Page();
         }

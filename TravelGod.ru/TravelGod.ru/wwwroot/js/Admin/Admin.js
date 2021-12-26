@@ -49,6 +49,7 @@
             },
             success: function () {
                 form.remove()
+                $('.link-removable').remove()
             }
         })
     })

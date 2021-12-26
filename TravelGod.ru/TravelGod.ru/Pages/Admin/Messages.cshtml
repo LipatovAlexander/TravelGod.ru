@@ -15,7 +15,7 @@
         <th scope="col" class="text-nowrap">Текст</th>
         <th scope="col" class="text-nowrap">Дата</th>
         <th scope="col" class="text-nowrap">Пользователь</th>
-        <th scope="col" class="text-nowrap">Название чата</th>
+        <th scope="col" class="text-nowrap">Куда</th>
         <th scope="col" class="text-nowrap">Статус</th>
     </tr>
     </thead>
@@ -70,13 +70,26 @@
                 }
             </td>
             <td>
-                <span
-                    @if (message.Chat.Status is Status.RemovedByModerator)
+                <span @if (message.Chat.Status is Status.RemovedByModerator)
+                                          {
+                                              @("class=\"text-danger\"")
+                                          }>
+                    @if (message.Chat.IsGroupChat)
                     {
-                        @("class=\"text-danger\"")
+                        @message.Chat.Name
                     }
-                >
-                    @message.Chat.Name
+                    else
+                    {
+                        var otherUser = message.Chat.Users.FirstOrDefault(u => u.Id != message.Chat.CreatedById);
+                        @if (otherUser?.Status == Status.Normal)
+                        {
+                            <a asp-page="/Profile/Index" asp-route-id="@otherUser.Id">@otherUser.DisplayName</a>
+                        }
+                        else
+                        {
+                            <span class="text-danger">@otherUser?.DisplayName</span>
+                        }
+                    }
                 </span>
             </td>
             <td>

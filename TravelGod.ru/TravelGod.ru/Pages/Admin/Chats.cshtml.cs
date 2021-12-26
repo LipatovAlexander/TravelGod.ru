@@ -23,26 +23,10 @@ namespace TravelGod.ru.Pages.Admin
         {
             const int pageSize = 10;
             ListOfChats = await _unitOfWork.Chats.GetPaginatedListAsync(pageSize, pageIndex, null,
-                chats => chats.Include(c => c.CreatedBy));
+                chats => chats.Include(c => c.CreatedBy)
+                              .Include(c => c.Users));
 
             return Page();
-        }
-
-        public async Task<IActionResult> OnPostEdit(int id)
-        {
-            EditedChat = await _unitOfWork.Chats.FindByIdAsync(id);
-
-            ModelState.Clear();
-            if (EditedChat is null
-                || !await TryUpdateModelAsync(EditedChat, nameof(EditedChat))
-                || !TryValidateModel(EditedChat, nameof(EditedChat)))
-            {
-                return BadRequest();
-            }
-
-            _unitOfWork.Chats.Update(EditedChat);
-            await _unitOfWork.SaveAsync();
-            return new JsonResult("success");
         }
 
         public async Task<IActionResult> OnPostRemove(int id)
