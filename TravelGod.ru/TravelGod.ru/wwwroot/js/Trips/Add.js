@@ -11,16 +11,20 @@
 
     let form = $('#trip-form');
 
+    $('.nav-item:has(.nav-link.active)').nextAll().find('.nav-link').click(function (e) {
+        let tab = $('.tab-pane.active.show')
+        let inputs = tab.find('input')
+        let validator = form.validate();
+        if (!inputs.valid()) {
+            validator.showErrors();
+            e.preventDefault();
+            return false;
+        }
+    })
+
     $('.btnNext').click(function (e) {
         e.preventDefault();
-        let tab = $(this).closest('.tab-pane');
-        let inputs = tab.find('input');
-        let validator = form.validate();
-        if (inputs.valid()) {
-            $('.nav-tabs .active').parent().next('li').find('a').trigger('click');
-        } else {
-            validator.showErrors();
-        }
+        $('.nav-tabs .active').parent().next('li').find('a').trigger('click');
     });
 
     $('.btnPrevious').click(function (e) {
