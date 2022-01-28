@@ -2,9 +2,11 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
     <PropertyGroup>
         <RollForward>Major</RollForward>
+        <UserSecretsId>21a153ec-e471-48cb-8c54-8f0b4b412dfe</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
@@ -21,8 +23,4 @@
         <Folder Include="wwwroot\CustomFiles" />
     </ItemGroup>
 
-    <Target Name="PrePublishTarget" AfterTargets="Publish">
-        <Exec Command="dotnet tool restore" />
-        <Exec Command="dotnet ef database update" />
-    </Target>
 </Project>

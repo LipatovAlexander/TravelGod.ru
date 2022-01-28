@@ -34,7 +34,8 @@ namespace TravelGod.ru
             services.AddRazorPages()
                     .AddMvcOptions(options =>
                     {
-                        options.ModelValidatorProviders.Add(new ValidationProvider(services.BuildServiceProvider()));
+                        options.ModelValidatorProviders.Add(
+                            new ValidationProvider(services.BuildServiceProvider()));
                     })
                     .AddRazorPagesOptions(options =>
                     {
@@ -51,27 +52,9 @@ namespace TravelGod.ru
             services.AddDbContext<ApplicationContext>(x =>
             {
                 string connStr;
-                if (_environment.IsDevelopment())
-                {
-                    connStr = Configuration.GetConnectionString("DefaultConnection");
-                    x.LogTo(Console.WriteLine, LogLevel.Information);
-                }
-                else
-                {
-                    // Use connection string provided at runtime by Heroku.
-                    var connUrl = Environment.GetEnvironmentVariable("CLEARDB_DATABASE_URL");
-
-                    connUrl = connUrl.Replace("mysql://", string.Empty);
-                    var userPassSide = connUrl.Split("@")[0];
-                    var hostSide = connUrl.Split("@")[1];
-
-                    var connUser = userPassSide.Split(":")[0];
-                    var connPass = userPassSide.Split(":")[1];
-                    var connHost = hostSide.Split("/")[0];
-                    var connDb = hostSide.Split("/")[1].Split("?")[0];
-
-                    connStr = $"server={connHost};Uid={connUser};Pwd={connPass};Database={connDb};SSL Mode=None";
-                }
+                connStr = Configuration.GetConnectionString(_environment.IsDevelopment()
+                    ? "DefaultConnection"
+                    : "PublishConnection");
 
                 x.UseMySql(connStr, ServerVersion.AutoDetect(connStr));
             });
